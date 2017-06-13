@@ -10,19 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170613201620) do
+ActiveRecord::Schema.define(version: 20170613202126) do
 
-  create_table "channel_user", id: false, force: :cascade do |t|
-    t.integer "channel_id"
-    t.integer "user_id"
-    t.index ["channel_id"], name: "index_channel_user_on_channel_id"
-    t.index ["user_id"], name: "index_channel_user_on_user_id"
-  end
-
-  create_table "channels", force: :cascade do |t|
+  create_table "chatroom", force: :cascade do |t|
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "chatroom_user", id: false, force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "chatroom_id"
+    t.index ["user_id"], name: "index_chatroom_user_on_user_id"
   end
 
   create_table "messages", force: :cascade do |t|

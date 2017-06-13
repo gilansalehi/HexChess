@@ -8,6 +8,9 @@ class User < ApplicationRecord
 
   after_initialize :ensure_session_token
 
+  has_many :messages
+  has_and_belongs_to_many :chatrooms
+
   def self.find_by_credentials(name, password)
     user = User.find_by(name: name)
     user.is_password?(password) ? user : nil
