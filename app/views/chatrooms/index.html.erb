@@ -1,0 +1,5 @@
+<div class="row col-md-8 col-md-offset-2">
+  <h1><%= @chatrooms.count %></h1>
+  <h1><%= @chatrooms.map { |c| c.name } %></h1>
+  <a href='/chatrooms/new'>New Chat</a>
+</div>
