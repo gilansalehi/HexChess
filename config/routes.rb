@@ -8,10 +8,10 @@ Rails.application.routes.draw do
   namespace :api, defaults: { format: :json } do
   end
 
- mount ActionCable.server => '/cable'
+  mount ActionCable.server => '/cable'
 
- resources :chatrooms, param: :slug
- resources :messages
+  resources :chatrooms, param: :slug
+  resources :messages
 
   get '/logout', controller: :sessions, action: :destroy
 
