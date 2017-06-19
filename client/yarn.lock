@@ -2166,9 +2166,9 @@ react-dom@^15.5.4:
     object-assign "^4.1.0"
     prop-types "^15.5.10"
 
-react-on-rails@6.10.1:
-  version "6.10.1"
-  resolved "https://registry.yarnpkg.com/react-on-rails/-/react-on-rails-6.10.1.tgz#fea46416d138b56472f1ea753c58ecfe5ebaab41"
+react-on-rails@^8.0.3:
+  version "8.0.3"
+  resolved "https://registry.yarnpkg.com/react-on-rails/-/react-on-rails-8.0.3.tgz#51ababe8f7436c7e467d2600eddfe4da450749bd"
 
 react-redux@^5.0.4:
   version "5.0.5"
