@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
 
+  get 'hello_world', to: 'hello_world#index'
   root to: "static_pages#root"
 
   resources :users, only: [:new, :create, :show]
