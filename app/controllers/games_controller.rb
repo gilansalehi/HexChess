@@ -1,0 +1,51 @@
+class GamesController < ApplicationController
+  def new
+    @game = Game.new()
+  end
+
+  def create
+    @game = Game.new(game_params)
+
+    if @game.save
+      ActionCable.server.broadcast 'games',
+        position: @game.position,
+      head :ok
+    else
+      flash.now[:errors] = @game.errors.full_messages
+    end
+  end
+
+  def show
+    @game = Game.find(params[:id])
+    render :game
+  end
+
+  def update
+    @game = Game.find(params[:id])
+
+    if @game.update(game_params)
+      ActionCable.server.broadcast 'games',
+        position: @game.position,
+      head :ok
+    else
+      flash :errors
+    end
+  end
+
+  def index
+    @games = Game.where({ status: 'seeking' })
+    render :games_index
+  end
+
+  private
+
+  def game_params
+    params.require(:game).permit(
+      :position,
+      :status,
+      :winner,
+      :p1_id,
+      :p2_id,
+    )
+  end
+end
