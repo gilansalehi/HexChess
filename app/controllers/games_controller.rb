@@ -1,6 +1,6 @@
 class GamesController < ApplicationController
   def new
-    @game = Game.new()
+    @game = Game.new(game_params)
   end
 
   def create
@@ -8,7 +8,7 @@ class GamesController < ApplicationController
 
     if @game.save
       ActionCable.server.broadcast 'games',
-        position: @game.position,
+        position: @game.position
       head :ok
     else
       flash.now[:errors] = @game.errors.full_messages
@@ -25,7 +25,7 @@ class GamesController < ApplicationController
 
     if @game.update(game_params)
       ActionCable.server.broadcast 'games',
-        position: @game.position,
+        position: @game.position
       head :ok
     else
       flash :errors
@@ -33,8 +33,8 @@ class GamesController < ApplicationController
   end
 
   def index
-    @games = Game.where({ status: 'seeking' })
-    render :games_index
+    @games = Game.all #.where({ status: 'seeking' })
+    render :index
   end
 
   private

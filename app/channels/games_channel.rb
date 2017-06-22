@@ -1,4 +1,4 @@
-class MessagesChannel < ApplicationCable::Channel
+class GamesChannel < ApplicationCable::Channel
 
   def subscribed
     stream_from 'games'
