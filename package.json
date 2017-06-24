@@ -1,14 +1,37 @@
 {
-  "name": "react-webpack-rails-tutorial",
-  "version": "0.0.1",
-  "private": true,
-  "engines": {
-    "node": "6.9.0",
-    "npm": "4.1.1"
+  "name": "HexChess",
+  "version": "1.0.0",
+  "description": "This README would normally document whatever steps are necessary to get the application up and running.",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
   },
+  "dependencies": {
+    "babel-core": "^6.25.0",
+    "babel-loader": "^7.1.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "react-redux": "^5.0.5",
+    "react-router": "^4.1.1",
+    "redux": "^3.7.0",
+    "webpack": "^3.0.0",
+    "webpack-dev-server": "^2.5.0"
+  },
+  "devDependencies": {},
   "scripts": {
-    "postinstall": "cd client && yarn install",
-    "rails-server": "echo 'visit http://localhost:3000/hello_world' && foreman start -f Procfile.dev",
-    "test": "rspec"
-  }
+    "webpack": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gilansalehi/HexChess.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gilansalehi/HexChess/issues"
+  },
+  "homepage": "https://github.com/gilansalehi/HexChess#readme"
 }
