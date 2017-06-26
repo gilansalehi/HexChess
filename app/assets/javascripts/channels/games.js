@@ -8,7 +8,6 @@ App.cable = ActionCable.createConsumer();
 
 App.games = App.cable.subscriptions.create('GamesChannel', {
   received: function(data) {
-    console.log(data);
     return data;
   },
 });
