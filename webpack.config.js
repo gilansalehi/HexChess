@@ -2,7 +2,7 @@
 var path = require('path');
 
 module.exports = {
-  entry: './frontend/hexChess.jsx',
+  entry: './frontend/hexChess.js',
   output: {
     filename: './app/assets/javascripts/bundle.js',
   },

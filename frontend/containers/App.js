@@ -1,10 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-// import Board from '../components/board.js';
-// import Nav from '../components/nav.js';
-// import InfoPanel from '../components/info.js';
-// import { Util } from './utils';
+import GamesIndex from './gamesIndex';
+import Game from './game';
 import {
   keydown
 } from '../actions/index.js';
@@ -25,6 +23,7 @@ class App extends Component {
   }
 
   render() {
+    const { game } = this.props;
     return(
       <div>
         <div className="main group">
@@ -32,6 +31,8 @@ class App extends Component {
             <input value={this.props.input} onChange={this.updateInput} />
             { this.props.input }
           </div>
+          <GamesIndex />
+          <Game {...game} />
         </div>
       </div>
     );
@@ -41,6 +42,7 @@ class App extends Component {
 function mapStateToProps(state) {
   return {
     input: state.input,
+    game: state.game,
   };
 }
 

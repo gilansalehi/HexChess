@@ -1,4 +1,5 @@
 class GamesController < ApplicationController
+
   def new
     @game = Game.new(game_params)
   end
@@ -7,9 +8,7 @@ class GamesController < ApplicationController
     @game = Game.new(game_params)
 
     if @game.save
-      ActionCable.server.broadcast 'games',
-        position: @game.position
-      head :ok
+      render :index
     else
       flash.now[:errors] = @game.errors.full_messages
     end
@@ -17,7 +16,7 @@ class GamesController < ApplicationController
 
   def show
     @game = Game.find(params[:id])
-    render :game
+    render :show
   end
 
   def update
@@ -34,7 +33,7 @@ class GamesController < ApplicationController
 
   def index
     @games = Game.all #.where({ status: 'seeking' })
-    render :index
+    render json: @games
   end
 
   private
@@ -46,6 +45,7 @@ class GamesController < ApplicationController
       :winner,
       :p1_id,
       :p2_id,
+      :creator_id,
     )
   end
 end
