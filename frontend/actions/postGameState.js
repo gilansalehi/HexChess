@@ -26,7 +26,6 @@ const postGameStateRequest = () => {
 }
 
 const postGameStateSuccess = (payload) => {
-  debugger;
   return {
     type: 'POST_GAME_STATE_SUCCESS',
     payload

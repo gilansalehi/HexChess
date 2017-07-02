@@ -25,7 +25,6 @@ const fetchGameStateRequest = () => {
 }
 
 const fetchGameStateSuccess = (payload) => {
-  debugger;
   return {
     type: 'FETCH_GAME_STATE_SUCCESS',
     payload

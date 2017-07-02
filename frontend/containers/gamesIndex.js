@@ -18,22 +18,24 @@ class GamesIndex extends Component {
     this.state = {
       active: true,
     };
+
+    this.newGame = this.newGame.bind(this);
   }
 
-  // componentDidMount() {
-  //   const self = this;
-  //   const continuouslyFetchGamesIndex = () => {
-  //     this.props.fetchAllGames();
-  //     window.setTimeout(continuouslyFetchGamesIndex, 3000);
-  //   }
-  //   continuouslyFetchGamesIndex();
-  // }
+  newGame() {
+    const {postNewGame, user} = this.props;
+    user ? postNewGame(user) : alert('Please log in');
+  }
 
   render() {
-    const { games, postNewGame, fetchAllGames } = this.props;
+    const { user, games, fetchAllGames } = this.props;
     return (
       <div>
-        <GamesList games={games} newGame={ postNewGame } refresh={ fetchAllGames } />
+        <GamesList games={ games }
+                   newGame={ this.newGame }
+                   refresh={ fetchAllGames }
+                   user={ user }
+        />
       </div>
     )
   }
@@ -41,6 +43,7 @@ class GamesIndex extends Component {
 
 function mapStateToProps(state) {
   return {
+    user: state.user,
     games: state.games,
   };
 }

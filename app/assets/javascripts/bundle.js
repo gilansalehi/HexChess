@@ -23484,30 +23484,36 @@ var GamesIndex = function (_Component) {
     _this.state = {
       active: true
     };
+
+    _this.newGame = _this.newGame.bind(_this);
     return _this;
   }
 
-  // componentDidMount() {
-  //   const self = this;
-  //   const continuouslyFetchGamesIndex = () => {
-  //     this.props.fetchAllGames();
-  //     window.setTimeout(continuouslyFetchGamesIndex, 3000);
-  //   }
-  //   continuouslyFetchGamesIndex();
-  // }
-
   _createClass(GamesIndex, [{
+    key: 'newGame',
+    value: function newGame() {
+      var _props = this.props,
+          postNewGame = _props.postNewGame,
+          user = _props.user;
+
+      user ? postNewGame(user) : alert('Please log in');
+    }
+  }, {
     key: 'render',
     value: function render() {
-      var _props = this.props,
-          games = _props.games,
-          postNewGame = _props.postNewGame,
-          fetchAllGames = _props.fetchAllGames;
+      var _props2 = this.props,
+          user = _props2.user,
+          games = _props2.games,
+          fetchAllGames = _props2.fetchAllGames;
 
       return _react2.default.createElement(
         'div',
         null,
-        _react2.default.createElement(_gamesList2.default, { games: games, newGame: postNewGame, refresh: fetchAllGames })
+        _react2.default.createElement(_gamesList2.default, { games: games,
+          newGame: this.newGame,
+          refresh: fetchAllGames,
+          user: user
+        })
       );
     }
   }]);
@@ -23517,6 +23523,7 @@ var GamesIndex = function (_Component) {
 
 function mapStateToProps(state) {
   return {
+    user: state.user,
     games: state.games
   };
 }
@@ -39549,22 +39556,19 @@ exports.default = function () {
       return state;
       break;
     case 'FETCH_GAMES_SUCCESS':
-      debugger;
-      console.log(action.payload);
       return action.payload;
       break;
     case 'FETCH_GAMES_ERROR':
-      console.log(action.type);
       return state;
       break;
     case 'POST_NEW_GAME_REQUEST':
       return state;
       break;
     case 'POST_NEW_GAME_SUCCESS':
-      return action.payload;
+      debugger;
+      return [].concat(_toConsumableArray(state), [action.payload]);
       break;
     case 'POST_NEW_GAME_ERROR':
-      console.log(action.type);
       return state;
       break;
     case 'UPDATE_RECEIVED':
@@ -39573,6 +39577,8 @@ exports.default = function () {
   }
   return state;
 };
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 var initialState = [];
 
@@ -41167,22 +41173,13 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var GamesList = function (_Component) {
   _inherits(GamesList, _Component);
 
-  function GamesList(props) {
+  function GamesList() {
     _classCallCheck(this, GamesList);
 
-    var _this = _possibleConstructorReturn(this, (GamesList.__proto__ || Object.getPrototypeOf(GamesList)).call(this, props));
-
-    _this.bindFunctions();
-    return _this;
+    return _possibleConstructorReturn(this, (GamesList.__proto__ || Object.getPrototypeOf(GamesList)).apply(this, arguments));
   }
 
   _createClass(GamesList, [{
-    key: 'bindFunctions',
-    value: function bindFunctions() {
-      this.newGame = this.newGame.bind(this);
-      this.refresh = this.refresh.bind(this);
-    }
-  }, {
     key: 'mapGamesToList',
     value: function mapGamesToList(games) {
       return games.map(function (g, i) {
@@ -41220,16 +41217,6 @@ var GamesList = function (_Component) {
           )
         );
       });
-    }
-  }, {
-    key: 'newGame',
-    value: function newGame() {
-      this.props.newGame();
-    }
-  }, {
-    key: 'refresh',
-    value: function refresh() {
-      this.props.refresh(); // calls fetchAllGames
     }
   }, {
     key: 'render',
@@ -41368,14 +41355,15 @@ var _jquery2 = _interopRequireDefault(_jquery);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var postNewGame = exports.postNewGame = function postNewGame() {
+var postNewGame = exports.postNewGame = function postNewGame(currentUser) {
   return function (dispatch) {
     dispatch(postNewGameRequest());
-    return postGame();
+    return postGame(currentUser, dispatch);
   };
 };
 
-function postGame() {
+function postGame(currentUser, dispatch) {
+  debugger;
   _jquery2.default.ajax({
     type: 'POST',
     beforeSend: function beforeSend(xhr) {
@@ -41384,14 +41372,13 @@ function postGame() {
     url: '/games',
     dataType: 'json',
     contentType: 'application/json',
-    data: JSON.stringify({ game: { status: 'seeking', p1_id: 1, creator_id: 1 } })
-    // success: function(json) {
-    //   return postNewGameSuccess(json);
-    // },
-    // error: function(args) {
-    //   debugger;
-    //   return postNewGameError(args)
-    // }
+    data: JSON.stringify({ game: { status: 'seeking', creator_id: currentUser.id } }),
+    success: function success(json) {
+      dispatch({ type: 'POST_NEW_GAME_SUCCESS', payload: json });
+    },
+    error: function error(msg) {
+      dispatch({ type: 'POST_NEW_GAME_ERROR', payload: msg });
+    }
   });
 }
 

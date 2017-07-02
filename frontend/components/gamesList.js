@@ -2,16 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import { Link } from 'react-router-dom';
 
 export default class GamesList extends Component {
-  constructor(props) {
-    super(props)
-
-    this.bindFunctions();
-  }
-
-  bindFunctions() {
-    this.newGame = this.newGame.bind(this);
-    this.refresh = this.refresh.bind(this);
-  }
 
   mapGamesToList(games) {
     return games.map((g, i) => {
@@ -27,14 +17,6 @@ export default class GamesList extends Component {
         </li>
       );
     })
-  }
-
-  newGame() {
-    this.props.newGame();
-  }
-
-  refresh() {
-    this.props.refresh(); // calls fetchAllGames
   }
 
   render() {

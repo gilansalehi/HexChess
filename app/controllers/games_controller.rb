@@ -8,7 +8,7 @@ class GamesController < ApplicationController
     @game = Game.new(game_params)
 
     if @game.save
-      render :index
+      render :show
     else
       flash.now[:errors] = @game.errors.full_messages
     end

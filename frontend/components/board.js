@@ -44,7 +44,6 @@ export default class Board extends Component {
   }
 
   resetEnergy() {
-    debugger;
     this.context.resetEnergy();
   }
 
