@@ -3,6 +3,10 @@ import inputReducer from './input';
 import gamesIndexReducer from './gamesIndex';
 import gameReducer from './gameReducer';
 
+const placeholder = () => {
+  return {};
+}
+
 const allReducers = combineReducers({
   input: inputReducer,
   games: gamesIndexReducer,

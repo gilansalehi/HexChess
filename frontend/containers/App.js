@@ -11,15 +11,6 @@ class App extends Component {
   constructor(props) {
     super(props);
 
-    this.bindFunctions();
-  }
-
-  bindFunctions() {
-    this.updateInput = this.updateInput.bind(this);
-  }
-
-  updateInput(e) {
-    this.props.keydown(e.target.value);
   }
 
   render() {
@@ -27,10 +18,6 @@ class App extends Component {
     return(
       <div>
         <div className="main group">
-          <div className="sidebar">
-            <input value={this.props.input} onChange={this.updateInput} />
-            { this.props.input }
-          </div>
           <GamesIndex />
           <Game {...game} />
         </div>
@@ -41,7 +28,6 @@ class App extends Component {
 
 function mapStateToProps(state) {
   return {
-    input: state.input,
     game: state.game,
   };
 }

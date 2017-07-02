@@ -8,7 +8,7 @@ import Player2Reducer from './player2';
  * Your entire applications state (store) is just whatever gets returned from all your reducers
  * */
 
-const defaultPlayer = "player1";
+const defaultPlayer = "P1";
 
 const currentPlayer = (state = defaultPlayer, action) => {
   switch (action.type) {

@@ -6,7 +6,7 @@ import {createStore, applyMiddleware} from 'redux';
 import thunk from 'redux-thunk';
 import promise from 'redux-promise';
 import {createLogger} from 'redux-logger';
-import allReducers from './reducers';
+import allReducers from './reducers/index';
 import App from './containers/App';
 import GamesIndex from './containers/gamesIndex';
 import Game from './containers/game';

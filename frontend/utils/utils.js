@@ -11,27 +11,27 @@ export const Util = {
     // RELATIVE DIRECTIONS
     forward: function(piece) {
       const { player, pos } = piece;
-      return player === 'player1' ? this.north(pos) : this.south(pos);
+      return player === 'P1' ? this.north(pos) : this.south(pos);
     },
     forwardLeft: function(piece) {
       const { player, pos } = piece;
-      return player === 'player1' ? this.northWest(pos) : this.southEast(pos);
+      return player === 'P1' ? this.northWest(pos) : this.southEast(pos);
     },
     forwardRight: function(piece) {
       const { player, pos } = piece;
-      return player === 'player1' ? this.northEast(pos) : this.southWest(pos);
+      return player === 'P1' ? this.northEast(pos) : this.southWest(pos);
     },
     back: function(piece) {
       const { player, pos } = piece;
-      return player === 'player1' ? this.south(pos) : this.north(pos);
+      return player === 'P1' ? this.south(pos) : this.north(pos);
     },
     backLeft: function(piece) {
       const { player, pos } = piece;
-      return player === 'player1' ? this.southWest(pos) : this.northEast(pos);
+      return player === 'P1' ? this.southWest(pos) : this.northEast(pos);
     },
     backRight: function(piece) {
       const { player, pos } = piece;
-      return player === 'player1' ? this.southEast(pos) : this.northWest(pos);
+      return player === 'P1' ? this.southEast(pos) : this.northWest(pos);
     },
     none: function() {
       return [];
@@ -59,10 +59,6 @@ export const Util = {
 
     isCollision(pos, array) {
       return array.indexOf(pos.toString()) > -1;
-    },
-
-    keepGoing2(currentPos, nextPos, allHexStrings, enemyHexStrings, includeCaptures) {
-      return (!this.isCollision(currentPos, enemyHexStrings) && this.inBounds(nextPos) && ( !this.isCollision(nextPos, allHexStrings) || (includeCaptures && this.isCollision(nextPos, enemyHexStrings))))
     },
 
     keepGoing(currentPos, nextPos, allHexStrings, enemyHexStrings, includeCaptures) {

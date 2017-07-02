@@ -20,14 +20,14 @@ class GamesIndex extends Component {
     };
   }
 
-  componentDidMount() {
-    const self = this;
-    const continuouslyFetchGamesIndex = () => {
-      this.props.fetchAllGames();
-      window.setTimeout(continuouslyFetchGamesIndex, 3000);
-    }
-    continuouslyFetchGamesIndex();
-  }
+  // componentDidMount() {
+  //   const self = this;
+  //   const continuouslyFetchGamesIndex = () => {
+  //     this.props.fetchAllGames();
+  //     window.setTimeout(continuouslyFetchGamesIndex, 3000);
+  //   }
+  //   continuouslyFetchGamesIndex();
+  // }
 
   render() {
     const { games, postNewGame } = this.props;

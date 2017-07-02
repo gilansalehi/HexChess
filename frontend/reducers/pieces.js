@@ -13,13 +13,15 @@ function repeat(callback, options, repeat) {
 
 function flatten(array) {
   let result = [];
-  array.forEach(item => result.push(Array.isArray(item) ? flatten(item) : item));
+  array.forEach(item => {
+    result = result.concat(Array.isArray(item) ? flatten(item) : [item]);
+  });
   return result;
 }
 
 function buildTeam(player) {
   return [
-    hero({ player, imgUrl: images.hero }),
+    hero({ player, imgUrl: images.hero, pos: (player === 'P1' ? [0, -3, 3] : [0, 3, -3]), }),
     queen({ player, imgUrl: images.queen }),
     repeat(pawn,   { player, imgUrl: images.pawn   }, 8),
     repeat(bishop, { player, imgUrl: images.bishop }, 2),
@@ -42,7 +44,7 @@ export default function (state = initialState, action) {
         const newState = state.map((piece) => {
           if ( piece.pos.toString() === start.toString() ) { // piece was moved
             return Object.assign({}, piece, { pos: end }) // update the piece's pos
-          } else if ( poiece.pos.toString() === end.toString() ) { // piece was captured
+          } else if ( piece.pos.toString() === end.toString() ) { // piece was captured
             return Object.assign({}, piece, { pos: 'prison' })
           } else {
             return piece;

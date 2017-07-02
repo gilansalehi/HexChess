@@ -3709,37 +3709,37 @@ var Util = exports.Util = {
       var player = piece.player,
           pos = piece.pos;
 
-      return player === 'player1' ? this.north(pos) : this.south(pos);
+      return player === 'P1' ? this.north(pos) : this.south(pos);
     },
     forwardLeft: function forwardLeft(piece) {
       var player = piece.player,
           pos = piece.pos;
 
-      return player === 'player1' ? this.northWest(pos) : this.southEast(pos);
+      return player === 'P1' ? this.northWest(pos) : this.southEast(pos);
     },
     forwardRight: function forwardRight(piece) {
       var player = piece.player,
           pos = piece.pos;
 
-      return player === 'player1' ? this.northEast(pos) : this.southWest(pos);
+      return player === 'P1' ? this.northEast(pos) : this.southWest(pos);
     },
     back: function back(piece) {
       var player = piece.player,
           pos = piece.pos;
 
-      return player === 'player1' ? this.south(pos) : this.north(pos);
+      return player === 'P1' ? this.south(pos) : this.north(pos);
     },
     backLeft: function backLeft(piece) {
       var player = piece.player,
           pos = piece.pos;
 
-      return player === 'player1' ? this.southWest(pos) : this.northEast(pos);
+      return player === 'P1' ? this.southWest(pos) : this.northEast(pos);
     },
     backRight: function backRight(piece) {
       var player = piece.player,
           pos = piece.pos;
 
-      return player === 'player1' ? this.southEast(pos) : this.northWest(pos);
+      return player === 'P1' ? this.southEast(pos) : this.northWest(pos);
     },
     none: function none() {
       return [];
@@ -3776,9 +3776,6 @@ var Util = exports.Util = {
     },
     isCollision: function isCollision(pos, array) {
       return array.indexOf(pos.toString()) > -1;
-    },
-    keepGoing2: function keepGoing2(currentPos, nextPos, allHexStrings, enemyHexStrings, includeCaptures) {
-      return !this.isCollision(currentPos, enemyHexStrings) && this.inBounds(nextPos) && (!this.isCollision(nextPos, allHexStrings) || includeCaptures && this.isCollision(nextPos, enemyHexStrings));
     },
     keepGoing: function keepGoing(currentPos, nextPos, allHexStrings, enemyHexStrings, includeCaptures) {
       if (enemyHexStrings.indexOf(currentPos.toString()) !== -1) {
@@ -5458,9 +5455,9 @@ var Piece = function (_Component) {
 
     _this.state = { pos: options.pos };
     _this.type = options.type;
-    _this.player = options.player || 'player1';
+    _this.player = options.player || 'P1';
     _this.imgUrl = options.imgUrl || '#';
-    _this.color = options.player === 'player1' ? 'blue' : 'red';
+    _this.color = options.player === 'P1' ? 'blue' : 'red';
 
     _this.legalMoves = _this.legalMoves.bind(_this);
     _this.getAdjacentHexes = _this.getAdjacentHexes.bind(_this);
@@ -5492,7 +5489,7 @@ var Piece = function (_Component) {
     key: 'render',
     value: function render() {
       var imgUrl = this.imgUrl;
-      var color = this.player === 'player1' ? 'blue' : 'red';
+      var color = this.player === 'P1' ? 'blue' : 'red';
 
       return _react2.default.createElement(
         'div',
@@ -12788,19 +12785,16 @@ var GamesIndex = function (_Component) {
     return _this;
   }
 
-  _createClass(GamesIndex, [{
-    key: 'componentDidMount',
-    value: function componentDidMount() {
-      var _this2 = this;
+  // componentDidMount() {
+  //   const self = this;
+  //   const continuouslyFetchGamesIndex = () => {
+  //     this.props.fetchAllGames();
+  //     window.setTimeout(continuouslyFetchGamesIndex, 3000);
+  //   }
+  //   continuouslyFetchGamesIndex();
+  // }
 
-      var self = this;
-      var continuouslyFetchGamesIndex = function continuouslyFetchGamesIndex() {
-        _this2.props.fetchAllGames();
-        window.setTimeout(continuouslyFetchGamesIndex, 3000);
-      };
-      continuouslyFetchGamesIndex();
-    }
-  }, {
+  _createClass(GamesIndex, [{
     key: 'render',
     value: function render() {
       var _props = this.props,
@@ -13034,7 +13028,6 @@ var Game = function (_Component) {
       var _props = this.props,
           currentPlayer = _props.currentPlayer,
           selection = _props.selection;
-
 
       if (!selection) {
         if (hex.player === currentPlayer) {
@@ -13534,9 +13527,9 @@ var _reduxPromise2 = _interopRequireDefault(_reduxPromise);
 
 var _reduxLogger = __webpack_require__(260);
 
-var _reducers = __webpack_require__(261);
+var _index = __webpack_require__(261);
 
-var _reducers2 = _interopRequireDefault(_reducers);
+var _index2 = _interopRequireDefault(_index);
 
 var _App = __webpack_require__(274);
 
@@ -13558,7 +13551,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // import { fetchGameData } from './actions/startup';
 
 var logger = (0, _reduxLogger.createLogger)();
-var store = (0, _redux.createStore)(_reducers2.default, (0, _redux.applyMiddleware)(_reduxThunk2.default, _reduxPromise2.default, logger));
+var store = (0, _redux.createStore)(_index2.default, (0, _redux.applyMiddleware)(_reduxThunk2.default, _reduxPromise2.default, logger));
 
 window.init = function () {
     document.addEventListener("DOMContentLoaded", function () {
@@ -29021,6 +29014,10 @@ var _gameReducer2 = _interopRequireDefault(_gameReducer);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var placeholder = function placeholder() {
+  return {};
+};
+
 var allReducers = (0, _redux.combineReducers)({
   input: _input2.default,
   games: _gamesIndex2.default,
@@ -29076,21 +29073,28 @@ exports.default = function () {
   switch (action.type) {
     case 'FETCH_GAMES_REQUEST':
       return state;
+      break;
     case 'FETCH_GAMES_SUCCESS':
       return action.payload;
+      break;
     case 'FETCH_GAMES_ERROR':
       console.log(action.type);
       return state;
+      break;
     case 'POST_NEW_GAME_REQUEST':
       return state;
+      break;
     case 'POST_NEW_GAME_SUCCESS':
       return action.payload;
+      break;
     case 'POST_NEW_GAME_ERROR':
       console.log(action.type);
       return state;
+      break;
     case 'UPDATE_RECEIVED':
       debugger;
       return action.payload;
+      break;
   }
   return state;
 };
@@ -29133,7 +29137,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * Your entire applications state (store) is just whatever gets returned from all your reducers
  * */
 
-var defaultPlayer = "player1";
+var defaultPlayer = "P1";
 
 var currentPlayer = function currentPlayer() {
   var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : defaultPlayer;
@@ -29217,7 +29221,7 @@ exports.default = function () {
           if (piece.pos.toString() === start.toString()) {
             // piece was moved
             return Object.assign({}, piece, { pos: end }); // update the piece's pos
-          } else if (poiece.pos.toString() === end.toString()) {
+          } else if (piece.pos.toString() === end.toString()) {
             // piece was captured
             return Object.assign({}, piece, { pos: 'prison' });
           } else {
@@ -29265,13 +29269,13 @@ function repeat(callback, options, repeat) {
 function flatten(array) {
   var result = [];
   array.forEach(function (item) {
-    return result.push(Array.isArray(item) ? flatten(item) : item);
+    result = result.concat(Array.isArray(item) ? flatten(item) : [item]);
   });
   return result;
 }
 
 function buildTeam(player) {
-  return [(0, _pieces.hero)({ player: player, imgUrl: _info.images.hero }), (0, _pieces.queen)({ player: player, imgUrl: _info.images.queen }), repeat(_pieces.pawn, { player: player, imgUrl: _info.images.pawn }, 8), repeat(_pieces.bishop, { player: player, imgUrl: _info.images.bishop }, 2), repeat(_pieces.rook, { player: player, imgUrl: _info.images.rook }, 2), repeat(_pieces.node, { player: player, imgUrl: _info.images.blueGem }, 12)];
+  return [(0, _pieces.hero)({ player: player, imgUrl: _info.images.hero, pos: player === 'P1' ? [0, -3, 3] : [0, 3, -3] }), (0, _pieces.queen)({ player: player, imgUrl: _info.images.queen }), repeat(_pieces.pawn, { player: player, imgUrl: _info.images.pawn }, 8), repeat(_pieces.bishop, { player: player, imgUrl: _info.images.bishop }, 2), repeat(_pieces.rook, { player: player, imgUrl: _info.images.rook }, 2), repeat(_pieces.node, { player: player, imgUrl: _info.images.blueGem }, 12)];
 }
 
 var initialState = flatten([buildTeam('P1'), buildTeam('P2')]);
@@ -29523,10 +29527,10 @@ var _redux = __webpack_require__(15);
  * Your entire applications state (store) is just whatever gets returned from all your reducers
  * */
 
-var initialState = (0, _redux.combineReducers)({
-  player: 'player2',
+var initialState = {
+  player: 'P2',
   reserve: 'hidden'
-});
+};
 
 exports.default = initialState;
 
@@ -29585,23 +29589,10 @@ var App = function (_Component) {
   function App(props) {
     _classCallCheck(this, App);
 
-    var _this = _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
-
-    _this.bindFunctions();
-    return _this;
+    return _possibleConstructorReturn(this, (App.__proto__ || Object.getPrototypeOf(App)).call(this, props));
   }
 
   _createClass(App, [{
-    key: 'bindFunctions',
-    value: function bindFunctions() {
-      this.updateInput = this.updateInput.bind(this);
-    }
-  }, {
-    key: 'updateInput',
-    value: function updateInput(e) {
-      this.props.keydown(e.target.value);
-    }
-  }, {
     key: 'render',
     value: function render() {
       var game = this.props.game;
@@ -29612,12 +29603,6 @@ var App = function (_Component) {
         _react2.default.createElement(
           'div',
           { className: 'main group' },
-          _react2.default.createElement(
-            'div',
-            { className: 'sidebar' },
-            _react2.default.createElement('input', { value: this.props.input, onChange: this.updateInput }),
-            this.props.input
-          ),
           _react2.default.createElement(_gamesIndex2.default, null),
           _react2.default.createElement(_game2.default, game)
         )
@@ -29630,7 +29615,6 @@ var App = function (_Component) {
 
 function mapStateToProps(state) {
   return {
-    input: state.input,
     game: state.game
   };
 }

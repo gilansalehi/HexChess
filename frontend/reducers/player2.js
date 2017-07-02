@@ -6,10 +6,10 @@ import {combineReducers} from 'redux';
  * Your entire applications state (store) is just whatever gets returned from all your reducers
  * */
 
-const initialState = combineReducers({
-  player: 'player2',
+const initialState = {
+  player: 'P2',
   reserve: 'hidden',
-});
+};
 
 export default initialState;
 

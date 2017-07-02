@@ -50,7 +50,6 @@ class Game extends Component {
 
   handleClick(hex) {
     const { currentPlayer, selection } = this.props;
-
     if ( !selection ) {
       if ( hex.player === currentPlayer ) {
         this.props.setSelection(hex);

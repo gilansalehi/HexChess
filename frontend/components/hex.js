@@ -31,7 +31,7 @@ export default class Hex extends Component {
     const newState = Object.assign({}, oldState, newProps);
     this.setState(newState);
   }
-  
+
   data() {
     const { pos, contents } = this.props;
     const player = contents && contents.player;

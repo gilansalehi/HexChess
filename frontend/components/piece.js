@@ -8,9 +8,9 @@ export default class Piece extends Component {
 
     this.state = { pos: options.pos };
     this.type = options.type;
-    this.player = options.player || 'player1';
+    this.player = options.player || 'P1';
     this.imgUrl = options.imgUrl || '#';
-    this.color = options.player === 'player1' ? 'blue' : 'red';
+    this.color = options.player === 'P1' ? 'blue' : 'red';
 
     this.legalMoves = this.legalMoves.bind(this);
     this.getAdjacentHexes = this.getAdjacentHexes.bind(this);
@@ -37,12 +37,12 @@ export default class Piece extends Component {
 
   render() {
     const imgUrl = this.imgUrl
-    const color = this.player === 'player1' ? 'blue' : 'red'
+    const color = this.player === 'P1' ? 'blue' : 'red'
 
     return (
       <div className={"piece " + this.player } style={{ background: this.color }}>
         <img src={ imgUrl } />
-        <span className="piece-label" 
+        <span className="piece-label"
           style={{ color: 'white', backgroundColor: color }}>
           <strong>{ this.type }</strong>
         </span>
