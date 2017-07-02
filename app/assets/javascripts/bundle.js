@@ -5353,10 +5353,11 @@ var Hex = function (_Component) {
           this.address.join('-')
         );
       }
+      var key = contents ? contents.type + contents.player : this.pos.toString();
 
       return _react2.default.createElement(
         'div',
-        { className: 'hex', id: this.pos.toString() },
+        { className: 'hex', id: this.pos.toString(), key: key },
         _react2.default.createElement(
           'div',
           { className: 'slant1' },

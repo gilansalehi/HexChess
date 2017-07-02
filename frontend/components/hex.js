@@ -110,9 +110,10 @@ export default class Hex extends Component {
         { this.address.join('-') }
       </span>
     }
+    const key = contents ? contents.type + contents.player : this.pos.toString();
 
     return (
-      <div className="hex" id={ this.pos.toString() }>
+      <div className="hex" id={ this.pos.toString() } key={key}>
         <div className="slant1">
           <div className="slant1">
             <div className="hex-inner" style={{ background: this.color }}>
