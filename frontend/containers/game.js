@@ -16,12 +16,7 @@ import {
   resetEnergy,
   updateInfo,
 } from '../actions/gameActions.js';
-import {
-  fetchGameData,
-} from '../actions/startup';
-// import Hex from './hex.js';
-// import Reserve from './reserve.js';
-// import Controls from './controls.js';
+// import { fetchGameData, } from '../actions/startup';
 
 class Game extends Component {
 
@@ -33,6 +28,15 @@ class Game extends Component {
     this.isLegalMove = this.isLegalMove.bind(this);
     this.enoughEnergy = this.enoughEnergy.bind(this);
     this.buildInfoPanel = this.buildInfoPanel.bind(this);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const lastPosition = this.props.position;
+    const nextPosition = nextProps.position;
+    if ( nextPosition !== lastPosition ) {
+      // TODO: update backend
+      console.log('position change detected');
+    }
   }
 
   getChildContext() {
@@ -66,8 +70,10 @@ class Game extends Component {
           // console.log(selection.contents);
           this.props.useEnergy(selection.contents.cost);
           this.hideReserve();
+          // update backend...
         } else { // MOVE
           this.props.movePiece(selection, hex);
+          // update backend ...
         }
       }
       this.props.clearSelection();

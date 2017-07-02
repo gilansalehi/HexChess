@@ -3,10 +3,8 @@ import { images, info } from '../utils/info';
 
 function repeat(callback, options, repeat) {
   let result = [];
-  let i = 0;
-  while ( i < repeat ) {
+  for (let i = 0; i < repeat; i++) {
     result.push(callback(options));
-    i++;
   }
   return result;
 }
@@ -65,6 +63,9 @@ export default function (state = initialState, action) {
         }
       })
       return newState;
+      break;
+    case 'FETCH_GAME_STATE_SUCCESS':
+      debugger;
       break;
   }
   return state;
