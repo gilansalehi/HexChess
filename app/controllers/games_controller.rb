@@ -33,7 +33,7 @@ class GamesController < ApplicationController
 
   def index
     @games = Game.all #.where({ status: 'seeking' })
-    render json: @games
+    render :index
   end
 
   private

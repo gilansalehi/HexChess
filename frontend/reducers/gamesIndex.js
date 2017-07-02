@@ -6,6 +6,8 @@ export default function (state = initialState, action) {
       return state;
       break;
     case 'FETCH_GAMES_SUCCESS':
+      debugger;
+      console.log(action.payload);
       return action.payload;
       break;
     case 'FETCH_GAMES_ERROR':
@@ -23,7 +25,6 @@ export default function (state = initialState, action) {
       return state;
       break;
     case 'UPDATE_RECEIVED':
-      debugger;
       return action.payload;
       break;
   }

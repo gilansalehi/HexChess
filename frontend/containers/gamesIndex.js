@@ -30,10 +30,10 @@ class GamesIndex extends Component {
   // }
 
   render() {
-    const { games, postNewGame } = this.props;
+    const { games, postNewGame, fetchAllGames } = this.props;
     return (
       <div>
-        <GamesList games={games} newGame={ postNewGame } />
+        <GamesList games={games} newGame={ postNewGame } refresh={ fetchAllGames } />
       </div>
     )
   }

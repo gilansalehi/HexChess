@@ -1,4 +1,4 @@
-json.array @games do |game|
+json.array!(@games) do |game|
   json.id       game.id
   json.creator  game.creator.try(:name)
   json.players  game.users

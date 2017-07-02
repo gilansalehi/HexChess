@@ -19,6 +19,7 @@ class App extends Component {
     return(
       <Router>
         <div className="main group">
+        <Route exact path={''} component={GamesIndex} />
           <Route exact path={'/'} component={GamesIndex} />
           <Route path={'/games/:id'} component={Game} />
         </div>
