@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
+import { BrowserRouter as Router, Link, Route } from 'react-router-dom';
 import GamesIndex from './gamesIndex';
 import Game from './game';
 import {
@@ -16,12 +17,12 @@ class App extends Component {
   render() {
     const { game } = this.props;
     return(
-      <div>
+      <Router>
         <div className="main group">
-          <GamesIndex />
-          <Game {...game} />
+          <Route exact path={'/'} component={GamesIndex} />
+          <Route path={'/games/:id'} component={Game} />
         </div>
-      </div>
+      </Router>
     );
   }
 }
