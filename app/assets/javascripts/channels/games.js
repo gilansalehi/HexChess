@@ -8,7 +8,6 @@
 //
 // App.games = App.cable.subscriptions.create('GamesChannel', {
 //   received: function(data) {
-//     debugger;
 //     console.log('yup yup yup');
 //     return data;
 //   },

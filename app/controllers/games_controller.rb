@@ -23,9 +23,7 @@ class GamesController < ApplicationController
     @game = Game.find(params[:id])
 
     if @game.update(game_params)
-      ActionCable.server.broadcast 'games',
-        position: @game.position
-      head :ok
+      render :show
     else
       flash :errors
     end
@@ -48,4 +46,6 @@ class GamesController < ApplicationController
       :creator_id,
     )
   end
+
+
 end

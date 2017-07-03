@@ -61,7 +61,6 @@ export default class Reserve extends Component {
 
   selectPieceFromReserve(hex) {
     // const piece = hex.state.contents;
-    // debugger;
     // this.props.setSelection(piece);
     // this.hideReserve();
   }

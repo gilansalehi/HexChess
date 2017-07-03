@@ -6,7 +6,6 @@ export default function(state = initialState, action) {
       return state;
       break;
     case 'LOGIN_SUCCESS':
-      debugger;
       return action.payload;
       break;
     case 'LOGIN_ERROR':

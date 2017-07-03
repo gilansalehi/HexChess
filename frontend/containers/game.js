@@ -15,28 +15,40 @@ import {
   useEnergy,
   resetEnergy,
   updateInfo,
-} from '../actions/gameActions.js';
+} from '../actions/gameActions';
+import { postGameStateData } from '../actions/postGameState';
+import { fetchGameStateData } from '../actions/fetchGameState';
 // import { fetchGameData, } from '../actions/startup';
 
 class Game extends Component {
 
   constructor(props) {
     super(props);
+
+    this.gameId = this.props.match.params.id;
     this.getLegalMoves = this.getLegalMoves.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.hideReserve = this.hideReserve.bind(this);
     this.isLegalMove = this.isLegalMove.bind(this);
     this.enoughEnergy = this.enoughEnergy.bind(this);
     this.buildInfoPanel = this.buildInfoPanel.bind(this);
+    this.fetchGameState = this.fetchGameState.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
-    const lastPosition = this.props.position;
-    const nextPosition = nextProps.position;
+    const lastPosition = this.props.pieces;
+    const nextPosition = nextProps.pieces;
+    const id = this.gameId;
+    // double check that THIS player made the change
     if ( nextPosition !== lastPosition ) {
       // TODO: update backend
+      this.props.postGameStateData(id, nextPosition);
       console.log('position change detected');
     }
+  }
+
+  fetchGameState() {
+    this.props.fetchGameStateData(this.gameId)
   }
 
   getChildContext() {
@@ -148,6 +160,7 @@ class Game extends Component {
     return (
       <div className="game">
         <Nav options={[
+            { name: 'fetch', handleClick: () => { this.fetchGameState() } },
             { name: 'Slot 1', handleClick: ()=> { console.log('click!') } },
             { name: 'Slot 2', handleClick: ()=> { console.log('click!') } },
             { name: 'Slot 3', handleClick: ()=> { console.log('click!') } },
@@ -205,6 +218,8 @@ function mapDispatchToProps(dispatch) {
     useEnergy: useEnergy,
     resetEnergy: resetEnergy,
     updateInfo: updateInfo,
+    postGameStateData: postGameStateData,
+    fetchGameStateData: fetchGameStateData,
   }, dispatch);
 
 }

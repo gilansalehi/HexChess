@@ -13,7 +13,7 @@ export const fetchGameStateData = (gameId) => {
 }
 
 function fetchGameState(id) {
-  const URL = '/games' + id;
+  const URL = '/games/' + id;
   return fetch(URL, { method: 'GET'})
      .then(response => Promise.all([response, response.json()]));
 }
