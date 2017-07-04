@@ -2,12 +2,22 @@ import React, { Component, PropTypes } from 'react';
 import { Link } from 'react-router-dom';
 
 export default class GamesList extends Component {
+  constructor(props) {
+    super(props)
+
+    this.handleClick = this.handleClick.bind(this);
+  }
+
+  handleClick(id) {
+    // JOIN GAME
+    this.props.joinGame(id)
+  }
 
   mapGamesToList(games) {
     return games.map((g, i) => {
       return (
         <li key={i} style={{color:'white'}}>
-          <Link to={ `/games/${g.id}` } >
+          <Link to={ `/games/${g.id}` } onClick={ () => this.handleClick(g.id) }>
             <span>{g.creator || 'anon ' }</span>
             <span>{g.status || 'seeking ' }</span>
             <span>{g.p2_id || 'anon ' }</span>

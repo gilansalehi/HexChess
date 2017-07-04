@@ -34,40 +34,39 @@ const initialState = flatten([
 ]);
 
 export default function (state = initialState, action) {
-  const thisPlayer = 'P1';
   switch (action.type) {
     case 'MOVE_PIECE':
       var { player, start, end } = action.payload;
-      if ( player === thisPlayer ) {
-        const newState = state.map((piece) => {
-          if ( piece.pos.toString() === start.toString() ) { // piece was moved
-            return Object.assign({}, piece, { pos: end }) // update the piece's pos
-          } else if ( piece.pos.toString() === end.toString() ) { // piece was captured
-            return Object.assign({}, piece, { pos: 'prison' })
-          } else {
-            return piece;
-          }
-        });
-        return newState;
-      }
+      return state.map((piece) => {
+        if ( piece.pos.toString() === start.toString() ) { // piece was moved
+          return Object.assign({}, piece, { pos: end, ready: false }) // update the piece's pos
+        } else if ( piece.pos.toString() === end.toString() ) { // piece was captured
+          return Object.assign({}, piece, { pos: 'prison' })
+        } else {
+          return piece;
+        }
+      });
       break;
     case 'DEPLOY_PIECE':
       var { player, start, end } = action.payload;
       const selectedPiece = action.payload.contents; // state.find((p) => { return p.type === 'pawn' });
-      const newState = state.map((piece) => {
+      return state.map((piece) => {
         // return piece === selectedPiece ? Object.assign({}, piece, { pos: end }); : piece;
         if ( piece === selectedPiece ) {
-          return Object.assign({}, piece, { pos: end });
+          return Object.assign({}, piece, { pos: end, ready: false });
         } else {
           return piece;
         }
-      })
-      return newState;
+      });
       break;
     case 'FETCH_GAME_STATE_SUCCESS':
-      const {position} = action.payload;
+      const { position } = action.payload;
       // separate position into player and pieces...
-      return JSON.parse(position);
+      const { pieces, currentPlayer } = JSON.parse(position)
+      return pieces || state;
+      break;
+    case 'READY_ALL_PIECES':
+      return state.map(p => Object.assign({}, p, { ready: true }));
       break;
   }
   return state;

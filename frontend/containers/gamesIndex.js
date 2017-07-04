@@ -9,6 +9,7 @@ import {
 
 import {
   postNewGame,
+  joinGame,
 } from '../actions/gameIndex';
 
 class GamesIndex extends Component {
@@ -20,11 +21,17 @@ class GamesIndex extends Component {
     };
 
     this.newGame = this.newGame.bind(this);
+    this.joinGame = this.joinGame.bind(this);
   }
 
   newGame() {
     const {postNewGame, user} = this.props;
     user ? postNewGame(user) : alert('Please log in');
+  }
+
+  joinGame(id) {
+    const {joinGame, user} = this.props;
+    user ? joinGame(user, id) : alert('Please log in');
   }
 
   render() {
@@ -34,6 +41,7 @@ class GamesIndex extends Component {
         <GamesList games={ games }
                    newGame={ this.newGame }
                    refresh={ fetchAllGames }
+                   joinGame={ this.joinGame }
                    user={ user }
         />
       </div>
@@ -52,6 +60,7 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     fetchAllGames: fetchAllGames,
     postNewGame: postNewGame,
+    joinGame: joinGame,
     // actionName: action imported from ./actions
   }, dispatch);
 }

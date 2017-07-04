@@ -14,7 +14,7 @@ function postGame(currentUser, dispatch) {
     url: '/games',
     dataType: 'json',
     contentType: 'application/json',
-    data: JSON.stringify({ game: { status: 'seeking', creator_id: currentUser.id } }),
+    data: JSON.stringify({ game: { status: 'seeking', creator_id: currentUser.id, p1_id: currentUser.id } }),
     success: function(json) {
       dispatch({ type: 'POST_NEW_GAME_SUCCESS', payload: json });
     },
@@ -40,5 +40,25 @@ const postNewGameSuccess = (payload) => {
 const postNewGameError = () => {
   return {
     type: "POST_NEW_GAME_ERROR"
+  }
+}
+
+export const joinGame = (currentUser, gameId) => {
+  return (dispatch) => {
+    dispatch({ type: 'JOIN_GAME_REQUEST' });
+    return $.ajax({
+      type: 'PUT',
+      beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+      url: '/games/' + gameId,
+      dataType: 'json',
+      contentType: 'application/json',
+      data: JSON.stringify({ game: { p2_id: currentUser.id } }),
+      success: function(json) {
+        dispatch({ type: 'JOIN_GAME_SUCCESS', payload: json });
+      },
+      error: function(msg) {
+        dispatch({ type: 'JOIN_GAME_SUCCESS', payload: msg });
+      }
+    });
   }
 }

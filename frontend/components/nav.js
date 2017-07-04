@@ -25,9 +25,9 @@ export default class Nav extends Component {
 
   render() {
     // const quickDeploy...
-    const { pieces } = this.props; 
+    const { pieces } = this.props;
     const optionsList = this.generateOptionsList();
-    const showReserve = (this.props.player1.reserve === 'displayed');
+    const showReserve = (this.props.player.reserve === 'displayed');
 
     return (
       <div className="nav clearfix">
@@ -39,7 +39,7 @@ export default class Nav extends Component {
         </div>
         <div className={ showReserve ? 'displayed' : 'hidden' } >
           <Reserve
-            player1={ this.props.player1 }
+            player={ this.props.player }
             showReserve={ showReserve }
             pieces={ pieces }
           />

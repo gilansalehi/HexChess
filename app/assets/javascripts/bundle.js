@@ -1613,43 +1613,6 @@ module.exports = ReactUpdates;
 
 /***/ }),
 /* 15 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* WEBPACK VAR INJECTION */(function(process) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__createStore__ = __webpack_require__(107);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__combineReducers__ = __webpack_require__(250);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__bindActionCreators__ = __webpack_require__(251);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__applyMiddleware__ = __webpack_require__(252);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__compose__ = __webpack_require__(109);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__utils_warning__ = __webpack_require__(69);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "createStore", function() { return __WEBPACK_IMPORTED_MODULE_0__createStore__["b"]; });
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "combineReducers", function() { return __WEBPACK_IMPORTED_MODULE_1__combineReducers__["a"]; });
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "bindActionCreators", function() { return __WEBPACK_IMPORTED_MODULE_2__bindActionCreators__["a"]; });
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "applyMiddleware", function() { return __WEBPACK_IMPORTED_MODULE_3__applyMiddleware__["a"]; });
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "compose", function() { return __WEBPACK_IMPORTED_MODULE_4__compose__["a"]; });
-
-
-
-
-
-
-
-/*
-* This is a dummy function to check if the function name has been altered by minification.
-* If the function has been minified and NODE_ENV !== 'production', warn the user.
-*/
-function isCrushed() {}
-
-if (process.env.NODE_ENV !== 'production' && typeof isCrushed.name === 'string' && isCrushed.name !== 'isCrushed') {
-  __WEBPACK_IMPORTED_MODULE_5__utils_warning__["a" /* default */]('You are currently using minified code outside of NODE_ENV === \'production\'. ' + 'This means that you are running a slower development build of Redux. ' + 'You can use loose-envify (https://github.com/zertosh/loose-envify) for browserify ' + 'or DefinePlugin for webpack (http://stackoverflow.com/questions/30030031) ' + 'to ensure you have the correct code for your production build.');
-}
-
-
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(0)))
-
-/***/ }),
-/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1919,6 +1882,43 @@ function getPooledWarningPropertyDefinition(propName, getVal) {
   }
 }
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
+
+/***/ }),
+/* 16 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* WEBPACK VAR INJECTION */(function(process) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__createStore__ = __webpack_require__(107);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__combineReducers__ = __webpack_require__(250);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__bindActionCreators__ = __webpack_require__(251);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__applyMiddleware__ = __webpack_require__(252);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__compose__ = __webpack_require__(109);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__utils_warning__ = __webpack_require__(69);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "createStore", function() { return __WEBPACK_IMPORTED_MODULE_0__createStore__["b"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "combineReducers", function() { return __WEBPACK_IMPORTED_MODULE_1__combineReducers__["a"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "bindActionCreators", function() { return __WEBPACK_IMPORTED_MODULE_2__bindActionCreators__["a"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "applyMiddleware", function() { return __WEBPACK_IMPORTED_MODULE_3__applyMiddleware__["a"]; });
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "compose", function() { return __WEBPACK_IMPORTED_MODULE_4__compose__["a"]; });
+
+
+
+
+
+
+
+/*
+* This is a dummy function to check if the function name has been altered by minification.
+* If the function has been minified and NODE_ENV !== 'production', warn the user.
+*/
+function isCrushed() {}
+
+if (process.env.NODE_ENV !== 'production' && typeof isCrushed.name === 'string' && isCrushed.name !== 'isCrushed') {
+  __WEBPACK_IMPORTED_MODULE_5__utils_warning__["a" /* default */]('You are currently using minified code outside of NODE_ENV === \'production\'. ' + 'This means that you are running a slower development build of Redux. ' + 'You can use loose-envify (https://github.com/zertosh/loose-envify) for browserify ' + 'or DefinePlugin for webpack (http://stackoverflow.com/questions/30030031) ' + 'to ensure you have the correct code for your production build.');
+}
+
+
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(0)))
 
 /***/ }),
 /* 17 */
@@ -3582,7 +3582,7 @@ module.exports = EventPluginHub;
 
 
 
-var SyntheticEvent = __webpack_require__(16);
+var SyntheticEvent = __webpack_require__(15);
 
 var getEventTarget = __webpack_require__(48);
 
@@ -23453,7 +23453,7 @@ var _react = __webpack_require__(3);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _redux = __webpack_require__(15);
+var _redux = __webpack_require__(16);
 
 var _reactRedux = __webpack_require__(31);
 
@@ -23486,6 +23486,7 @@ var GamesIndex = function (_Component) {
     };
 
     _this.newGame = _this.newGame.bind(_this);
+    _this.joinGame = _this.joinGame.bind(_this);
     return _this;
   }
 
@@ -23499,12 +23500,21 @@ var GamesIndex = function (_Component) {
       user ? postNewGame(user) : alert('Please log in');
     }
   }, {
+    key: 'joinGame',
+    value: function joinGame(id) {
+      var _props2 = this.props,
+          joinGame = _props2.joinGame,
+          user = _props2.user;
+
+      user ? joinGame(user, id) : alert('Please log in');
+    }
+  }, {
     key: 'render',
     value: function render() {
-      var _props2 = this.props,
-          user = _props2.user,
-          games = _props2.games,
-          fetchAllGames = _props2.fetchAllGames;
+      var _props3 = this.props,
+          user = _props3.user,
+          games = _props3.games,
+          fetchAllGames = _props3.fetchAllGames;
 
       return _react2.default.createElement(
         'div',
@@ -23512,6 +23522,7 @@ var GamesIndex = function (_Component) {
         _react2.default.createElement(_gamesList2.default, { games: games,
           newGame: this.newGame,
           refresh: fetchAllGames,
+          joinGame: this.joinGame,
           user: user
         })
       );
@@ -23531,7 +23542,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return (0, _redux.bindActionCreators)({
     fetchAllGames: _startup.fetchAllGames,
-    postNewGame: _gameIndex.postNewGame
+    postNewGame: _gameIndex.postNewGame,
+    joinGame: _gameIndex.joinGame
     // actionName: action imported from ./actions
   }, dispatch);
 }
@@ -23555,7 +23567,7 @@ var _react = __webpack_require__(3);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _redux = __webpack_require__(15);
+var _redux = __webpack_require__(16);
 
 var _reactRedux = __webpack_require__(31);
 
@@ -23601,6 +23613,7 @@ var Game = function (_Component) {
 
     _this.gameId = _this.props.match.params.id;
     _this.getLegalMoves = _this.getLegalMoves.bind(_this);
+    _this.getNodeCount = _this.getNodeCount.bind(_this);
     _this.handleClick = _this.handleClick.bind(_this);
     _this.hideReserve = _this.hideReserve.bind(_this);
     _this.isLegalMove = _this.isLegalMove.bind(_this);
@@ -23611,6 +23624,11 @@ var Game = function (_Component) {
   }
 
   _createClass(Game, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      this.props.fetchGameStateData(this.gameId);
+    }
+  }, {
     key: 'componentWillReceiveProps',
     value: function componentWillReceiveProps(nextProps) {
       var lastPosition = this.props.pieces;
@@ -23618,23 +23636,24 @@ var Game = function (_Component) {
       var id = this.gameId;
       // double check that THIS player made the change
       if (nextPosition !== lastPosition) {
-        debugger;
-        // TODO: update backend
-        this.props.postGameStateData(id, nextPosition);
-        console.log('position change detected');
+        var gameState = {
+          pieces: nextProps.pieces,
+          currentPlayer: nextProps.currentPlayer
+        };
+
+        this.props.postGameStateData(id, gameState);
       }
     }
   }, {
     key: 'fetchGameState',
     value: function fetchGameState() {
-      debugger;
       this.props.fetchGameStateData(this.gameId);
     }
   }, {
     key: 'getChildContext',
     value: function getChildContext() {
       var self = this;
-      //EXPOSE ACTIONS TO CHILDREN
+      // EXPOSE ACTIONS TO CHILDREN
       return {
         handleClick: function handleClick(hex) {
           self.handleClick(hex);
@@ -23649,8 +23668,7 @@ var Game = function (_Component) {
           self.props.resetEnergy();
         },
 
-        player1: this.props.player1,
-        player2: this.props.player2
+        player: this.props.player
       };
     }
   }, {
@@ -23658,31 +23676,37 @@ var Game = function (_Component) {
     value: function handleClick(hex) {
       var _props = this.props,
           currentPlayer = _props.currentPlayer,
-          selection = _props.selection;
+          selection = _props.selection,
+          player = _props.player;
+
 
       if (!selection) {
-        if (hex.player === currentPlayer) {
+        if (hex.player === player.player) {
           this.props.setSelection(hex);
           this.props.updateInfo(hex);
         } else {
-          //clear selection
+          this.props.updateInfo(hex);
         }
       } else {
         // selection exists
         if (hex.pos === selection.pos) {
           // nothing happens?
-        } else if (this.isLegalMove(hex.pos)) {
+        } else if (this.isLegalMove(hex.pos) && currentPlayer === player.player && selection.contents.ready) {
+          // MAKE THE MOVE:
           if (selection.pos[0] === 'reserve') {
-            // DEPLOY
             this.props.deployPiece(selection, hex);
-            // console.log(selection.contents);
             this.props.useEnergy(selection.contents.cost);
             this.hideReserve();
-            // update backend...
           } else {
-            // MOVE
             this.props.movePiece(selection, hex);
-            // update backend ...
+          }
+          // THEN HANDLE TURN LOGIC:
+          this.props.incrementActions();
+          if (player.actions >= 1) {
+            this.props.passTurn();
+            this.props.readyAllPieces();
+            this.props.resetActions();
+            this.props.resetEnergy();
           }
         }
         this.props.clearSelection();
@@ -23696,12 +23720,17 @@ var Game = function (_Component) {
   }, {
     key: 'isLegalMove',
     value: function isLegalMove(pos) {
-      var selection = this.props.selection;
+      var _props2 = this.props,
+          selection = _props2.selection,
+          player = _props2.player;
 
       if (!selection) {
         return false;
       }
       var piece = selection.contents;
+      if (player.player !== piece.player) {
+        return false;
+      } // e.g. P2 selects P1 piece (to see info)
       var moves = this.getLegalMoves(piece).map(function (m) {
         return m.toString();
       });
@@ -23712,10 +23741,9 @@ var Game = function (_Component) {
     value: function getLegalMoves(piece) {
       // calculates a piece's legal moves from its type
       var legalMoves = [];
-      var _props2 = this.props,
-          player1 = _props2.player1,
-          player2 = _props2.player2,
-          pieces = _props2.pieces;
+      var _props3 = this.props,
+          player = _props3.player,
+          pieces = _props3.pieces;
 
       var thisPlayer = piece.player;
       var moveFuncs = _utils.Util.moveFuncs,
@@ -23755,35 +23783,42 @@ var Game = function (_Component) {
   }, {
     key: 'buildInfoPanel',
     value: function buildInfoPanel() {
-      var player1 = this.props.player1;
+      var player = this.props.player;
 
-      return player1 ? player1.info : 'placeholder';
+      return player ? player.info : 'placeholder';
     }
   }, {
     key: 'enoughEnergy',
     value: function enoughEnergy(piece) {
-      var _props3 = this.props,
-          pieces = _props3.pieces,
-          player1 = _props3.player1;
+      var _props4 = this.props,
+          pieces = _props4.pieces,
+          player = _props4.player;
 
-      var player = player1;
-      var energy = 10; // getNodeCount('P1', pieces);
+      var energy = this.getNodeCount(player, pieces);
       var remainingEnergy = energy - player.energy;
       return remainingEnergy >= piece.cost;
+    }
+  }, {
+    key: 'getNodeCount',
+    value: function getNodeCount(player, pieces) {
+      return pieces.filter(function (p) {
+        return p.type === 'node' && p.player === player.player && Array.isArray(p.pos);
+      }).length;
     }
   }, {
     key: 'render',
     value: function render() {
       var _this2 = this;
 
-      var _props4 = this.props,
-          player1 = _props4.player1,
-          player2 = _props4.player2,
-          selection = _props4.selection,
-          pieces = _props4.pieces;
+      var _props5 = this.props,
+          player = _props5.player,
+          selection = _props5.selection,
+          pieces = _props5.pieces,
+          currentPlayer = _props5.currentPlayer;
 
       var legalMoves = selection ? this.getLegalMoves(selection.contents) : [];
       var info = this.buildInfoPanel();
+      var nodeCount = this.getNodeCount(player, pieces);
 
       return _react2.default.createElement(
         'div',
@@ -23803,19 +23838,21 @@ var Game = function (_Component) {
             } }, { name: 'Res', handleClick: function handleClick() {
               _this2.props.showReserve();
             } }],
-          player1: player1,
+          player: player,
           pieces: pieces
         }),
         _react2.default.createElement(_board2.default, {
           pieces: pieces,
           legalMoves: legalMoves,
           selection: selection,
-          player1: player1,
-          player2: player2,
-          p1Energy: 10,
-          p2Energy: 10
+          nodeCount: nodeCount,
+          player: player
         }),
-        _react2.default.createElement(_info2.default, { info: info })
+        _react2.default.createElement(_info2.default, { info: info,
+          remainingEnergy: nodeCount - player.energy,
+          remainingActions: 2 - player.actions,
+          currentPlayer: currentPlayer
+        })
       );
     }
   }]);
@@ -23826,8 +23863,7 @@ var Game = function (_Component) {
 Game.childContextTypes = {
   handleClick: _react2.default.PropTypes.func,
   hideReserve: _react2.default.PropTypes.func,
-  player1: _react2.default.PropTypes.object,
-  player2: _react2.default.PropTypes.object,
+  player: _react2.default.PropTypes.object,
   deployPiece: _react2.default.PropTypes.func,
   resetEnergy: _react2.default.PropTypes.func
 };
@@ -23839,9 +23875,9 @@ function mapStateToProps(state) {
     selection: game.selection,
     currentPlayer: game.currentPlayer,
     moveCount: game.moveCount,
-    player1: game.player1,
-    player2: game.player2,
-    pieces: game.position
+    player: game.player,
+    pieces: game.position,
+    currentUser: state.user
   };
 }
 
@@ -23857,7 +23893,11 @@ function mapDispatchToProps(dispatch) {
     resetEnergy: _gameActions.resetEnergy,
     updateInfo: _gameActions.updateInfo,
     postGameStateData: _postGameState.postGameStateData,
-    fetchGameStateData: _fetchGameState.fetchGameStateData
+    fetchGameStateData: _fetchGameState.fetchGameStateData,
+    passTurn: _gameActions.passTurn,
+    incrementActions: _gameActions.incrementActions,
+    resetActions: _gameActions.resetActions,
+    readyAllPieces: _gameActions.readyAllPieces
   }, dispatch);
 }
 
@@ -24027,17 +24067,17 @@ var Reserve = function (_Component) {
     key: 'buildPieceList',
     value: function buildPieceList() {
       var _props = this.props,
-          player1 = _props.player1,
+          player = _props.player,
           pieces = _props.pieces; // pieces = this.props[player]
 
       var text = _utils.Util.text;
 
-      var player = 'P1';
+      var thisPlayer = player.player;
 
       var pieceMap = {};
       var uniquePieces = [];
       var pieceList = pieces.filter(function (p) {
-        return p.player === player && p.pos === 'reserve';
+        return p.player === thisPlayer && p.pos === 'reserve';
       });
 
       pieceList.forEach(function (p) {
@@ -24089,7 +24129,6 @@ var Reserve = function (_Component) {
     key: 'selectPieceFromReserve',
     value: function selectPieceFromReserve(hex) {
       // const piece = hex.state.contents;
-      // debugger;
       // this.props.setSelection(piece);
       // this.hideReserve();
     }
@@ -24229,7 +24268,7 @@ var _reactRouter = __webpack_require__(10);
 
 var _reactRedux = __webpack_require__(31);
 
-var _redux = __webpack_require__(15);
+var _redux = __webpack_require__(16);
 
 var _reduxThunk = __webpack_require__(257);
 
@@ -27025,7 +27064,7 @@ module.exports = FallbackCompositionState;
 
 
 
-var SyntheticEvent = __webpack_require__(16);
+var SyntheticEvent = __webpack_require__(15);
 
 /**
  * @interface Event
@@ -27066,7 +27105,7 @@ module.exports = SyntheticCompositionEvent;
 
 
 
-var SyntheticEvent = __webpack_require__(16);
+var SyntheticEvent = __webpack_require__(15);
 
 /**
  * @interface Event
@@ -27113,7 +27152,7 @@ var EventPropagators = __webpack_require__(25);
 var ExecutionEnvironment = __webpack_require__(7);
 var ReactDOMComponentTree = __webpack_require__(6);
 var ReactUpdates = __webpack_require__(14);
-var SyntheticEvent = __webpack_require__(16);
+var SyntheticEvent = __webpack_require__(15);
 
 var inputValueTracking = __webpack_require__(84);
 var getEventTarget = __webpack_require__(48);
@@ -34915,7 +34954,7 @@ var EventPropagators = __webpack_require__(25);
 var ExecutionEnvironment = __webpack_require__(7);
 var ReactDOMComponentTree = __webpack_require__(6);
 var ReactInputSelection = __webpack_require__(99);
-var SyntheticEvent = __webpack_require__(16);
+var SyntheticEvent = __webpack_require__(15);
 
 var getActiveElement = __webpack_require__(100);
 var isTextInputElement = __webpack_require__(85);
@@ -35112,7 +35151,7 @@ var EventPropagators = __webpack_require__(25);
 var ReactDOMComponentTree = __webpack_require__(6);
 var SyntheticAnimationEvent = __webpack_require__(202);
 var SyntheticClipboardEvent = __webpack_require__(203);
-var SyntheticEvent = __webpack_require__(16);
+var SyntheticEvent = __webpack_require__(15);
 var SyntheticFocusEvent = __webpack_require__(204);
 var SyntheticKeyboardEvent = __webpack_require__(205);
 var SyntheticMouseEvent = __webpack_require__(37);
@@ -35336,7 +35375,7 @@ module.exports = SimpleEventPlugin;
 
 
 
-var SyntheticEvent = __webpack_require__(16);
+var SyntheticEvent = __webpack_require__(15);
 
 /**
  * @interface Event
@@ -35380,7 +35419,7 @@ module.exports = SyntheticAnimationEvent;
 
 
 
-var SyntheticEvent = __webpack_require__(16);
+var SyntheticEvent = __webpack_require__(15);
 
 /**
  * @interface Event
@@ -35761,7 +35800,7 @@ module.exports = SyntheticTouchEvent;
 
 
 
-var SyntheticEvent = __webpack_require__(16);
+var SyntheticEvent = __webpack_require__(15);
 
 /**
  * @interface Event
@@ -38071,7 +38110,7 @@ function shallowEqual(objA, objB) {
 /* unused harmony export whenMapDispatchToPropsIsFunction */
 /* unused harmony export whenMapDispatchToPropsIsMissing */
 /* unused harmony export whenMapDispatchToPropsIsObject */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_redux__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_redux__ = __webpack_require__(16);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__wrapMapToProps__ = __webpack_require__(110);
 
 
@@ -39494,7 +39533,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _redux = __webpack_require__(15);
+var _redux = __webpack_require__(16);
 
 var _input = __webpack_require__(266);
 
@@ -39612,7 +39651,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _redux = __webpack_require__(15);
+var _redux = __webpack_require__(16);
 
 var _selection = __webpack_require__(269);
 
@@ -39625,10 +39664,6 @@ var _pieces2 = _interopRequireDefault(_pieces);
 var _player = __webpack_require__(273);
 
 var _player2 = _interopRequireDefault(_player);
-
-var _player3 = __webpack_require__(277);
-
-var _player4 = _interopRequireDefault(_player3);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -39645,10 +39680,16 @@ var currentPlayer = function currentPlayer() {
 
   switch (action.type) {
     case 'SWITCH_PLAYER':
-      return action.payload; // "player1" or "player2"
+      return state === 'P1' ? 'P2' : 'P1';
       break;
     case 'SET_PLAYER':
-      return action.payload; // "player1" or "player2"
+      return action.payload; // "P1" or "P2"
+      break;
+    case 'FETCH_GAME_STATE_SUCCESS':
+      var _JSON$parse = JSON.parse(action.payload.position),
+          _currentPlayer = _JSON$parse.currentPlayer;
+
+      return _currentPlayer || 'P1';
       break;
   }
   return state;
@@ -39656,8 +39697,7 @@ var currentPlayer = function currentPlayer() {
 
 var allReducers = (0, _redux.combineReducers)({
   selection: _selection2.default,
-  player1: _player2.default,
-  player2: _player4.default,
+  player: _player2.default,
   position: _pieces2.default,
   currentPlayer: currentPlayer
 });
@@ -39708,7 +39748,6 @@ exports.default = function () {
   var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
   var action = arguments[1];
 
-  var thisPlayer = 'P1';
   switch (action.type) {
     case 'MOVE_PIECE':
       var _action$payload = action.payload,
@@ -39716,20 +39755,17 @@ exports.default = function () {
           start = _action$payload.start,
           end = _action$payload.end;
 
-      if (player === thisPlayer) {
-        var _newState = state.map(function (piece) {
-          if (piece.pos.toString() === start.toString()) {
-            // piece was moved
-            return Object.assign({}, piece, { pos: end }); // update the piece's pos
-          } else if (piece.pos.toString() === end.toString()) {
-            // piece was captured
-            return Object.assign({}, piece, { pos: 'prison' });
-          } else {
-            return piece;
-          }
-        });
-        return _newState;
-      }
+      return state.map(function (piece) {
+        if (piece.pos.toString() === start.toString()) {
+          // piece was moved
+          return Object.assign({}, piece, { pos: end, ready: false }); // update the piece's pos
+        } else if (piece.pos.toString() === end.toString()) {
+          // piece was captured
+          return Object.assign({}, piece, { pos: 'prison' });
+        } else {
+          return piece;
+        }
+      });
       break;
     case 'DEPLOY_PIECE':
       var _action$payload2 = action.payload,
@@ -39738,20 +39774,29 @@ exports.default = function () {
           end = _action$payload2.end;
 
       var selectedPiece = action.payload.contents; // state.find((p) => { return p.type === 'pawn' });
-      var newState = state.map(function (piece) {
+      return state.map(function (piece) {
         // return piece === selectedPiece ? Object.assign({}, piece, { pos: end }); : piece;
         if (piece === selectedPiece) {
-          return Object.assign({}, piece, { pos: end });
+          return Object.assign({}, piece, { pos: end, ready: false });
         } else {
           return piece;
         }
       });
-      return newState;
       break;
     case 'FETCH_GAME_STATE_SUCCESS':
       var position = action.payload.position;
+      // separate position into player and pieces...
 
-      return JSON.parse(position);
+      var _JSON$parse = JSON.parse(position),
+          pieces = _JSON$parse.pieces,
+          currentPlayer = _JSON$parse.currentPlayer;
+
+      return pieces || state;
+      break;
+    case 'READY_ALL_PIECES':
+      return state.map(function (p) {
+        return Object.assign({}, p, { ready: true });
+      });
       break;
   }
   return state;
@@ -39798,6 +39843,7 @@ var hero = exports.hero = function hero(options) {
     type: 'hero',
     player: options.player,
     cost: 0,
+    ready: true,
     pos: options.pos,
     moveDirs: ['adjacent'],
     imgUrl: options.imgUrl,
@@ -39810,6 +39856,7 @@ var pawn = exports.pawn = function pawn(options) {
     type: 'pawn',
     player: options.player,
     cost: 0,
+    ready: true,
     pos: 'reserve',
     moveDirs: ['pawn'],
     imgUrl: options.imgUrl
@@ -39821,6 +39868,7 @@ var bishop = exports.bishop = function bishop(options) {
     type: 'bishop',
     player: options.player,
     cost: 2,
+    ready: true,
     pos: 'reserve',
     moveDirs: ['bishop'],
     imgUrl: options.imgUrl
@@ -39832,6 +39880,7 @@ var rook = exports.rook = function rook(options) {
     type: 'rook',
     player: options.player,
     cost: 3,
+    ready: true,
     pos: 'reserve',
     moveDirs: ['rook'],
     imgUrl: options.imgUrl
@@ -39843,6 +39892,7 @@ var queen = exports.queen = function queen(options) {
     type: 'queen',
     player: options.player,
     cost: 6,
+    ready: true,
     pos: 'reserve',
     moveDirs: ['queen'],
     imgUrl: options.imgUrl
@@ -39854,6 +39904,7 @@ var node = exports.node = function node(options) {
     type: 'node',
     player: options.player,
     cost: 0,
+    ready: true,
     pos: 'reserve',
     moveDirs: ['none'],
     imgUrl: options.imgUrl
@@ -39895,7 +39946,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _redux = __webpack_require__(15);
+var _redux = __webpack_require__(16);
 
 var _reserve = __webpack_require__(274);
 
@@ -39909,16 +39960,35 @@ var _info = __webpack_require__(276);
 
 var _info2 = _interopRequireDefault(_info);
 
+var _actions = __webpack_require__(277);
+
+var _actions2 = _interopRequireDefault(_actions);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var initialState = (0, _redux.combineReducers)({
+var defaultPlayer = 'P1';
+
+function playerReducer() {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : defaultPlayer;
+  var action = arguments[1];
+
+  switch (action.type) {
+    case 'JOIN_GAME_SUCCESS':
+      return action.payload.player;
+      break;
+  }
+  return state;
+}
+
+var playerState = (0, _redux.combineReducers)({
+  actions: _actions2.default,
   energy: _energy2.default, // could in theory pass arg to the function...
   info: _info2.default,
-  player: 'P1',
+  player: playerReducer,
   reserve: _reserve2.default
 });
 
-exports.default = initialState;
+exports.default = playerState;
 
 /***/ }),
 /* 274 */
@@ -40021,31 +40091,22 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _redux = __webpack_require__(15);
+exports.default = function () {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
+  var action = arguments[1];
 
-// import ActiveUserReducer from './reducer-active-user';
-// import SelectionReducer from './selection';
-/*
- * We combine all reducers into a single object before updated data is dispatched (sent) to store
- * Your entire applications state (store) is just whatever gets returned from all your reducers
- * */
-
-var initialState = {
-  player: 'P2',
-  reserve: 'hidden'
+  switch (action.type) {
+    case 'INCREMENT_ACTIONS':
+      return state + 1;
+      break;
+    case 'RESET_ACTIONS':
+      return 0;
+      break;
+  }
+  return state;
 };
 
-exports.default = initialState;
-
-// returns the slice of state that is the selection data
-
-var defaultsxxx = {
-  energy: 0,
-  avatar: 'avatar',
-  reserve: 'hidden',
-  heroPos: [],
-  pieces: []
-};
+var initialState = 0;
 
 /***/ }),
 /* 278 */
@@ -40067,7 +40128,6 @@ exports.default = function () {
       return state;
       break;
     case 'LOGIN_SUCCESS':
-      debugger;
       return action.payload;
       break;
     case 'LOGIN_ERROR':
@@ -40105,7 +40165,7 @@ var _react = __webpack_require__(3);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _redux = __webpack_require__(15);
+var _redux = __webpack_require__(16);
 
 var _reactRedux = __webpack_require__(31);
 
@@ -41194,22 +41254,35 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var GamesList = function (_Component) {
   _inherits(GamesList, _Component);
 
-  function GamesList() {
+  function GamesList(props) {
     _classCallCheck(this, GamesList);
 
-    return _possibleConstructorReturn(this, (GamesList.__proto__ || Object.getPrototypeOf(GamesList)).apply(this, arguments));
+    var _this = _possibleConstructorReturn(this, (GamesList.__proto__ || Object.getPrototypeOf(GamesList)).call(this, props));
+
+    _this.handleClick = _this.handleClick.bind(_this);
+    return _this;
   }
 
   _createClass(GamesList, [{
+    key: 'handleClick',
+    value: function handleClick(id) {
+      // JOIN GAME
+      this.props.joinGame(id);
+    }
+  }, {
     key: 'mapGamesToList',
     value: function mapGamesToList(games) {
+      var _this2 = this;
+
       return games.map(function (g, i) {
         return _react2.default.createElement(
           'li',
           { key: i, style: { color: 'white' } },
           _react2.default.createElement(
             _reactRouterDom.Link,
-            { to: '/games/' + g.id },
+            { to: '/games/' + g.id, onClick: function onClick() {
+                return _this2.handleClick(g.id);
+              } },
             _react2.default.createElement(
               'span',
               null,
@@ -41368,7 +41441,7 @@ var fetchGamesError = function fetchGamesError() {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.postNewGame = undefined;
+exports.joinGame = exports.postNewGame = undefined;
 
 var _jquery = __webpack_require__(41);
 
@@ -41392,7 +41465,7 @@ function postGame(currentUser, dispatch) {
     url: '/games',
     dataType: 'json',
     contentType: 'application/json',
-    data: JSON.stringify({ game: { status: 'seeking', creator_id: currentUser.id } }),
+    data: JSON.stringify({ game: { status: 'seeking', creator_id: currentUser.id, p1_id: currentUser.id } }),
     success: function success(json) {
       dispatch({ type: 'POST_NEW_GAME_SUCCESS', payload: json });
     },
@@ -41418,6 +41491,28 @@ var postNewGameSuccess = function postNewGameSuccess(payload) {
 var postNewGameError = function postNewGameError() {
   return {
     type: "POST_NEW_GAME_ERROR"
+  };
+};
+
+var joinGame = exports.joinGame = function joinGame(currentUser, gameId) {
+  return function (dispatch) {
+    dispatch({ type: 'JOIN_GAME_REQUEST' });
+    return _jquery2.default.ajax({
+      type: 'PUT',
+      beforeSend: function beforeSend(xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', (0, _jquery2.default)('meta[name="csrf-token"]').attr('content'));
+      },
+      url: '/games/' + gameId,
+      dataType: 'json',
+      contentType: 'application/json',
+      data: JSON.stringify({ game: { p2_id: currentUser.id } }),
+      success: function success(json) {
+        dispatch({ type: 'JOIN_GAME_SUCCESS', payload: json });
+      },
+      error: function error(msg) {
+        dispatch({ type: 'JOIN_GAME_SUCCESS', payload: msg });
+      }
+    });
   };
 };
 
@@ -41502,12 +41597,12 @@ var Board = function (_Component) {
     key: 'drawEnergyCounter',
     value: function drawEnergyCounter() {
       var _props = this.props,
-          player1 = _props.player1,
-          p1Energy = _props.p1Energy;
+          player = _props.player,
+          nodeCount = _props.nodeCount;
 
       return _react2.default.createElement(_energyCounter2.default, {
-        energy: p1Energy - player1.energy,
-        nodeCount: p1Energy
+        energy: nodeCount - player.energy,
+        nodeCount: nodeCount
       });
     }
   }, {
@@ -41529,13 +41624,16 @@ var Board = function (_Component) {
     value: function drawBoard() {
       var _this2 = this;
 
-      var xnums = [-4, -3, -2, -1, 0, 1, 2, 3, 4];
-      var ynums = [-6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6].reverse(); // OR NOT REVERSE IF DISPLAYING FOR PLAYER 2!!
       var _props2 = this.props,
           pieces = _props2.pieces,
           selection = _props2.selection,
-          legalMoves = _props2.legalMoves;
+          legalMoves = _props2.legalMoves,
+          player = _props2.player;
 
+
+      var xnums = [-4, -3, -2, -1, 0, 1, 2, 3, 4];
+      var ynums = [-6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6];
+      player.player === 'P1' && ynums.reverse(); // 'observer' will see from 'P2' perspective...
 
       var lmarr = legalMoves && legalMoves.map(function (arr) {
         return arr.join(',');
@@ -41933,7 +42031,7 @@ var Nav = function (_Component) {
       var pieces = this.props.pieces;
 
       var optionsList = this.generateOptionsList();
-      var showReserve = this.props.player1.reserve === 'displayed';
+      var showReserve = this.props.player.reserve === 'displayed';
 
       return _react2.default.createElement(
         'div',
@@ -41952,7 +42050,7 @@ var Nav = function (_Component) {
           'div',
           { className: showReserve ? 'displayed' : 'hidden' },
           _react2.default.createElement(_reserve2.default, {
-            player1: this.props.player1,
+            player: this.props.player,
             showReserve: showReserve,
             pieces: pieces
           })
@@ -42069,7 +42167,11 @@ var InfoPanel = function (_Component) {
   _createClass(InfoPanel, [{
     key: 'render',
     value: function render() {
-      var info = this.props.info;
+      var _props = this.props,
+          info = _props.info,
+          currentPlayer = _props.currentPlayer,
+          remainingEnergy = _props.remainingEnergy,
+          remainingActions = _props.remainingActions;
       var _styles = this.styles,
           image = _styles.image,
           text = _styles.text,
@@ -42083,11 +42185,21 @@ var InfoPanel = function (_Component) {
           'div',
           { style: flexPositioner },
           _react2.default.createElement(
+            'span',
+            null,
+            'Active Player: ',
+            currentPlayer === 'P1' ? 'Blue' : 'Red',
+            ' - Remaining Energy: ',
+            remainingEnergy,
+            ' - Remaining Actions: ',
+            remainingActions
+          ),
+          _react2.default.createElement('img', { src: info.image, style: image, width: '100%', height: 'auto' }),
+          _react2.default.createElement(
             'div',
             { style: text },
             info.text || "INFO PANEL"
-          ),
-          _react2.default.createElement('img', { src: info.image, style: image, width: '100%', height: 'auto' })
+          )
         )
       );
     }
@@ -42127,7 +42239,7 @@ function styles() {
   var flexPositioner = {
     display: 'flex',
     position: 'relative',
-    flexDirection: 'column-reverse',
+    flexDirection: 'column',
     height: '100%',
     width: '100%'
   };
@@ -42225,6 +42337,22 @@ var resetEnergy = exports.resetEnergy = function resetEnergy() {
     type: 'RESET_ENERGY',
     payload: 0
   };
+};
+
+var incrementActions = exports.incrementActions = function incrementActions() {
+  return { type: 'INCREMENT_ACTIONS' };
+};
+
+var resetActions = exports.resetActions = function resetActions() {
+  return { type: 'RESET_ACTIONS' };
+};
+
+var passTurn = exports.passTurn = function passTurn() {
+  return { type: 'SWITCH_PLAYER' };
+};
+
+var readyAllPieces = exports.readyAllPieces = function readyAllPieces() {
+  return { type: 'READY_ALL_PIECES' };
 };
 
 var updateInfo = exports.updateInfo = function updateInfo(hex) {
@@ -42356,7 +42484,7 @@ var _react = __webpack_require__(3);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _redux = __webpack_require__(15);
+var _redux = __webpack_require__(16);
 
 var _reactRedux = __webpack_require__(31);
 

@@ -16,14 +16,14 @@ export default class Reserve extends Component {
   }
 
   buildPieceList() {
-    const { player1, pieces } = this.props; // pieces = this.props[player]
+    const { player, pieces } = this.props; // pieces = this.props[player]
     const { text } = Util;
-    const player = 'P1';
+    const thisPlayer = player.player;
 
     let pieceMap = {};
     let uniquePieces = [];
     let pieceList = pieces.filter((p) => {
-      return p.player === player && p.pos === 'reserve'
+      return p.player === thisPlayer && p.pos === 'reserve'
     });
 
     pieceList.forEach((p) => {

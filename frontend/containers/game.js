@@ -15,6 +15,10 @@ import {
   useEnergy,
   resetEnergy,
   updateInfo,
+  incrementActions,
+  resetActions,
+  passTurn,
+  readyAllPieces,
 } from '../actions/gameActions';
 import { postGameStateData } from '../actions/postGameState';
 import { fetchGameStateData } from '../actions/fetchGameState';
@@ -27,6 +31,7 @@ class Game extends Component {
 
     this.gameId = this.props.match.params.id;
     this.getLegalMoves = this.getLegalMoves.bind(this);
+    this.getNodeCount = this.getNodeCount.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.hideReserve = this.hideReserve.bind(this);
     this.isLegalMove = this.isLegalMove.bind(this);
@@ -35,15 +40,22 @@ class Game extends Component {
     this.fetchGameState = this.fetchGameState.bind(this);
   }
 
+  componentDidMount() {
+    this.props.fetchGameStateData(this.gameId);
+  }
+
   componentWillReceiveProps(nextProps) {
     const lastPosition = this.props.pieces;
     const nextPosition = nextProps.pieces;
     const id = this.gameId;
     // double check that THIS player made the change
     if ( nextPosition !== lastPosition ) {
-      // TODO: update backend
-      this.props.postGameStateData(id, nextPosition);
-      console.log('position change detected');
+      const gameState = {
+        pieces: nextProps.pieces,
+        currentPlayer: nextProps.currentPlayer
+      };
+
+      this.props.postGameStateData(id, gameState);
     }
   }
 
@@ -53,39 +65,45 @@ class Game extends Component {
 
   getChildContext() {
     var self = this;
-    //EXPOSE ACTIONS TO CHILDREN
+    // EXPOSE ACTIONS TO CHILDREN
     return {
       handleClick(hex) { self.handleClick(hex); },
       hideReserve() { self.hideReserve(); },
       deployPiece(x, y, z) { self.deployPiece(x, y, z); },
       resetEnergy() { self.props.resetEnergy(); },
-      player1: this.props.player1,
-      player2: this.props.player2,
+      player: this.props.player,
     }
   }
 
   handleClick(hex) {
-    const { currentPlayer, selection } = this.props;
+    const { currentPlayer, selection, player } = this.props;
+
     if ( !selection ) {
-      if ( hex.player === currentPlayer ) {
+      if ( hex.player === player.player ) {
         this.props.setSelection(hex);
         this.props.updateInfo(hex);
       } else {
-        //clear selection
+        this.props.updateInfo(hex);
       }
     } else { // selection exists
       if ( hex.pos === selection.pos ) {
         // nothing happens?
-      } else if ( this.isLegalMove(hex.pos) ) {
-        if ( selection.pos[0] === 'reserve' ) { // DEPLOY
+      } else if ( this.isLegalMove(hex.pos) && currentPlayer === player.player && selection.contents.ready ) {
+        // MAKE THE MOVE:
+        if ( selection.pos[0] === 'reserve' ) {
           this.props.deployPiece(selection, hex);
-          // console.log(selection.contents);
           this.props.useEnergy(selection.contents.cost);
           this.hideReserve();
-          // update backend...
-        } else { // MOVE
+        } else {
           this.props.movePiece(selection, hex);
-          // update backend ...
+        }
+        // THEN HANDLE TURN LOGIC:
+        this.props.incrementActions();
+        if ( player.actions >= 1 ) {
+          this.props.passTurn();
+          this.props.readyAllPieces();
+          this.props.resetActions();
+          this.props.resetEnergy();
         }
       }
       this.props.clearSelection();
@@ -97,9 +115,10 @@ class Game extends Component {
   }
 
   isLegalMove(pos) {
-    const { selection } = this.props;
+    const { selection, player } = this.props;
     if ( !selection ) { return false; }
     const piece = selection.contents;
+    if ( player.player !== piece.player ) { return false } // e.g. P2 selects P1 piece (to see info)
     const moves = this.getLegalMoves(piece).map((m) => { return m.toString() });
     return moves.indexOf(pos.toString()) !== -1;
   }
@@ -107,7 +126,7 @@ class Game extends Component {
   getLegalMoves(piece) {
     // calculates a piece's legal moves from its type
     let legalMoves = [];
-    const { player1, player2, pieces } = this.props;
+    const { player, pieces } = this.props;
     const thisPlayer = piece.player;
     const { moveFuncs, getHeroPos, getStrings, inBounds } = Util;
     const noSelfCaptures = getStrings(
@@ -140,22 +159,28 @@ class Game extends Component {
   }
 
   buildInfoPanel() {
-    const { player1 } = this.props;
-    return player1 ? player1.info : 'placeholder';
+    const { player } = this.props;
+    return player ? player.info : 'placeholder';
   }
 
   enoughEnergy(piece) {
-    const { pieces, player1 } = this.props;
-    const player = player1;
-    const energy = 10; // getNodeCount('P1', pieces);
+    const { pieces, player } = this.props;
+    const energy = this.getNodeCount(player, pieces);
     const remainingEnergy = energy - player.energy;
     return remainingEnergy >= piece.cost;
   }
 
+  getNodeCount(player, pieces) {
+    return pieces.filter(p => {
+      return p.type === 'node' && p.player === player.player && Array.isArray(p.pos)
+    }).length;
+  }
+
   render() {
-    const { player1, player2, selection, pieces } = this.props;
+    const { player, selection, pieces, currentPlayer } = this.props;
     const legalMoves = selection ? this.getLegalMoves(selection.contents) : [];
     const info = this.buildInfoPanel();
+    const nodeCount = this.getNodeCount(player, pieces);
 
     return (
       <div className="game">
@@ -168,19 +193,21 @@ class Game extends Component {
             { name: 'Slot 5', handleClick: ()=> { console.log('click!') } },
             { name: 'Res', handleClick: ()=> { this.props.showReserve(); } },
           ]}
-          player1={ player1 }
+          player={ player }
           pieces={ pieces }
         />
         <Board
           pieces={ pieces }
           legalMoves={ legalMoves }
           selection={ selection }
-          player1={ player1 }
-          player2={ player2 }
-          p1Energy={ 10 }
-          p2Energy={ 10 }
+          nodeCount={ nodeCount }
+          player={ player }
         />
-        <InfoPanel info={ info } />
+        <InfoPanel info={ info }
+          remainingEnergy={ nodeCount - player.energy }
+          remainingActions={ 2 - player.actions }
+          currentPlayer={ currentPlayer }
+        />
       </div>
     )
   }
@@ -189,8 +216,7 @@ class Game extends Component {
 Game.childContextTypes = {
   handleClick: React.PropTypes.func,
   hideReserve: React.PropTypes.func,
-  player1: React.PropTypes.object,
-  player2: React.PropTypes.object,
+  player: React.PropTypes.object,
   deployPiece: React.PropTypes.func,
   resetEnergy: React.PropTypes.func,
 };
@@ -201,9 +227,9 @@ function mapStateToProps(state) {
     selection: game.selection,
     currentPlayer: game.currentPlayer,
     moveCount: game.moveCount,
-    player1: game.player1,
-    player2: game.player2,
+    player: game.player,
     pieces: game.position,
+    currentUser: state.user,
   };
 }
 
@@ -220,6 +246,10 @@ function mapDispatchToProps(dispatch) {
     updateInfo: updateInfo,
     postGameStateData: postGameStateData,
     fetchGameStateData: fetchGameStateData,
+    passTurn: passTurn,
+    incrementActions: incrementActions,
+    resetActions: resetActions,
+    readyAllPieces: readyAllPieces,
   }, dispatch);
 
 }

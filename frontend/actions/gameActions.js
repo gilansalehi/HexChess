@@ -80,6 +80,22 @@ export const resetEnergy = () => {
   }
 }
 
+export const incrementActions = () => {
+  return { type: 'INCREMENT_ACTIONS' };
+}
+
+export const resetActions = () => {
+  return { type: 'RESET_ACTIONS' };
+}
+
+export const passTurn = () => {
+  return { type: 'SWITCH_PLAYER' };
+}
+
+export const readyAllPieces = () => {
+  return { type: 'READY_ALL_PIECES' };
+}
+
 export const updateInfo = (hex) => {
   return {
     type: 'UPDATE_INFO',

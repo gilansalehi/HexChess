@@ -9,15 +9,20 @@ export default class InfoPanel extends Component {
   }
 
   render() {
-    const { info } = this.props;
+    const { info, currentPlayer, remainingEnergy, remainingActions } = this.props;
     const { image, text, container, flexPositioner } = this.styles;
     return (
       <div className='info-panel' style={ container }>
         <div style={ flexPositioner }>
-          <div style={ text }>
-          { info.text || "INFO PANEL"}
-          </div>
+          <span>
+            Active Player: { currentPlayer === 'P1' ? 'Blue' : 'Red' } -
+            Remaining Energy: { remainingEnergy } -
+            Remaining Actions: { remainingActions }
+          </span>
           <img src={ info.image } style={ image } width='100%' height='auto' />
+          <div style={ text }>
+            { info.text || "INFO PANEL"}
+          </div>
         </div>
       </div>
     )
@@ -52,7 +57,7 @@ function styles() {
   const flexPositioner = {
     display: 'flex',
     position: 'relative',
-    flexDirection: 'column-reverse',
+    flexDirection: 'column',
     height: '100%',
     width: '100%',
   };

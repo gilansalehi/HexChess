@@ -28,13 +28,13 @@ export default class Board extends Component {
   }
 
   drawEnergyCounter() {
-    const { player1, p1Energy } = this.props;
+    const { player, nodeCount } = this.props;
     return (
       <EnergyCounter
-        energy={ p1Energy - player1.energy }
-        nodeCount={ p1Energy }
+        energy={ nodeCount - player.energy }
+        nodeCount={ nodeCount }
       />
-    )
+    );
   }
 
   drawCancelButton() {
@@ -48,9 +48,11 @@ export default class Board extends Component {
   }
 
   drawBoard() {
+    const { pieces, selection, legalMoves, player } = this.props;
+
     const xnums = [-4, -3, -2, -1, 0, 1, 2, 3, 4];
-    const ynums = [-6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6].reverse(); // OR NOT REVERSE IF DISPLAYING FOR PLAYER 2!!
-    const { pieces, selection, legalMoves } = this.props;
+    let ynums = [-6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6];
+    player.player === 'P1' && ynums.reverse(); // 'observer' will see from 'P2' perspective...
 
     const lmarr = legalMoves && legalMoves.map((arr) => { return arr.join(','); });
     const energyCount = this.drawEnergyCounter();
