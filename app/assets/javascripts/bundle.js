@@ -23626,16 +23626,32 @@ var Game = function (_Component) {
   _createClass(Game, [{
     key: 'componentDidMount',
     value: function componentDidMount() {
+      var _this2 = this;
+
       this.props.fetchGameStateData(this.gameId);
+
+      this.continuallyFetchGameState = function () {
+        if (_this2.props.currentPlayer !== _this2.props.player.player) {
+          console.log("fetching...");
+          _this2.fetchGameState(_this2.gameId);
+        }
+        window.setTimeout(_this2.continuallyFetchGameState, 1000);
+      };
+      this.continuallyFetchGameState();
     }
   }, {
     key: 'componentWillReceiveProps',
     value: function componentWillReceiveProps(nextProps) {
       var lastPosition = this.props.pieces;
       var nextPosition = nextProps.pieces;
+      var _props = this.props,
+          currentPlayer = _props.currentPlayer,
+          player = _props.player;
+
       var id = this.gameId;
       // double check that THIS player made the change
-      if (nextPosition !== lastPosition) {
+      if (nextPosition !== lastPosition && currentPlayer === player.player) {
+        debugger;
         var gameState = {
           pieces: nextProps.pieces,
           currentPlayer: nextProps.currentPlayer
@@ -23674,10 +23690,10 @@ var Game = function (_Component) {
   }, {
     key: 'handleClick',
     value: function handleClick(hex) {
-      var _props = this.props,
-          currentPlayer = _props.currentPlayer,
-          selection = _props.selection,
-          player = _props.player;
+      var _props2 = this.props,
+          currentPlayer = _props2.currentPlayer,
+          selection = _props2.selection,
+          player = _props2.player;
 
 
       if (!selection) {
@@ -23720,9 +23736,9 @@ var Game = function (_Component) {
   }, {
     key: 'isLegalMove',
     value: function isLegalMove(pos) {
-      var _props2 = this.props,
-          selection = _props2.selection,
-          player = _props2.player;
+      var _props3 = this.props,
+          selection = _props3.selection,
+          player = _props3.player;
 
       if (!selection) {
         return false;
@@ -23741,9 +23757,9 @@ var Game = function (_Component) {
     value: function getLegalMoves(piece) {
       // calculates a piece's legal moves from its type
       var legalMoves = [];
-      var _props3 = this.props,
-          player = _props3.player,
-          pieces = _props3.pieces;
+      var _props4 = this.props,
+          player = _props4.player,
+          pieces = _props4.pieces;
 
       var thisPlayer = piece.player;
       var moveFuncs = _utils.Util.moveFuncs,
@@ -23790,9 +23806,9 @@ var Game = function (_Component) {
   }, {
     key: 'enoughEnergy',
     value: function enoughEnergy(piece) {
-      var _props4 = this.props,
-          pieces = _props4.pieces,
-          player = _props4.player;
+      var _props5 = this.props,
+          pieces = _props5.pieces,
+          player = _props5.player;
 
       var energy = this.getNodeCount(player, pieces);
       var remainingEnergy = energy - player.energy;
@@ -23808,13 +23824,13 @@ var Game = function (_Component) {
   }, {
     key: 'render',
     value: function render() {
-      var _this2 = this;
+      var _this3 = this;
 
-      var _props5 = this.props,
-          player = _props5.player,
-          selection = _props5.selection,
-          pieces = _props5.pieces,
-          currentPlayer = _props5.currentPlayer;
+      var _props6 = this.props,
+          player = _props6.player,
+          selection = _props6.selection,
+          pieces = _props6.pieces,
+          currentPlayer = _props6.currentPlayer;
 
       var legalMoves = selection ? this.getLegalMoves(selection.contents) : [];
       var info = this.buildInfoPanel();
@@ -23824,7 +23840,7 @@ var Game = function (_Component) {
         'div',
         { className: 'game' },
         _react2.default.createElement(_nav2.default, { options: [{ name: 'fetch', handleClick: function handleClick() {
-              _this2.fetchGameState();
+              _this3.fetchGameState();
             } }, { name: 'Slot 1', handleClick: function handleClick() {
               console.log('click!');
             } }, { name: 'Slot 2', handleClick: function handleClick() {
@@ -23836,7 +23852,7 @@ var Game = function (_Component) {
             } }, { name: 'Slot 5', handleClick: function handleClick() {
               console.log('click!');
             } }, { name: 'Res', handleClick: function handleClick() {
-              _this2.props.showReserve();
+              _this3.props.showReserve();
             } }],
           player: player,
           pieces: pieces

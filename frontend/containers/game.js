@@ -42,14 +42,24 @@ class Game extends Component {
 
   componentDidMount() {
     this.props.fetchGameStateData(this.gameId);
+
+    this.continuallyFetchGameState = () => {
+      if ( this.props.currentPlayer !== this.props.player.player ) {
+        console.log("fetching...");
+        this.fetchGameState(this.gameId);
+      }
+      window.setTimeout(this.continuallyFetchGameState, 1000);
+    }
+    this.continuallyFetchGameState();
   }
 
   componentWillReceiveProps(nextProps) {
     const lastPosition = this.props.pieces;
     const nextPosition = nextProps.pieces;
+    const { currentPlayer, player } = this.props;
     const id = this.gameId;
     // double check that THIS player made the change
-    if ( nextPosition !== lastPosition ) {
+    if ( nextPosition !== lastPosition && currentPlayer === player.player ) {
       const gameState = {
         pieces: nextProps.pieces,
         currentPlayer: nextProps.currentPlayer
@@ -60,7 +70,7 @@ class Game extends Component {
   }
 
   fetchGameState() {
-    this.props.fetchGameStateData(this.gameId)
+    this.props.fetchGameStateData(this.gameId);
   }
 
   getChildContext() {
