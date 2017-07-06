@@ -37,7 +37,7 @@ class GamesIndex extends Component {
   render() {
     const { user, games, fetchAllGames } = this.props;
     return (
-      <div>
+      <div className="fifty-left">
         <GamesList games={ games }
                    newGame={ this.newGame }
                    refresh={ fetchAllGames }

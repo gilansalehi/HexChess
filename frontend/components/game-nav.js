@@ -3,6 +3,7 @@ import Piece from './piece.js';
 import Hex from './hex.js';
 import NavButton from './nav-button.js';
 import Reserve from './reserve.js';
+import { BrowserRouter as Router, Link, Route } from 'react-router-dom';
 
 export default class Nav extends Component {
   constructor(props) {
@@ -31,7 +32,7 @@ export default class Nav extends Component {
 
     return (
       <div className="nav clearfix">
-        <NavButton option={{ name: 'NAV' }} />
+        { this.props.children }
         <div className="nav-flex-positioner">
           <ul className="nav-list clearfix">
             { optionsList }

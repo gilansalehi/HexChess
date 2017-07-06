@@ -1,6 +1,7 @@
 const initialState = false;
 
 export default function(state = initialState, action) {
+  console.log(state);
   switch(action.type) {
     case 'LOGIN_REQUEST_PENDING':
       return state;

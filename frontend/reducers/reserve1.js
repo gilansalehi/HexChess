@@ -8,6 +8,9 @@ export default function (state = initialState, action) {
     case 'HIDE_RESERVE':
       return 'hidden';
       break;
+    case 'TOGGLE_RESERVE':
+      return state === 'hidden' ? 'displayed' : 'hidden';
+      break;
   }
   return state;
 }

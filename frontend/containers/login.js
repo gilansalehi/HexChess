@@ -43,7 +43,7 @@ class LoginForm extends Component {
   render() {
 
     return (
-      <div className="auth-page group">
+      <div className="auth-page group fifty-left">
         <h1>Log in</h1>
 
         <form onSubmit={ this.submit } >

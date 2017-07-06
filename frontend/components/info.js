@@ -8,6 +8,14 @@ export default class InfoPanel extends Component {
     this.styles = styles();
   }
 
+  buildImage() {
+    const {info} = this.props;
+    const {image} = this.styles;
+    return (
+      <img src={ info.image } style={ image } width='100%' height='auto' />
+    )
+  }
+
   render() {
     const { info, currentPlayer, remainingEnergy, remainingActions } = this.props;
     const { image, text, container, flexPositioner } = this.styles;
@@ -19,7 +27,6 @@ export default class InfoPanel extends Component {
             Remaining Energy: { remainingEnergy } -
             Remaining Actions: { remainingActions }
           </span>
-          <img src={ info.image } style={ image } width='100%' height='auto' />
           <div style={ text }>
             { info.text || "INFO PANEL"}
           </div>

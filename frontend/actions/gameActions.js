@@ -66,6 +66,10 @@ export const hideReserve = () => {
   }
 }
 
+export const toggleReserve = () => {
+  return { type: 'TOGGLE_RESERVE' }
+}
+
 export const useEnergy = (cost) => {
   return {
     type: 'USE_ENERGY',
@@ -96,12 +100,10 @@ export const readyAllPieces = () => {
   return { type: 'READY_ALL_PIECES' };
 }
 
-export const updateInfo = (hex) => {
+export const updateInfo = (obj) => {
+  // const { image, text } = obj;
   return {
     type: 'UPDATE_INFO',
-    payload: {
-      image: hex.contents.imgUrl,
-      text: hex.contents.info,
-    },
-  }
+    payload: obj,
+  };
 }

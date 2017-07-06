@@ -4,6 +4,8 @@ import {connect} from 'react-redux';
 import { BrowserRouter as Router, Link, Route } from 'react-router-dom';
 import GamesIndex from './gamesIndex';
 import Game from './game';
+import Nav from '../components/app-nav';
+import NavButton from '../components/nav-button.js';
 import LoginForm from '../containers/login';
 import {
   keydown
@@ -21,22 +23,17 @@ class App extends Component {
 
   buildNav() {
     const { user, logoutRequest } = this.props;
-    if ( user ) {
-      return (
-        <nav>
-          <Link to={'/'}>Home</Link>
-          <span> Logged in as { user.name } </span>
-          <a className='hover-hands' onClick={ logoutRequest }>Log Out</a>
-        </nav>
-      );
-    } else {
-      return (
-        <nav>
-          <Link to={'/'}>Home</Link>
-          <Link to={'/login'}>Log In</Link>
-        </nav>
-      );
-    }
+
+    return (
+      <Nav options={[]}>
+        <Link to={'/'}>
+          <NavButton option={{ name: 'Home' }} />
+        </Link>
+        <Link to={user ? '/logout' : '/login'}>
+          <NavButton option={{ name: user ? 'Log Out' : 'Log In'}} />
+        </Link>
+      </Nav>
+    );
   }
 
   render() {

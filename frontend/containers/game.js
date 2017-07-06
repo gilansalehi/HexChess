@@ -2,8 +2,11 @@ import React, { Component, PropTypes } from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import Board from '../components/board.js';
-import Nav from '../components/nav.js';
+import Nav from '../components/game-nav.js';
+import NavButton from '../components/nav-button';
+import { BrowserRouter as Router, Link, Route } from 'react-router-dom';
 import InfoPanel from '../components/info.js';
+import BannerMessage from '../components/banner-message';
 import { Util } from '../utils/utils';
 import {
   setSelection,
@@ -12,6 +15,7 @@ import {
   deployPiece,
   showReserve,
   hideReserve,
+  toggleReserve,
   useEnergy,
   resetEnergy,
   updateInfo,
@@ -29,6 +33,7 @@ class Game extends Component {
   constructor(props) {
     super(props);
 
+    this.checkForWin = this.checkForWin.bind(this);
     this.gameId = this.props.match.params.id;
     this.getLegalMoves = this.getLegalMoves.bind(this);
     this.getNodeCount = this.getNodeCount.bind(this);
@@ -45,12 +50,15 @@ class Game extends Component {
 
     this.continuallyFetchGameState = () => {
       if ( this.props.currentPlayer !== this.props.player.player ) {
-        console.log("fetching...");
         this.fetchGameState(this.gameId);
       }
       window.setTimeout(this.continuallyFetchGameState, 1000);
     }
     this.continuallyFetchGameState();
+  }
+
+  componentWillUnmount() {
+    this.continuallyFetchGameState = false;
   }
 
   componentWillReceiveProps(nextProps) {
@@ -67,6 +75,11 @@ class Game extends Component {
 
       this.props.postGameStateData(id, gameState);
     }
+  }
+
+  checkForWin(selection, destination) {
+    const { pieces } = this.props;
+    // maybe handle in info panel?
   }
 
   fetchGameState() {
@@ -91,14 +104,23 @@ class Game extends Component {
     if ( !selection ) {
       if ( hex.player === player.player ) {
         this.props.setSelection(hex);
-        this.props.updateInfo(hex);
-      } else {
-        this.props.updateInfo(hex);
       }
+      this.props.updateInfo({ image: hex.contents.imgUrl, text: hex.contents.info });
     } else { // selection exists
+      const moveIsLegal  = this.isLegalMove(hex.pos);
+      const isMyTurn     = currentPlayer === player.player;
+      const pieceIsReady = selection.contents.ready;
+
+      if ( !moveIsLegal ) {
+        this.props.updateInfo({ text: "Illegal move!" })
+      } else if ( !isMyTurn ) {
+        this.props.updateInfo({ text: "Not your turn yet!" })
+      } else if ( !pieceIsReady ) {
+        this.props.updateInfo({ text: "That piece has already acted this turn." })
+      }
       if ( hex.pos === selection.pos ) {
         // nothing happens?
-      } else if ( this.isLegalMove(hex.pos) && currentPlayer === player.player && selection.contents.ready ) {
+      } else if ( moveIsLegal && isMyTurn && pieceIsReady ) {
         // MAKE THE MOVE:
         if ( selection.pos[0] === 'reserve' ) {
           this.props.deployPiece(selection, hex);
@@ -106,9 +128,11 @@ class Game extends Component {
           this.hideReserve();
         } else {
           this.props.movePiece(selection, hex);
+          // check for game winning states?
         }
         // THEN HANDLE TURN LOGIC:
         this.props.incrementActions();
+        this.checkForWin(selection, hex);
         if ( player.actions >= 1 ) {
           this.props.passTurn();
           this.props.readyAllPieces();
@@ -191,21 +215,35 @@ class Game extends Component {
     const legalMoves = selection ? this.getLegalMoves(selection.contents) : [];
     const info = this.buildInfoPanel();
     const nodeCount = this.getNodeCount(player, pieces);
+    const energyString = player.energy ? `${nodeCount - player.energy}/${nodeCount}` : nodeCount;
 
     return (
       <div className="game">
+        <BannerMessage pieces={pieces} />
         <Nav options={[
             { name: 'fetch', handleClick: () => { this.fetchGameState() } },
-            { name: 'Slot 1', handleClick: ()=> { console.log('click!') } },
-            { name: 'Slot 2', handleClick: ()=> { console.log('click!') } },
-            { name: 'Slot 3', handleClick: ()=> { console.log('click!') } },
-            { name: 'Slot 4', handleClick: ()=> { console.log('click!') } },
-            { name: 'Slot 5', handleClick: ()=> { console.log('click!') } },
-            { name: 'Res', handleClick: ()=> { this.props.showReserve(); } },
+            {
+              name: 'Action',
+              value: (2 - player.actions),
+              handleClick: () => console.log('click!'),
+              color: currentPlayer === 'P1' ? 'blue' : 'red',
+            },
+            {
+              name: 'Energy',
+              value: energyString,
+              handleClick: () => { console.log('click!') },
+              color: '#FA0',
+            },
+            { name: 'Res', handleClick: ()=> { this.props.toggleReserve(); } },
           ]}
+          currentPlayer={ currentPlayer }
           player={ player }
           pieces={ pieces }
-        />
+        >
+          <Link to={'/'}>
+            <NavButton option={{ name: 'HOME' }} />
+          </Link>
+        </Nav>
         <Board
           pieces={ pieces }
           legalMoves={ legalMoves }
@@ -260,6 +298,7 @@ function mapDispatchToProps(dispatch) {
     incrementActions: incrementActions,
     resetActions: resetActions,
     readyAllPieces: readyAllPieces,
+    toggleReserve: toggleReserve,
   }, dispatch);
 
 }
