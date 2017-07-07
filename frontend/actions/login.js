@@ -56,3 +56,27 @@ export const fetchCurrentUser = (callback) => {
     }
   });
 }
+
+
+export const signupRequest = (credentials) => {
+  return (dispatch) => {
+    dispatch({ type: 'SIGNUP_REQUEST_PENDING' });
+    return signup(credentials, dispatch);
+  }
+}
+
+const signup = (credentials, dispatch) => {
+  $.ajax({
+    url: '/users',
+    beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+    type: 'POST',
+    dataType: 'json',
+    data: credentials,
+    success: function (currentUser) {
+      dispatch({ type: 'SIGNUP_SUCCESS', payload: currentUser });
+    },
+    error: function (msg) {
+      dispatch({ type: 'SIGNUP_ERROR', payload: msg });
+    }
+  });
+}

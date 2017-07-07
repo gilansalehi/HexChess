@@ -6,10 +6,10 @@ import {connect} from 'react-redux';
 import $ from 'jquery';
 import { Link } from 'react-router-dom';
 import {
-  loginRequest
+  signupRequest
 } from '../actions/login';
 
-class LoginForm extends Component {
+class SignupForm extends Component {
 
   constructor(props) {
     super(props);
@@ -17,17 +17,23 @@ class LoginForm extends Component {
     this.state = {
       name: '',
       password: '',
+      confirmPassword: '',
     }
 
     this.updateUsername = this.updateUsername.bind(this);
     this.updatePassword = this.updatePassword.bind(this);
+    this.updateConfirmPassword = this.updateConfirmPassword.bind(this);
     this.submit = this.submit.bind(this);
   }
 
   submit(e) {
     e.preventDefault();
     const credentials = { user: this.state };
-    this.props.loginRequest(credentials);
+    if ( this.state.password !== this.state.confirmPassword ) {
+      alert("Make sure your passwords match!");
+      return false;
+    }
+    this.props.signupRequest(credentials);
   }
 
   updateUsername(e) {
@@ -40,11 +46,16 @@ class LoginForm extends Component {
     this.setState({ password });
   }
 
+  updateConfirmPassword(e) {
+    const confirmPassword = e.target.value;
+    this.setState({ confirmPassword });
+  }
+
   render() {
 
     return (
       <div className="auth-page group sixty-left">
-        <h1>Log in</h1>
+        <h1>Sign Up</h1>
 
         <form onSubmit={ this.submit } className="clearfix" >
 
@@ -65,15 +76,21 @@ class LoginForm extends Component {
                  value={ this.state.password }
                  placeholder="Enter your password"></input>
           <br></br>
+          <label htmlFor="confirm">Confirm Password</label><br></br>
+          <input id="password"
+                 type="password"
+                 name="user[password]"
+                 onChange={ e => this.updateConfirmPassword(e) }
+                 value={ this.state.confirmPassword }
+                 placeholder="Confirm your Password"></input>
+          <br></br>
 
-          <Link to={"/profile"}>
-            <div className="submit button" type="submit" onClick={ this.submit }>Log In</div>
-          </Link>
+          <Link to={"/profile"} className="submit button" type="submit" onClick={ this.submit }>Sign Up</Link>
         </form>
 
         <div className="join-block">
-          No account?
-          <Link to={'/signup'}>Sign Up</Link>
+          Already Signed Up?
+          <Link to={'/'}>Home</Link>
         </div>
       </div>
     );
@@ -89,9 +106,9 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({
-    loginRequest: loginRequest
+    signupRequest: signupRequest
   }, dispatch);
 
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(LoginForm);
+export default connect(mapStateToProps, mapDispatchToProps)(SignupForm);

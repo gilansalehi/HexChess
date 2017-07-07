@@ -10,6 +10,7 @@ import {
 import {
   postNewGame,
   joinGame,
+  observeGame,
 } from '../actions/gameIndex';
 
 class GamesIndex extends Component {
@@ -22,6 +23,11 @@ class GamesIndex extends Component {
 
     this.newGame = this.newGame.bind(this);
     this.joinGame = this.joinGame.bind(this);
+    this.observeGame = this.observeGame.bind(this);
+  }
+
+  componentDidMount() {
+    this.props.fetchAllGames();
   }
 
   newGame() {
@@ -34,14 +40,20 @@ class GamesIndex extends Component {
     user ? joinGame(user, id) : alert('Please log in');
   }
 
+  observeGame(id) {
+    const {observeGame, user} = this.props;
+    observeGame(id);
+  }
+
   render() {
     const { user, games, fetchAllGames } = this.props;
     return (
-      <div className="fifty-left">
+      <div className="sixty-left">
         <GamesList games={ games }
                    newGame={ this.newGame }
                    refresh={ fetchAllGames }
                    joinGame={ this.joinGame }
+                   observeGame={ this.observeGame }
                    user={ user }
         />
       </div>
@@ -61,6 +73,7 @@ function mapDispatchToProps(dispatch) {
     fetchAllGames: fetchAllGames,
     postNewGame: postNewGame,
     joinGame: joinGame,
+    observeGame: observeGame,
     // actionName: action imported from ./actions
   }, dispatch);
 }

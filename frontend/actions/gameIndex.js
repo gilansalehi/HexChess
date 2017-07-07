@@ -62,3 +62,22 @@ export const joinGame = (currentUser, gameId) => {
     });
   }
 }
+
+export const observeGame = (gameId) => {
+  return (dispatch) => {
+    dispatch({ type: 'OBSERVE_GAME_REQUEST' });
+    return $.ajax({
+      type: 'GET',
+      beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+      url: '/games/' + gameId,
+      dataType: 'json',
+      contentType: 'application/json',
+      success: function(json) {
+        dispatch({ type: 'OBSERVE_GAME_SUCCESS', payload: json });
+      },
+      error: function(msg) {
+        dispatch({ type: 'OBSERVE_GAME_SUCCESS', payload: msg });
+      }
+    });
+  }
+}

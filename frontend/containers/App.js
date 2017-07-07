@@ -7,6 +7,8 @@ import Game from './game';
 import Nav from '../components/app-nav';
 import NavButton from '../components/nav-button.js';
 import LoginForm from '../containers/login';
+import SignupForm from '../containers/signup';
+import Profile from '../containers/user';
 import {
   keydown
 } from '../actions/index.js';
@@ -19,6 +21,13 @@ class App extends Component {
     super(props);
 
     this.buildNav = this.buildNav.bind(this);
+    this.handleSession = this.handleSession.bind(this);
+  }
+
+  handleSession() {
+    const { user } = this.props;
+
+    if (user) { this.props.logoutRequest(); }
   }
 
   buildNav() {
@@ -29,7 +38,10 @@ class App extends Component {
         <Link to={'/'}>
           <NavButton option={{ name: 'Home' }} />
         </Link>
-        <Link to={user ? '/logout' : '/login'}>
+        <Link to={user ? '/profile' : '/signup' }>
+          <NavButton option={{ name: user ? 'Hello!' : 'Sign Up'}} />
+        </Link>
+        <Link to={user ? '/logout' : '/login'} onClick={ this.handleSession }>
           <NavButton option={{ name: user ? 'Log Out' : 'Log In'}} />
         </Link>
       </Nav>
@@ -49,7 +61,9 @@ class App extends Component {
           <div className="routes">
             <Route exact path={'/'} component={GamesIndex} />
             <Route path={'/login'} component={LoginForm} />
+            <Route path={'/signup'} component={SignupForm} />
             <Route path={'/games/:id'} component={Game} />
+            <Route path={'/profile'} component={Profile} />
           </div>
         </div>
       </Router>

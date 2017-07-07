@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { Link } from 'react-router-dom';
+import GameLink from './game-link';
 
 export default class GamesList extends Component {
   constructor(props) {
@@ -10,19 +11,17 @@ export default class GamesList extends Component {
 
   handleClick(id) {
     // JOIN GAME
-    this.props.joinGame(id)
+    const { user, joinGame, observeGame } = this.props;
+    user ? this.props.joinGame(id) : observeGame(id);
   }
 
   mapGamesToList(games) {
     return games.map((g, i) => {
+      const bgColor = i % 2 ? '#666' : '#777';
       return (
-        <li key={i} style={{color:'white'}}>
+        <li key={i} style={{color:'white', backgroundColor: bgColor }}>
           <Link to={ `/games/${g.id}` } onClick={ () => this.handleClick(g.id) }>
-            <span>{g.creator || 'anon ' }</span>
-            <span>{g.status || 'seeking ' }</span>
-            <span>{g.p2_id || 'anon ' }</span>
-            <span>{g.winner || 'in progress ' }</span>
-            <span>{g.created_at}</span>
+            <GameLink game={g} />
           </Link>
         </li>
       );
@@ -36,7 +35,14 @@ export default class GamesList extends Component {
     return (
       <div style={{color: 'white'}}>
         <h1> Games </h1>
-        <ul>
+        <ul className='pseudo-table'>
+          <li key='header' className='tr' style={{ backgroundColor: '#444', textAlign: 'center' }}>
+            <span className='td'>Creator</span>
+            <span className='td'>Seeking</span>
+            <span className='td'>Opponent</span>
+            <span className='td'>Status</span>
+            <span className='td-last'>Timestamp</span>
+          </li>
           { gamesList }
         </ul>
         <div className="hover-hands" onClick={ newGame }>Post Game</div>

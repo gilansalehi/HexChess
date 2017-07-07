@@ -8,12 +8,11 @@ export default class Nav extends Component {
   }
 
   handleClick() {
-    this.props.handleClick();
+    const { handleClick } = this.props;
+    handleClick && handleClick();
   }
 
-
   render() {
-    // const quickDeploy...
     const { option } = this.props
     const styler = { backgroundColor: option.color || '#777' };
     return (

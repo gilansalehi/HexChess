@@ -21,6 +21,15 @@ export default function(state = initialState, action) {
     case 'LOGOUT_ERROR':
       return state;
       break;
+    case 'SIGNUP_REQUEST_PENDING':
+      return state;
+      break;
+    case 'SIGNUP_SUCCESS':
+      return action.payload;
+      break;
+    case 'SIGNUP_ERROR':
+      return state;
+      break;
   }
   return state;
 }

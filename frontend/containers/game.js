@@ -32,6 +32,7 @@ class Game extends Component {
 
   constructor(props) {
     super(props);
+    this.gameOver = false;
 
     this.checkForWin = this.checkForWin.bind(this);
     this.gameId = this.props.match.params.id;
@@ -66,6 +67,7 @@ class Game extends Component {
     const nextPosition = nextProps.pieces;
     const { currentPlayer, player } = this.props;
     const id = this.gameId;
+    this.checkForWin(nextPosition);
     // double check that THIS player made the change
     if ( nextPosition !== lastPosition && currentPlayer === player.player ) {
       const gameState = {
@@ -77,9 +79,28 @@ class Game extends Component {
     }
   }
 
-  checkForWin(selection, destination) {
-    const { pieces } = this.props;
-    // maybe handle in info panel?
+  checkForWin(pieces) {
+    const prisoners = pieces.filter(p => p.pos === 'prison');
+    const capturedHeroes = prisoners.filter(p => p.type === 'hero');
+    const capturedNodes = prisoners.filter(p => p.type === 'node');
+    const capturedBlueNodes = capturedNodes.filter(n => n.player === 'P1');
+    const capturedRedNodes  = capturedNodes.filter(n => n.player === 'P2');
+    let winner = false;
+    let message = '';
+    if ( capturedHeroes.length ) {
+      winner = capturedHeroes[0].player === 'P2' ? 'Blue' : 'Red';
+      message = `${winner} wins by capturing the enemy hero!`;
+    }
+    if ( capturedBlueNodes.length >= 3 ) {
+      winner = 'Red';
+      message = 'Red wins by capturing three enemy nodes!';
+    }
+    if ( capturedRedNodes.length >= 3 ) {
+      winner = 'Blue';
+      message = 'Blue wins by capturing three enemy nodes!';
+    }
+    if (winner) { this.gameOver = true; }
+    return { winner, message };
   }
 
   fetchGameState() {
@@ -99,6 +120,7 @@ class Game extends Component {
   }
 
   handleClick(hex) {
+    if ( this.gameOver ) { return false; }
     const { currentPlayer, selection, player } = this.props;
 
     if ( !selection ) {
@@ -128,6 +150,7 @@ class Game extends Component {
           this.hideReserve();
         } else {
           this.props.movePiece(selection, hex);
+          debugger;
           // check for game winning states?
         }
         // THEN HANDLE TURN LOGIC:

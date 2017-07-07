@@ -18,4 +18,6 @@ Rails.application.routes.draw do
 
   get '/logout', controller: :sessions, action: :destroy
 
+  get "*path", to: "static_pages#root"
+
 end

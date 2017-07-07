@@ -61,14 +61,48 @@ ul, li {
   font-size: large;
 }
 
+.auth-page {
+  font-family: "Consolas";
+  color: white;
+}
+
+a:link {
+  color: white;
+  text-decoration: none;
+}
+
+a:visted {
+  color: #fa0;
+}
+
+form label {
+  padding: 5px;
+}
+
+form input {
+  padding: 5px;
+  border-radius: 3px;
+}
+
+.button {
+  padding: 5px;
+  margin: 10px;
+  background-color: darkGray;
+  border-radius: 3px;
+}
+
+.button:hover {
+  background-color: lightGray;
+}
+
 .clearfix {
   content: '';
   display: block;
   clear: both;
 }
 
-.fifty-left {
-  padding: 0 0 0 50px;
+.sixty-left {
+  padding: 10px 60px;
 }
 
 .game {
@@ -78,11 +112,39 @@ ul, li {
   width: 100%;
 }
 
+.game-link {
+  width: 100%;
+}
+
+.pseudo-table {
+  border: 1px solid white;
+  border-bottom: none;
+}
+.td {
+  display: inline-block;
+  padding: 10px;
+  width: 75px;
+  border-right: 1px solid white;
+}
+.td-last {
+  display: inline-block;
+  padding: 10px;
+  width: 75px;
+}
+
+.tr {
+  border-bottom: 1px solid white;
+}
+
+.group {
+  color: white;
+}
+
 .nav {
   display: block;
   position: absolute;
   color: white;
-  font-family: 'Garamond', sans-serif;
+  font-family: 'Consolas', sans-serif;
   height: 100%;
   width: 50px;
   background-color: #555;
