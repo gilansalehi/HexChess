@@ -67,11 +67,12 @@ class Game extends Component {
     const nextPosition = nextProps.pieces;
     const { currentPlayer, player } = this.props;
     const id = this.gameId;
-    this.checkForWin(nextPosition);
+    // this.checkForWin(nextPosition);
     // double check that THIS player made the change
     if ( nextPosition !== lastPosition && currentPlayer === player.player ) {
       const gameState = {
         pieces: nextProps.pieces,
+        actions: nextProps.player.actions,
         currentPlayer: nextProps.currentPlayer
       };
 
@@ -121,6 +122,7 @@ class Game extends Component {
 
   handleClick(hex) {
     if ( this.gameOver ) { return false; }
+    debugger;
     const { currentPlayer, selection, player } = this.props;
 
     if ( !selection ) {
@@ -150,13 +152,12 @@ class Game extends Component {
           this.hideReserve();
         } else {
           this.props.movePiece(selection, hex);
-          debugger;
           // check for game winning states?
         }
         // THEN HANDLE TURN LOGIC:
         this.props.incrementActions();
-        this.checkForWin(selection, hex);
-        if ( player.actions >= 1 ) {
+        // this.checkForWin(selection, hex);
+        if ( parseInt(player.actions) >= 1 ) {
           this.props.passTurn();
           this.props.readyAllPieces();
           this.props.resetActions();
@@ -295,6 +296,7 @@ Game.childContextTypes = {
 function mapStateToProps(state) {
   const {game} = state;
   return {
+    game: state.game,
     selection: game.selection,
     currentPlayer: game.currentPlayer,
     moveCount: game.moveCount,

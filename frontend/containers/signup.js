@@ -59,7 +59,7 @@ class SignupForm extends Component {
 
         <form onSubmit={ this.submit } className="clearfix" >
 
-          <label htmlFor="username">Username</label><br></br>
+          <label htmlFor="username">Username:</label><br></br>
           <input id="username"
                  type="text"
                  name="user[username]"
@@ -68,7 +68,7 @@ class SignupForm extends Component {
                  placeholder="Enter your username"></input>
           <br></br>
 
-          <label htmlFor="password">Password</label><br></br>
+          <label htmlFor="password">Password:</label><br></br>
           <input id="password"
                  type="password"
                  name="user[password]"
@@ -76,7 +76,7 @@ class SignupForm extends Component {
                  value={ this.state.password }
                  placeholder="Enter your password"></input>
           <br></br>
-          <label htmlFor="confirm">Confirm Password</label><br></br>
+          <label htmlFor="confirm">Confirm Password:</label><br></br>
           <input id="password"
                  type="password"
                  name="user[password]"

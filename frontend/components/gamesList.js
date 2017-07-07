@@ -5,14 +5,6 @@ import GameLink from './game-link';
 export default class GamesList extends Component {
   constructor(props) {
     super(props)
-
-    this.handleClick = this.handleClick.bind(this);
-  }
-
-  handleClick(id) {
-    // JOIN GAME
-    const { user, joinGame, observeGame } = this.props;
-    user ? this.props.joinGame(id) : observeGame(id);
   }
 
   mapGamesToList(games) {
@@ -20,7 +12,7 @@ export default class GamesList extends Component {
       const bgColor = i % 2 ? '#666' : '#777';
       return (
         <li key={i} style={{color:'white', backgroundColor: bgColor }}>
-          <Link to={ `/games/${g.id}` } onClick={ () => this.handleClick(g.id) }>
+          <Link to={ `/games/${g.id}` } onClick={ () => this.props.handleClick(g.id) }>
             <GameLink game={g} />
           </Link>
         </li>
@@ -33,7 +25,7 @@ export default class GamesList extends Component {
     const gamesList = this.mapGamesToList(games);
 
     return (
-      <div style={{color: 'white'}}>
+      <div style={{color: 'white' }}>
         <h1> Games </h1>
         <ul className='pseudo-table'>
           <li key='header' className='tr' style={{ backgroundColor: '#444', textAlign: 'center' }}>
@@ -41,12 +33,14 @@ export default class GamesList extends Component {
             <span className='td'>Seeking</span>
             <span className='td'>Opponent</span>
             <span className='td'>Status</span>
-            <span className='td-last'>Timestamp</span>
+            <span className='td'>Timestamp</span>
+            <span className='td'>Join</span>
+            <span className='td'>Observe</span>
           </li>
           { gamesList }
         </ul>
-        <div className="hover-hands" onClick={ newGame }>Post Game</div>
-        <div className="hover-hands" onClick={ refresh }>Refresh List</div>
+        <div className="hover-hands button" onClick={ newGame }>Post Game</div>
+        <div className="hover-hands button" onClick={ refresh }>Refresh List</div>
       </div>
     )
   }

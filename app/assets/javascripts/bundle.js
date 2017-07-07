@@ -558,7 +558,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 
 var _prodInvariant = __webpack_require__(4);
 
-var DOMProperty = __webpack_require__(17);
+var DOMProperty = __webpack_require__(18);
 var ReactDOMComponentFlags = __webpack_require__(80);
 
 var invariant = __webpack_require__(1);
@@ -1922,6 +1922,65 @@ function getPooledWarningPropertyDefinition(propName, getVal) {
 
 /***/ }),
 /* 17 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__BrowserRouter__ = __webpack_require__(281);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "BrowserRouter", function() { return __WEBPACK_IMPORTED_MODULE_0__BrowserRouter__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__HashRouter__ = __webpack_require__(283);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "HashRouter", function() { return __WEBPACK_IMPORTED_MODULE_1__HashRouter__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Link__ = __webpack_require__(116);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Link", function() { return __WEBPACK_IMPORTED_MODULE_2__Link__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__MemoryRouter__ = __webpack_require__(285);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "MemoryRouter", function() { return __WEBPACK_IMPORTED_MODULE_3__MemoryRouter__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__NavLink__ = __webpack_require__(286);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "NavLink", function() { return __WEBPACK_IMPORTED_MODULE_4__NavLink__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__Prompt__ = __webpack_require__(287);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Prompt", function() { return __WEBPACK_IMPORTED_MODULE_5__Prompt__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__Redirect__ = __webpack_require__(288);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Redirect", function() { return __WEBPACK_IMPORTED_MODULE_6__Redirect__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__Route__ = __webpack_require__(289);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Route", function() { return __WEBPACK_IMPORTED_MODULE_7__Route__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__Router__ = __webpack_require__(290);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Router", function() { return __WEBPACK_IMPORTED_MODULE_8__Router__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__StaticRouter__ = __webpack_require__(291);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "StaticRouter", function() { return __WEBPACK_IMPORTED_MODULE_9__StaticRouter__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__Switch__ = __webpack_require__(292);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Switch", function() { return __WEBPACK_IMPORTED_MODULE_10__Switch__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__matchPath__ = __webpack_require__(293);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "matchPath", function() { return __WEBPACK_IMPORTED_MODULE_11__matchPath__["a"]; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__withRouter__ = __webpack_require__(294);
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "withRouter", function() { return __WEBPACK_IMPORTED_MODULE_12__withRouter__["a"]; });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/***/ }),
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2134,65 +2193,6 @@ var DOMProperty = {
 
 module.exports = DOMProperty;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
-
-/***/ }),
-/* 18 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__BrowserRouter__ = __webpack_require__(281);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "BrowserRouter", function() { return __WEBPACK_IMPORTED_MODULE_0__BrowserRouter__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__HashRouter__ = __webpack_require__(283);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "HashRouter", function() { return __WEBPACK_IMPORTED_MODULE_1__HashRouter__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Link__ = __webpack_require__(116);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Link", function() { return __WEBPACK_IMPORTED_MODULE_2__Link__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__MemoryRouter__ = __webpack_require__(285);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "MemoryRouter", function() { return __WEBPACK_IMPORTED_MODULE_3__MemoryRouter__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__NavLink__ = __webpack_require__(286);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "NavLink", function() { return __WEBPACK_IMPORTED_MODULE_4__NavLink__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__Prompt__ = __webpack_require__(287);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Prompt", function() { return __WEBPACK_IMPORTED_MODULE_5__Prompt__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__Redirect__ = __webpack_require__(288);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Redirect", function() { return __WEBPACK_IMPORTED_MODULE_6__Redirect__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__Route__ = __webpack_require__(289);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Route", function() { return __WEBPACK_IMPORTED_MODULE_7__Route__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__Router__ = __webpack_require__(290);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Router", function() { return __WEBPACK_IMPORTED_MODULE_8__Router__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__StaticRouter__ = __webpack_require__(291);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "StaticRouter", function() { return __WEBPACK_IMPORTED_MODULE_9__StaticRouter__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__Switch__ = __webpack_require__(292);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Switch", function() { return __WEBPACK_IMPORTED_MODULE_10__Switch__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__matchPath__ = __webpack_require__(293);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "matchPath", function() { return __WEBPACK_IMPORTED_MODULE_11__matchPath__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__withRouter__ = __webpack_require__(294);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "withRouter", function() { return __WEBPACK_IMPORTED_MODULE_12__withRouter__["a"]; });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /***/ }),
 /* 19 */
@@ -20522,7 +20522,7 @@ module.exports = CSSProperty;
 
 
 
-var DOMProperty = __webpack_require__(17);
+var DOMProperty = __webpack_require__(18);
 var ReactDOMComponentTree = __webpack_require__(6);
 var ReactInstrumentation = __webpack_require__(12);
 
@@ -21728,7 +21728,7 @@ module.exports = getActiveElement;
 var _prodInvariant = __webpack_require__(4);
 
 var DOMLazyTree = __webpack_require__(26);
-var DOMProperty = __webpack_require__(17);
+var DOMProperty = __webpack_require__(18);
 var React = __webpack_require__(23);
 var ReactBrowserEventEmitter = __webpack_require__(42);
 var ReactCurrentOwner = __webpack_require__(14);
@@ -23656,8 +23656,7 @@ var GamesIndex = function (_Component) {
     };
 
     _this.newGame = _this.newGame.bind(_this);
-    _this.joinGame = _this.joinGame.bind(_this);
-    _this.observeGame = _this.observeGame.bind(_this);
+    _this.handleClick = _this.handleClick.bind(_this);
     return _this;
   }
 
@@ -23676,30 +23675,37 @@ var GamesIndex = function (_Component) {
       user ? postNewGame(user) : alert('Please log in');
     }
   }, {
-    key: 'joinGame',
-    value: function joinGame(id) {
+    key: 'handleClick',
+    value: function handleClick(id) {
       var _props2 = this.props,
+          user = _props2.user,
+          games = _props2.games,
           joinGame = _props2.joinGame,
-          user = _props2.user;
+          observeGame = _props2.observeGame;
 
-      user ? joinGame(user, id) : alert('Please log in');
-    }
-  }, {
-    key: 'observeGame',
-    value: function observeGame(id) {
-      var _props3 = this.props,
-          observeGame = _props3.observeGame,
-          user = _props3.user;
-
-      observeGame(id);
+      var game = games.filter(function (g) {
+        return g.id === id;
+      })[0];
+      debugger;
+      if (!user) {
+        observeGame(id);
+      } else if (user.id === game.p1_id) {
+        joinGame({ p1_id: user.id }, id);
+      } else if (user.id === game.p2_id) {
+        joinGame({ p2_id: user.id }, id);
+      } else if (!game.p2_id) {
+        joinGame({ p2_id: user.id, status: 'in progress' }, id);
+      } else {
+        observeGame(id);
+      }
     }
   }, {
     key: 'render',
     value: function render() {
-      var _props4 = this.props,
-          user = _props4.user,
-          games = _props4.games,
-          fetchAllGames = _props4.fetchAllGames;
+      var _props3 = this.props,
+          user = _props3.user,
+          games = _props3.games,
+          fetchAllGames = _props3.fetchAllGames;
 
       return _react2.default.createElement(
         'div',
@@ -23707,8 +23713,7 @@ var GamesIndex = function (_Component) {
         _react2.default.createElement(_gamesList2.default, { games: games,
           newGame: this.newGame,
           refresh: fetchAllGames,
-          joinGame: this.joinGame,
-          observeGame: this.observeGame,
+          handleClick: this.handleClick,
           user: user
         })
       );
@@ -23770,7 +23775,7 @@ var _navButton = __webpack_require__(45);
 
 var _navButton2 = _interopRequireDefault(_navButton);
 
-var _reactRouterDom = __webpack_require__(18);
+var _reactRouterDom = __webpack_require__(17);
 
 var _info = __webpack_require__(303);
 
@@ -23853,11 +23858,12 @@ var Game = function (_Component) {
           player = _props.player;
 
       var id = this.gameId;
-      this.checkForWin(nextPosition);
+      // this.checkForWin(nextPosition);
       // double check that THIS player made the change
       if (nextPosition !== lastPosition && currentPlayer === player.player) {
         var gameState = {
           pieces: nextProps.pieces,
+          actions: nextProps.player.actions,
           currentPlayer: nextProps.currentPlayer
         };
 
@@ -23934,6 +23940,7 @@ var Game = function (_Component) {
       if (this.gameOver) {
         return false;
       }
+      debugger;
       var _props2 = this.props,
           currentPlayer = _props2.currentPlayer,
           selection = _props2.selection,
@@ -23968,13 +23975,12 @@ var Game = function (_Component) {
             this.hideReserve();
           } else {
             this.props.movePiece(selection, hex);
-            debugger;
             // check for game winning states?
           }
           // THEN HANDLE TURN LOGIC:
           this.props.incrementActions();
-          this.checkForWin(selection, hex);
-          if (player.actions >= 1) {
+          // this.checkForWin(selection, hex);
+          if (parseInt(player.actions) >= 1) {
             this.props.passTurn();
             this.props.readyAllPieces();
             this.props.resetActions();
@@ -24159,6 +24165,7 @@ function mapStateToProps(state) {
   var game = state.game;
 
   return {
+    game: state.game,
     selection: game.selection,
     currentPlayer: game.currentPlayer,
     moveCount: game.moveCount,
@@ -28518,7 +28525,7 @@ module.exports = EnterLeaveEventPlugin;
 
 
 
-var DOMProperty = __webpack_require__(17);
+var DOMProperty = __webpack_require__(18);
 
 var MUST_USE_PROPERTY = DOMProperty.injection.MUST_USE_PROPERTY;
 var HAS_BOOLEAN_VALUE = DOMProperty.injection.HAS_BOOLEAN_VALUE;
@@ -29215,7 +29222,7 @@ var AutoFocusUtils = __webpack_require__(162);
 var CSSPropertyOperations = __webpack_require__(163);
 var DOMLazyTree = __webpack_require__(26);
 var DOMNamespaces = __webpack_require__(54);
-var DOMProperty = __webpack_require__(17);
+var DOMProperty = __webpack_require__(18);
 var DOMPropertyOperations = __webpack_require__(92);
 var EventPluginHub = __webpack_require__(29);
 var EventPluginRegistry = __webpack_require__(37);
@@ -34230,7 +34237,7 @@ module.exports = getUnboundedScrollPosition;
 
 
 
-var DOMProperty = __webpack_require__(17);
+var DOMProperty = __webpack_require__(18);
 var EventPluginHub = __webpack_require__(29);
 var EventPluginUtils = __webpack_require__(48);
 var ReactComponentEnvironment = __webpack_require__(57);
@@ -36384,7 +36391,7 @@ module.exports = ReactMount.renderSubtreeIntoContainer;
 
 
 
-var DOMProperty = __webpack_require__(17);
+var DOMProperty = __webpack_require__(18);
 var EventPluginRegistry = __webpack_require__(37);
 var ReactComponentTreeHook = __webpack_require__(9);
 
@@ -36551,7 +36558,7 @@ module.exports = ReactDOMNullInputValuePropHook;
 
 
 
-var DOMProperty = __webpack_require__(17);
+var DOMProperty = __webpack_require__(18);
 var ReactComponentTreeHook = __webpack_require__(9);
 
 var warning = __webpack_require__(2);
@@ -40004,6 +40011,10 @@ exports.default = function () {
 
       return pieces || state;
       break;
+    case 'JOIN_GAME_SUCCESS':
+      var gameState = JSON.parse(action.payload.position);
+      return gameState.pieces;
+      break;
     case 'READY_ALL_PIECES':
       return state.map(function (p) {
         return Object.assign({}, p, { ready: true });
@@ -40187,6 +40198,9 @@ function playerReducer() {
     case 'JOIN_GAME_SUCCESS':
       return action.payload.player;
       break;
+    case 'OBSERVE_GAME_SUCCESS':
+      return 'observer';
+      break;
   }
   return state;
 }
@@ -40327,6 +40341,15 @@ exports.default = function () {
     case 'RESET_ACTIONS':
       return 0;
       break;
+    case 'JOIN_GAME_SUCCESS':
+      var position = action.payload.position;
+
+      var _JSON$parse = JSON.parse(position),
+          actions = _JSON$parse.actions,
+          currentPlayer = _JSON$parse.currentPlayer;
+
+      return actions;
+      break;
   }
   return state;
 };
@@ -40404,7 +40427,7 @@ var _redux = __webpack_require__(13);
 
 var _reactRedux = __webpack_require__(22);
 
-var _reactRouterDom = __webpack_require__(18);
+var _reactRouterDom = __webpack_require__(17);
 
 var _gamesIndex = __webpack_require__(117);
 
@@ -41487,7 +41510,7 @@ var _react = __webpack_require__(3);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactRouterDom = __webpack_require__(18);
+var _reactRouterDom = __webpack_require__(17);
 
 var _gameLink = __webpack_require__(296);
 
@@ -41507,24 +41530,10 @@ var GamesList = function (_Component) {
   function GamesList(props) {
     _classCallCheck(this, GamesList);
 
-    var _this = _possibleConstructorReturn(this, (GamesList.__proto__ || Object.getPrototypeOf(GamesList)).call(this, props));
-
-    _this.handleClick = _this.handleClick.bind(_this);
-    return _this;
+    return _possibleConstructorReturn(this, (GamesList.__proto__ || Object.getPrototypeOf(GamesList)).call(this, props));
   }
 
   _createClass(GamesList, [{
-    key: 'handleClick',
-    value: function handleClick(id) {
-      // JOIN GAME
-      var _props = this.props,
-          user = _props.user,
-          joinGame = _props.joinGame,
-          observeGame = _props.observeGame;
-
-      user ? this.props.joinGame(id) : observeGame(id);
-    }
-  }, {
     key: 'mapGamesToList',
     value: function mapGamesToList(games) {
       var _this2 = this;
@@ -41537,7 +41546,7 @@ var GamesList = function (_Component) {
           _react2.default.createElement(
             _reactRouterDom.Link,
             { to: '/games/' + g.id, onClick: function onClick() {
-                return _this2.handleClick(g.id);
+                return _this2.props.handleClick(g.id);
               } },
             _react2.default.createElement(_gameLink2.default, { game: g })
           )
@@ -41547,10 +41556,10 @@ var GamesList = function (_Component) {
   }, {
     key: 'render',
     value: function render() {
-      var _props2 = this.props,
-          games = _props2.games,
-          newGame = _props2.newGame,
-          refresh = _props2.refresh;
+      var _props = this.props,
+          games = _props.games,
+          newGame = _props.newGame,
+          refresh = _props.refresh;
 
       var gamesList = this.mapGamesToList(games);
 
@@ -41590,20 +41599,30 @@ var GamesList = function (_Component) {
             ),
             _react2.default.createElement(
               'span',
-              { className: 'td-last' },
+              { className: 'td' },
               'Timestamp'
+            ),
+            _react2.default.createElement(
+              'span',
+              { className: 'td' },
+              'Join'
+            ),
+            _react2.default.createElement(
+              'span',
+              { className: 'td' },
+              'Observe'
             )
           ),
           gamesList
         ),
         _react2.default.createElement(
           'div',
-          { className: 'hover-hands', onClick: newGame },
+          { className: 'hover-hands button', onClick: newGame },
           'Post Game'
         ),
         _react2.default.createElement(
           'div',
-          { className: 'hover-hands', onClick: refresh },
+          { className: 'hover-hands button', onClick: refresh },
           'Refresh List'
         )
       );
@@ -41632,6 +41651,8 @@ var _react = __webpack_require__(3);
 
 var _react2 = _interopRequireDefault(_react);
 
+var _reactRouterDom = __webpack_require__(17);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -41652,7 +41673,15 @@ var GameLink = function (_Component) {
   _createClass(GameLink, [{
     key: 'render',
     value: function render() {
-      var game = this.props.game;
+      var _props$game = this.props.game,
+          creator = _props$game.creator,
+          status = _props$game.status,
+          challenger = _props$game.challenger,
+          winner = _props$game.winner,
+          id = _props$game.id,
+          created_at = _props$game.created_at,
+          p1_id = _props$game.p1_id,
+          p2_id = _props$game.p2_id;
 
 
       return _react2.default.createElement(
@@ -41661,27 +41690,27 @@ var GameLink = function (_Component) {
         _react2.default.createElement(
           'span',
           { className: 'td' },
-          game.creator || 'anon '
+          creator || 'anon '
         ),
         _react2.default.createElement(
           'span',
           { className: 'td' },
-          game.status || 'seeking '
+          p1_id && p2_id ? 'vs.' : status
         ),
         _react2.default.createElement(
           'span',
           { className: 'td' },
-          game.p2_id || 'anon '
+          challenger || '-'
         ),
         _react2.default.createElement(
           'span',
           { className: 'td' },
-          game.winner || 'in progress '
+          winner || 'in progress '
         ),
         _react2.default.createElement(
           'span',
-          { className: 'td-last' },
-          game.created_at || ' '
+          { className: 'td' },
+          created_at || '-'
         )
       );
     }
@@ -41803,7 +41832,16 @@ function postGame(currentUser, dispatch) {
     url: '/games',
     dataType: 'json',
     contentType: 'application/json',
-    data: JSON.stringify({ game: { status: 'seeking', creator_id: currentUser.id, p1_id: currentUser.id } }),
+    data: JSON.stringify({ game: {
+        status: 'seeking',
+        creator_id: currentUser.id,
+        p1_id: currentUser.id,
+        position: {
+          currentPlayer: 'P1',
+          actions: 1,
+          pieces: DEFAULT_POSITION
+        }
+      } }),
     success: function success(json) {
       dispatch({ type: 'POST_NEW_GAME_SUCCESS', payload: json });
     },
@@ -41832,7 +41870,7 @@ var postNewGameError = function postNewGameError() {
   };
 };
 
-var joinGame = exports.joinGame = function joinGame(currentUser, gameId) {
+var joinGame = exports.joinGame = function joinGame(userData, gameId) {
   return function (dispatch) {
     dispatch({ type: 'JOIN_GAME_REQUEST' });
     return _jquery2.default.ajax({
@@ -41843,7 +41881,7 @@ var joinGame = exports.joinGame = function joinGame(currentUser, gameId) {
       url: '/games/' + gameId,
       dataType: 'json',
       contentType: 'application/json',
-      data: JSON.stringify({ game: { p2_id: currentUser.id } }),
+      data: JSON.stringify({ game: userData }),
       success: function success(json) {
         dispatch({ type: 'JOIN_GAME_SUCCESS', payload: json });
       },
@@ -41874,6 +41912,8 @@ var observeGame = exports.observeGame = function observeGame(gameId) {
     });
   };
 };
+
+var DEFAULT_POSITION = JSON.stringify([{ "type": "hero", "player": "P1", "cost": 0, "ready": true, "pos": [0, -3, 3], "moveDirs": ["adjacent"], "imgUrl": "http://cdn.paper4pc.com/images/fantasy-art-knight-warrior-horses-armor-wallpaper-1.jpg" }, { "type": "queen", "player": "P1", "cost": 6, "ready": true, "pos": "reserve", "moveDirs": ["queen"], "imgUrl": "http://img06.deviantart.net/23d8/i/2015/031/e/a/the_evil_queen_by_hexe_cobalt-d5g7rd0.jpg" }, { "type": "pawn", "player": "P1", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["pawn"], "imgUrl": "http://www.wallpaperbetter.com/wallpaper/84/539/806/fantasy-art-armor-knight-1080P-wallpaper-middle-size.jpg" }, { "type": "pawn", "player": "P1", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["pawn"], "imgUrl": "http://www.wallpaperbetter.com/wallpaper/84/539/806/fantasy-art-armor-knight-1080P-wallpaper-middle-size.jpg" }, { "type": "pawn", "player": "P1", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["pawn"], "imgUrl": "http://www.wallpaperbetter.com/wallpaper/84/539/806/fantasy-art-armor-knight-1080P-wallpaper-middle-size.jpg" }, { "type": "pawn", "player": "P1", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["pawn"], "imgUrl": "http://www.wallpaperbetter.com/wallpaper/84/539/806/fantasy-art-armor-knight-1080P-wallpaper-middle-size.jpg" }, { "type": "pawn", "player": "P1", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["pawn"], "imgUrl": "http://www.wallpaperbetter.com/wallpaper/84/539/806/fantasy-art-armor-knight-1080P-wallpaper-middle-size.jpg" }, { "type": "pawn", "player": "P1", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["pawn"], "imgUrl": "http://www.wallpaperbetter.com/wallpaper/84/539/806/fantasy-art-armor-knight-1080P-wallpaper-middle-size.jpg" }, { "type": "pawn", "player": "P1", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["pawn"], "imgUrl": "http://www.wallpaperbetter.com/wallpaper/84/539/806/fantasy-art-armor-knight-1080P-wallpaper-middle-size.jpg" }, { "type": "pawn", "player": "P1", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["pawn"], "imgUrl": "http://www.wallpaperbetter.com/wallpaper/84/539/806/fantasy-art-armor-knight-1080P-wallpaper-middle-size.jpg" }, { "type": "bishop", "player": "P1", "cost": 2, "ready": true, "pos": "reserve", "moveDirs": ["bishop"], "imgUrl": "https://s-media-cache-ak0.pinimg.com/originals/f0/34/df/f034df7627b5cb4dbef613bcb504482b.jpg" }, { "type": "bishop", "player": "P1", "cost": 2, "ready": true, "pos": "reserve", "moveDirs": ["bishop"], "imgUrl": "https://s-media-cache-ak0.pinimg.com/originals/f0/34/df/f034df7627b5cb4dbef613bcb504482b.jpg" }, { "type": "rook", "player": "P1", "cost": 3, "ready": true, "pos": "reserve", "moveDirs": ["rook"], "imgUrl": "http://wallup.net/wp-content/uploads/2016/04/10/297431-fantasy_armor-fantasy_art-sword-knight-angel_wings.png" }, { "type": "rook", "player": "P1", "cost": 3, "ready": true, "pos": "reserve", "moveDirs": ["rook"], "imgUrl": "http://wallup.net/wp-content/uploads/2016/04/10/297431-fantasy_armor-fantasy_art-sword-knight-angel_wings.png" }, { "type": "node", "player": "P1", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["none"], "imgUrl": "https://www.demilked.com/magazine/wp-content/uploads/2016/06/fantasy-jewelry-glow-in-the-dark-manon-richard-thumb640.jpg" }, { "type": "node", "player": "P1", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["none"], "imgUrl": "https://www.demilked.com/magazine/wp-content/uploads/2016/06/fantasy-jewelry-glow-in-the-dark-manon-richard-thumb640.jpg" }, { "type": "node", "player": "P1", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["none"], "imgUrl": "https://www.demilked.com/magazine/wp-content/uploads/2016/06/fantasy-jewelry-glow-in-the-dark-manon-richard-thumb640.jpg" }, { "type": "node", "player": "P1", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["none"], "imgUrl": "https://www.demilked.com/magazine/wp-content/uploads/2016/06/fantasy-jewelry-glow-in-the-dark-manon-richard-thumb640.jpg" }, { "type": "node", "player": "P1", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["none"], "imgUrl": "https://www.demilked.com/magazine/wp-content/uploads/2016/06/fantasy-jewelry-glow-in-the-dark-manon-richard-thumb640.jpg" }, { "type": "node", "player": "P1", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["none"], "imgUrl": "https://www.demilked.com/magazine/wp-content/uploads/2016/06/fantasy-jewelry-glow-in-the-dark-manon-richard-thumb640.jpg" }, { "type": "node", "player": "P1", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["none"], "imgUrl": "https://www.demilked.com/magazine/wp-content/uploads/2016/06/fantasy-jewelry-glow-in-the-dark-manon-richard-thumb640.jpg" }, { "type": "node", "player": "P1", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["none"], "imgUrl": "https://www.demilked.com/magazine/wp-content/uploads/2016/06/fantasy-jewelry-glow-in-the-dark-manon-richard-thumb640.jpg" }, { "type": "node", "player": "P1", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["none"], "imgUrl": "https://www.demilked.com/magazine/wp-content/uploads/2016/06/fantasy-jewelry-glow-in-the-dark-manon-richard-thumb640.jpg" }, { "type": "node", "player": "P1", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["none"], "imgUrl": "https://www.demilked.com/magazine/wp-content/uploads/2016/06/fantasy-jewelry-glow-in-the-dark-manon-richard-thumb640.jpg" }, { "type": "node", "player": "P1", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["none"], "imgUrl": "https://www.demilked.com/magazine/wp-content/uploads/2016/06/fantasy-jewelry-glow-in-the-dark-manon-richard-thumb640.jpg" }, { "type": "node", "player": "P1", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["none"], "imgUrl": "https://www.demilked.com/magazine/wp-content/uploads/2016/06/fantasy-jewelry-glow-in-the-dark-manon-richard-thumb640.jpg" }, { "type": "hero", "player": "P2", "cost": 0, "ready": true, "pos": [0, 3, -3], "moveDirs": ["adjacent"], "imgUrl": "http://cdn.paper4pc.com/images/fantasy-art-knight-warrior-horses-armor-wallpaper-1.jpg" }, { "type": "queen", "player": "P2", "cost": 6, "ready": true, "pos": "reserve", "moveDirs": ["queen"], "imgUrl": "http://img06.deviantart.net/23d8/i/2015/031/e/a/the_evil_queen_by_hexe_cobalt-d5g7rd0.jpg" }, { "type": "pawn", "player": "P2", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["pawn"], "imgUrl": "http://www.wallpaperbetter.com/wallpaper/84/539/806/fantasy-art-armor-knight-1080P-wallpaper-middle-size.jpg" }, { "type": "pawn", "player": "P2", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["pawn"], "imgUrl": "http://www.wallpaperbetter.com/wallpaper/84/539/806/fantasy-art-armor-knight-1080P-wallpaper-middle-size.jpg" }, { "type": "pawn", "player": "P2", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["pawn"], "imgUrl": "http://www.wallpaperbetter.com/wallpaper/84/539/806/fantasy-art-armor-knight-1080P-wallpaper-middle-size.jpg" }, { "type": "pawn", "player": "P2", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["pawn"], "imgUrl": "http://www.wallpaperbetter.com/wallpaper/84/539/806/fantasy-art-armor-knight-1080P-wallpaper-middle-size.jpg" }, { "type": "pawn", "player": "P2", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["pawn"], "imgUrl": "http://www.wallpaperbetter.com/wallpaper/84/539/806/fantasy-art-armor-knight-1080P-wallpaper-middle-size.jpg" }, { "type": "pawn", "player": "P2", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["pawn"], "imgUrl": "http://www.wallpaperbetter.com/wallpaper/84/539/806/fantasy-art-armor-knight-1080P-wallpaper-middle-size.jpg" }, { "type": "pawn", "player": "P2", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["pawn"], "imgUrl": "http://www.wallpaperbetter.com/wallpaper/84/539/806/fantasy-art-armor-knight-1080P-wallpaper-middle-size.jpg" }, { "type": "pawn", "player": "P2", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["pawn"], "imgUrl": "http://www.wallpaperbetter.com/wallpaper/84/539/806/fantasy-art-armor-knight-1080P-wallpaper-middle-size.jpg" }, { "type": "bishop", "player": "P2", "cost": 2, "ready": true, "pos": "reserve", "moveDirs": ["bishop"], "imgUrl": "https://s-media-cache-ak0.pinimg.com/originals/f0/34/df/f034df7627b5cb4dbef613bcb504482b.jpg" }, { "type": "bishop", "player": "P2", "cost": 2, "ready": true, "pos": "reserve", "moveDirs": ["bishop"], "imgUrl": "https://s-media-cache-ak0.pinimg.com/originals/f0/34/df/f034df7627b5cb4dbef613bcb504482b.jpg" }, { "type": "rook", "player": "P2", "cost": 3, "ready": true, "pos": "reserve", "moveDirs": ["rook"], "imgUrl": "http://wallup.net/wp-content/uploads/2016/04/10/297431-fantasy_armor-fantasy_art-sword-knight-angel_wings.png" }, { "type": "rook", "player": "P2", "cost": 3, "ready": true, "pos": "reserve", "moveDirs": ["rook"], "imgUrl": "http://wallup.net/wp-content/uploads/2016/04/10/297431-fantasy_armor-fantasy_art-sword-knight-angel_wings.png" }, { "type": "node", "player": "P2", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["none"], "imgUrl": "https://www.demilked.com/magazine/wp-content/uploads/2016/06/fantasy-jewelry-glow-in-the-dark-manon-richard-thumb640.jpg" }, { "type": "node", "player": "P2", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["none"], "imgUrl": "https://www.demilked.com/magazine/wp-content/uploads/2016/06/fantasy-jewelry-glow-in-the-dark-manon-richard-thumb640.jpg" }, { "type": "node", "player": "P2", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["none"], "imgUrl": "https://www.demilked.com/magazine/wp-content/uploads/2016/06/fantasy-jewelry-glow-in-the-dark-manon-richard-thumb640.jpg" }, { "type": "node", "player": "P2", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["none"], "imgUrl": "https://www.demilked.com/magazine/wp-content/uploads/2016/06/fantasy-jewelry-glow-in-the-dark-manon-richard-thumb640.jpg" }, { "type": "node", "player": "P2", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["none"], "imgUrl": "https://www.demilked.com/magazine/wp-content/uploads/2016/06/fantasy-jewelry-glow-in-the-dark-manon-richard-thumb640.jpg" }, { "type": "node", "player": "P2", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["none"], "imgUrl": "https://www.demilked.com/magazine/wp-content/uploads/2016/06/fantasy-jewelry-glow-in-the-dark-manon-richard-thumb640.jpg" }, { "type": "node", "player": "P2", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["none"], "imgUrl": "https://www.demilked.com/magazine/wp-content/uploads/2016/06/fantasy-jewelry-glow-in-the-dark-manon-richard-thumb640.jpg" }, { "type": "node", "player": "P2", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["none"], "imgUrl": "https://www.demilked.com/magazine/wp-content/uploads/2016/06/fantasy-jewelry-glow-in-the-dark-manon-richard-thumb640.jpg" }, { "type": "node", "player": "P2", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["none"], "imgUrl": "https://www.demilked.com/magazine/wp-content/uploads/2016/06/fantasy-jewelry-glow-in-the-dark-manon-richard-thumb640.jpg" }, { "type": "node", "player": "P2", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["none"], "imgUrl": "https://www.demilked.com/magazine/wp-content/uploads/2016/06/fantasy-jewelry-glow-in-the-dark-manon-richard-thumb640.jpg" }, { "type": "node", "player": "P2", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["none"], "imgUrl": "https://www.demilked.com/magazine/wp-content/uploads/2016/06/fantasy-jewelry-glow-in-the-dark-manon-richard-thumb640.jpg" }, { "type": "node", "player": "P2", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["none"], "imgUrl": "https://www.demilked.com/magazine/wp-content/uploads/2016/06/fantasy-jewelry-glow-in-the-dark-manon-richard-thumb640.jpg" }]);
 
 /***/ }),
 /* 299 */
@@ -42349,7 +42389,7 @@ var _reserve = __webpack_require__(120);
 
 var _reserve2 = _interopRequireDefault(_reserve);
 
-var _reactRouterDom = __webpack_require__(18);
+var _reactRouterDom = __webpack_require__(17);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -42905,7 +42945,7 @@ var _navButton = __webpack_require__(45);
 
 var _navButton2 = _interopRequireDefault(_navButton);
 
-var _reactRouterDom = __webpack_require__(18);
+var _reactRouterDom = __webpack_require__(17);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -42966,7 +43006,7 @@ var _jquery = __webpack_require__(34);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _reactRouterDom = __webpack_require__(18);
+var _reactRouterDom = __webpack_require__(17);
 
 var _login = __webpack_require__(72);
 
@@ -43035,7 +43075,7 @@ var LoginForm = function (_Component) {
           _react2.default.createElement(
             'label',
             { htmlFor: 'username' },
-            'Username'
+            'Username:'
           ),
           _react2.default.createElement('br', null),
           _react2.default.createElement('input', { id: 'username',
@@ -43050,7 +43090,7 @@ var LoginForm = function (_Component) {
           _react2.default.createElement(
             'label',
             { htmlFor: 'password' },
-            'Password'
+            'Password:'
           ),
           _react2.default.createElement('br', null),
           _react2.default.createElement('input', { id: 'password',
@@ -43126,7 +43166,7 @@ var _jquery = __webpack_require__(34);
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
-var _reactRouterDom = __webpack_require__(18);
+var _reactRouterDom = __webpack_require__(17);
 
 var _login = __webpack_require__(72);
 
@@ -43207,7 +43247,7 @@ var SignupForm = function (_Component) {
           _react2.default.createElement(
             'label',
             { htmlFor: 'username' },
-            'Username'
+            'Username:'
           ),
           _react2.default.createElement('br', null),
           _react2.default.createElement('input', { id: 'username',
@@ -43222,7 +43262,7 @@ var SignupForm = function (_Component) {
           _react2.default.createElement(
             'label',
             { htmlFor: 'password' },
-            'Password'
+            'Password:'
           ),
           _react2.default.createElement('br', null),
           _react2.default.createElement('input', { id: 'password',
@@ -43237,7 +43277,7 @@ var SignupForm = function (_Component) {
           _react2.default.createElement(
             'label',
             { htmlFor: 'confirm' },
-            'Confirm Password'
+            'Confirm Password:'
           ),
           _react2.default.createElement('br', null),
           _react2.default.createElement('input', { id: 'password',
@@ -43305,7 +43345,7 @@ var _redux = __webpack_require__(13);
 
 var _reactRedux = __webpack_require__(22);
 
-var _reactRouterDom = __webpack_require__(18);
+var _reactRouterDom = __webpack_require__(17);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 

@@ -22,8 +22,7 @@ class GamesIndex extends Component {
     };
 
     this.newGame = this.newGame.bind(this);
-    this.joinGame = this.joinGame.bind(this);
-    this.observeGame = this.observeGame.bind(this);
+    this.handleClick = this.handleClick.bind(this);
   }
 
   componentDidMount() {
@@ -35,14 +34,20 @@ class GamesIndex extends Component {
     user ? postNewGame(user) : alert('Please log in');
   }
 
-  joinGame(id) {
-    const {joinGame, user} = this.props;
-    user ? joinGame(user, id) : alert('Please log in');
-  }
-
-  observeGame(id) {
-    const {observeGame, user} = this.props;
-    observeGame(id);
+  handleClick(id) {
+    const {user, games, joinGame, observeGame} = this.props;
+    const game = games.filter(g => g.id === id)[0];
+    if ( !user ) {
+      observeGame(id);
+    } else if ( user.id === game.p1_id ) {
+      joinGame({ p1_id: user.id }, id);
+    } else if ( user.id === game.p2_id ) {
+      joinGame({ p2_id: user.id }, id);
+    } else if ( !game.p2_id ) {
+      joinGame({ p2_id: user.id, status: 'in progress' }, id);
+    } else {
+      observeGame(id)
+    }
   }
 
   render() {
@@ -52,8 +57,7 @@ class GamesIndex extends Component {
         <GamesList games={ games }
                    newGame={ this.newGame }
                    refresh={ fetchAllGames }
-                   joinGame={ this.joinGame }
-                   observeGame={ this.observeGame }
+                   handleClick={ this.handleClick }
                    user={ user }
         />
       </div>

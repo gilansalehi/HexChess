@@ -8,6 +8,11 @@ export default function (state = initialState, action) {
     case 'RESET_ACTIONS':
       return 0;
       break;
+    case 'JOIN_GAME_SUCCESS':
+      const { position } = action.payload;
+      const { actions, currentPlayer } = JSON.parse(position);
+      return actions;
+      break;
   }
   return state;
 }

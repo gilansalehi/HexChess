@@ -65,6 +65,10 @@ export default function (state = initialState, action) {
       const { pieces, currentPlayer } = JSON.parse(position)
       return pieces || state;
       break;
+    case 'JOIN_GAME_SUCCESS':
+      const gameState = JSON.parse(action.payload.position);
+      return gameState.pieces;
+      break;
     case 'READY_ALL_PIECES':
       return state.map(p => Object.assign({}, p, { ready: true }));
       break;

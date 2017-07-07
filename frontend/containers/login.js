@@ -48,7 +48,7 @@ class LoginForm extends Component {
 
         <form onSubmit={ this.submit } className="clearfix" >
 
-          <label htmlFor="username">Username</label><br></br>
+          <label htmlFor="username">Username:</label><br></br>
           <input id="username"
                  type="text"
                  name="user[username]"
@@ -57,7 +57,7 @@ class LoginForm extends Component {
                  placeholder="Enter your username"></input>
           <br></br>
 
-          <label htmlFor="password">Password</label><br></br>
+          <label htmlFor="password">Password:</label><br></br>
           <input id="password"
                  type="password"
                  name="user[password]"

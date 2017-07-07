@@ -10,7 +10,6 @@ class GamesChannel < ApplicationCable::Channel
   # end
 
   def speak(data)
-    byebug
     @game = Game.find_by(params[:id])
     @game.update(game_params)
   end
