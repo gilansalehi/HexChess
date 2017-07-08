@@ -12,6 +12,9 @@
 
 ActiveRecord::Schema.define(version: 20170629231846) do
 
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "chatroom_user", id: false, force: :cascade do |t|
     t.integer "user_id"
     t.integer "chatroom_id"
@@ -22,17 +25,6 @@ ActiveRecord::Schema.define(version: 20170629231846) do
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-  end
-
-  create_table "game_user", id: false, force: :cascade do |t|
-    t.integer "game_id"
-    t.integer "user_id"
-    t.boolean "player"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["game_id", "user_id", "player"], name: "index_game_user_on_game_id_and_user_id_and_player", unique: true
-    t.index ["game_id"], name: "index_game_user_on_game_id"
-    t.index ["user_id"], name: "index_game_user_on_user_id"
   end
 
   create_table "games", force: :cascade do |t|
