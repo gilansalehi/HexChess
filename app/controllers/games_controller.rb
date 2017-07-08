@@ -1,15 +1,16 @@
 class GamesController < ApplicationController
+  include Constant
+
   def new
-    @game = Game.new()
+    @game = Game.new(game_params)
   end
 
   def create
     @game = Game.new(game_params)
+    set_default_position
 
     if @game.save
-      ActionCable.server.broadcast 'games',
-        position: @game.position,
-      head :ok
+      render :show
     else
       flash.now[:errors] = @game.errors.full_messages
     end
@@ -17,24 +18,23 @@ class GamesController < ApplicationController
 
   def show
     @game = Game.find(params[:id])
-    render :game
+
+    render :show
   end
 
   def update
     @game = Game.find(params[:id])
 
     if @game.update(game_params)
-      ActionCable.server.broadcast 'games',
-        position: @game.position,
-      head :ok
+      render :show
     else
       flash :errors
     end
   end
 
   def index
-    @games = Game.where({ status: 'seeking' })
-    render :games_index
+    @games = Game.all #.where({ status: 'seeking' })
+    render :index
   end
 
   private
@@ -46,6 +46,18 @@ class GamesController < ApplicationController
       :winner,
       :p1_id,
       :p2_id,
+      :creator_id,
     )
+  end
+
+  def set_default_position
+    case @game.position
+    when 'DEFAULT_POSITION'
+      @game.position = ({
+          currentPlayer: 'P1',
+          actions: 1,
+          pieces: default_position
+        }).to_json
+    end
   end
 end

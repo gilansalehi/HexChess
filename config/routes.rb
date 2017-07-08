@@ -14,8 +14,10 @@ Rails.application.routes.draw do
   resources :chatrooms, param: :slug
   resources :messages
 
-  resources :games, only: [:new, :create, :update, :show]
+  resources :games, only: [:new, :create, :update, :show, :index]
 
   get '/logout', controller: :sessions, action: :destroy
+
+  get "*path", to: "static_pages#root"
 
 end

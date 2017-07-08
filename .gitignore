@@ -27,3 +27,7 @@ node_modules
 
 # Generated js bundles
 /app/assets/webpack/*
+/client
+
+# Ignore application configuration
+/config/application.yml

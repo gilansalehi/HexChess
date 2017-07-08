@@ -10,7 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170619203403) do
+ActiveRecord::Schema.define(version: 20170629231846) do
+
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
 
   create_table "chatroom_user", id: false, force: :cascade do |t|
     t.integer "user_id"
@@ -24,17 +27,6 @@ ActiveRecord::Schema.define(version: 20170619203403) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "game_user", id: false, force: :cascade do |t|
-    t.integer "game_id"
-    t.integer "user_id"
-    t.boolean "player"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["game_id", "user_id", "player"], name: "index_game_user_on_game_id_and_user_id_and_player", unique: true
-    t.index ["game_id"], name: "index_game_user_on_game_id"
-    t.index ["user_id"], name: "index_game_user_on_user_id"
-  end
-
   create_table "games", force: :cascade do |t|
     t.integer "p1_id"
     t.integer "p2_id"
@@ -43,8 +35,21 @@ ActiveRecord::Schema.define(version: 20170619203403) do
     t.string "winner"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "creator_id", default: 0, null: false
+    t.index ["creator_id"], name: "index_games_on_creator_id"
     t.index ["p1_id"], name: "index_games_on_p1_id"
     t.index ["p2_id"], name: "index_games_on_p2_id"
+  end
+
+  create_table "games_users", id: false, force: :cascade do |t|
+    t.integer "game_id"
+    t.integer "user_id"
+    t.boolean "player"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["game_id", "user_id", "player"], name: "index_games_users_on_game_id_and_user_id_and_player", unique: true
+    t.index ["game_id"], name: "index_games_users_on_game_id"
+    t.index ["user_id"], name: "index_games_users_on_user_id"
   end
 
   create_table "messages", force: :cascade do |t|
