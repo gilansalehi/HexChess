@@ -122,7 +122,6 @@ class Game extends Component {
 
   handleClick(hex) {
     if ( this.gameOver ) { return false; }
-    debugger;
     const { currentPlayer, selection, player } = this.props;
 
     if ( !selection ) {
@@ -244,7 +243,8 @@ class Game extends Component {
     return (
       <div className="game">
         <BannerMessage pieces={pieces} />
-        <Nav options={[
+        <Nav
+          options={[
             { name: 'fetch', handleClick: () => { this.fetchGameState() } },
             {
               name: 'Action',

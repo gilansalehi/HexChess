@@ -1,4 +1,5 @@
 class GamesController < ApplicationController
+  include Constant
 
   def new
     @game = Game.new(game_params)
@@ -6,6 +7,7 @@ class GamesController < ApplicationController
 
   def create
     @game = Game.new(game_params)
+    set_default_position
 
     if @game.save
       render :show
@@ -48,5 +50,14 @@ class GamesController < ApplicationController
     )
   end
 
-
+  def set_default_position
+    case @game.position
+    when 'DEFAULT_POSITION'
+      @game.position = ({
+          currentPlayer: 'P1',
+          actions: 1,
+          pieces: default_position
+        }).to_json
+    end
+  end
 end

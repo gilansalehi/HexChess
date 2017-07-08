@@ -23686,7 +23686,6 @@ var GamesIndex = function (_Component) {
       var game = games.filter(function (g) {
         return g.id === id;
       })[0];
-      debugger;
       if (!user) {
         observeGame(id);
       } else if (user.id === game.p1_id) {
@@ -23940,7 +23939,6 @@ var Game = function (_Component) {
       if (this.gameOver) {
         return false;
       }
-      debugger;
       var _props2 = this.props,
           currentPlayer = _props2.currentPlayer,
           selection = _props2.selection,
@@ -24105,7 +24103,8 @@ var Game = function (_Component) {
         _react2.default.createElement(_bannerMessage2.default, { pieces: pieces }),
         _react2.default.createElement(
           _gameNav2.default,
-          { options: [{ name: 'fetch', handleClick: function handleClick() {
+          {
+            options: [{ name: 'fetch', handleClick: function handleClick() {
                 _this3.fetchGameState();
               } }, {
               name: 'Action',
@@ -41601,16 +41600,6 @@ var GamesList = function (_Component) {
               'span',
               { className: 'td' },
               'Timestamp'
-            ),
-            _react2.default.createElement(
-              'span',
-              { className: 'td' },
-              'Join'
-            ),
-            _react2.default.createElement(
-              'span',
-              { className: 'td' },
-              'Observe'
             )
           ),
           gamesList
@@ -41832,16 +41821,14 @@ function postGame(currentUser, dispatch) {
     url: '/games',
     dataType: 'json',
     contentType: 'application/json',
-    data: JSON.stringify({ game: {
+    data: JSON.stringify({
+      game: {
         status: 'seeking',
         creator_id: currentUser.id,
         p1_id: currentUser.id,
-        position: {
-          currentPlayer: 'P1',
-          actions: 1,
-          pieces: DEFAULT_POSITION
-        }
-      } }),
+        position: 'DEFAULT_POSITION'
+      }
+    }),
     success: function success(json) {
       dispatch({ type: 'POST_NEW_GAME_SUCCESS', payload: json });
     },
@@ -41912,8 +41899,6 @@ var observeGame = exports.observeGame = function observeGame(gameId) {
     });
   };
 };
-
-var DEFAULT_POSITION = JSON.stringify([{ "type": "hero", "player": "P1", "cost": 0, "ready": true, "pos": [0, -3, 3], "moveDirs": ["adjacent"], "imgUrl": "http://cdn.paper4pc.com/images/fantasy-art-knight-warrior-horses-armor-wallpaper-1.jpg" }, { "type": "queen", "player": "P1", "cost": 6, "ready": true, "pos": "reserve", "moveDirs": ["queen"], "imgUrl": "http://img06.deviantart.net/23d8/i/2015/031/e/a/the_evil_queen_by_hexe_cobalt-d5g7rd0.jpg" }, { "type": "pawn", "player": "P1", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["pawn"], "imgUrl": "http://www.wallpaperbetter.com/wallpaper/84/539/806/fantasy-art-armor-knight-1080P-wallpaper-middle-size.jpg" }, { "type": "pawn", "player": "P1", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["pawn"], "imgUrl": "http://www.wallpaperbetter.com/wallpaper/84/539/806/fantasy-art-armor-knight-1080P-wallpaper-middle-size.jpg" }, { "type": "pawn", "player": "P1", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["pawn"], "imgUrl": "http://www.wallpaperbetter.com/wallpaper/84/539/806/fantasy-art-armor-knight-1080P-wallpaper-middle-size.jpg" }, { "type": "pawn", "player": "P1", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["pawn"], "imgUrl": "http://www.wallpaperbetter.com/wallpaper/84/539/806/fantasy-art-armor-knight-1080P-wallpaper-middle-size.jpg" }, { "type": "pawn", "player": "P1", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["pawn"], "imgUrl": "http://www.wallpaperbetter.com/wallpaper/84/539/806/fantasy-art-armor-knight-1080P-wallpaper-middle-size.jpg" }, { "type": "pawn", "player": "P1", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["pawn"], "imgUrl": "http://www.wallpaperbetter.com/wallpaper/84/539/806/fantasy-art-armor-knight-1080P-wallpaper-middle-size.jpg" }, { "type": "pawn", "player": "P1", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["pawn"], "imgUrl": "http://www.wallpaperbetter.com/wallpaper/84/539/806/fantasy-art-armor-knight-1080P-wallpaper-middle-size.jpg" }, { "type": "pawn", "player": "P1", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["pawn"], "imgUrl": "http://www.wallpaperbetter.com/wallpaper/84/539/806/fantasy-art-armor-knight-1080P-wallpaper-middle-size.jpg" }, { "type": "bishop", "player": "P1", "cost": 2, "ready": true, "pos": "reserve", "moveDirs": ["bishop"], "imgUrl": "https://s-media-cache-ak0.pinimg.com/originals/f0/34/df/f034df7627b5cb4dbef613bcb504482b.jpg" }, { "type": "bishop", "player": "P1", "cost": 2, "ready": true, "pos": "reserve", "moveDirs": ["bishop"], "imgUrl": "https://s-media-cache-ak0.pinimg.com/originals/f0/34/df/f034df7627b5cb4dbef613bcb504482b.jpg" }, { "type": "rook", "player": "P1", "cost": 3, "ready": true, "pos": "reserve", "moveDirs": ["rook"], "imgUrl": "http://wallup.net/wp-content/uploads/2016/04/10/297431-fantasy_armor-fantasy_art-sword-knight-angel_wings.png" }, { "type": "rook", "player": "P1", "cost": 3, "ready": true, "pos": "reserve", "moveDirs": ["rook"], "imgUrl": "http://wallup.net/wp-content/uploads/2016/04/10/297431-fantasy_armor-fantasy_art-sword-knight-angel_wings.png" }, { "type": "node", "player": "P1", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["none"], "imgUrl": "https://www.demilked.com/magazine/wp-content/uploads/2016/06/fantasy-jewelry-glow-in-the-dark-manon-richard-thumb640.jpg" }, { "type": "node", "player": "P1", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["none"], "imgUrl": "https://www.demilked.com/magazine/wp-content/uploads/2016/06/fantasy-jewelry-glow-in-the-dark-manon-richard-thumb640.jpg" }, { "type": "node", "player": "P1", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["none"], "imgUrl": "https://www.demilked.com/magazine/wp-content/uploads/2016/06/fantasy-jewelry-glow-in-the-dark-manon-richard-thumb640.jpg" }, { "type": "node", "player": "P1", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["none"], "imgUrl": "https://www.demilked.com/magazine/wp-content/uploads/2016/06/fantasy-jewelry-glow-in-the-dark-manon-richard-thumb640.jpg" }, { "type": "node", "player": "P1", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["none"], "imgUrl": "https://www.demilked.com/magazine/wp-content/uploads/2016/06/fantasy-jewelry-glow-in-the-dark-manon-richard-thumb640.jpg" }, { "type": "node", "player": "P1", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["none"], "imgUrl": "https://www.demilked.com/magazine/wp-content/uploads/2016/06/fantasy-jewelry-glow-in-the-dark-manon-richard-thumb640.jpg" }, { "type": "node", "player": "P1", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["none"], "imgUrl": "https://www.demilked.com/magazine/wp-content/uploads/2016/06/fantasy-jewelry-glow-in-the-dark-manon-richard-thumb640.jpg" }, { "type": "node", "player": "P1", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["none"], "imgUrl": "https://www.demilked.com/magazine/wp-content/uploads/2016/06/fantasy-jewelry-glow-in-the-dark-manon-richard-thumb640.jpg" }, { "type": "node", "player": "P1", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["none"], "imgUrl": "https://www.demilked.com/magazine/wp-content/uploads/2016/06/fantasy-jewelry-glow-in-the-dark-manon-richard-thumb640.jpg" }, { "type": "node", "player": "P1", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["none"], "imgUrl": "https://www.demilked.com/magazine/wp-content/uploads/2016/06/fantasy-jewelry-glow-in-the-dark-manon-richard-thumb640.jpg" }, { "type": "node", "player": "P1", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["none"], "imgUrl": "https://www.demilked.com/magazine/wp-content/uploads/2016/06/fantasy-jewelry-glow-in-the-dark-manon-richard-thumb640.jpg" }, { "type": "node", "player": "P1", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["none"], "imgUrl": "https://www.demilked.com/magazine/wp-content/uploads/2016/06/fantasy-jewelry-glow-in-the-dark-manon-richard-thumb640.jpg" }, { "type": "hero", "player": "P2", "cost": 0, "ready": true, "pos": [0, 3, -3], "moveDirs": ["adjacent"], "imgUrl": "http://cdn.paper4pc.com/images/fantasy-art-knight-warrior-horses-armor-wallpaper-1.jpg" }, { "type": "queen", "player": "P2", "cost": 6, "ready": true, "pos": "reserve", "moveDirs": ["queen"], "imgUrl": "http://img06.deviantart.net/23d8/i/2015/031/e/a/the_evil_queen_by_hexe_cobalt-d5g7rd0.jpg" }, { "type": "pawn", "player": "P2", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["pawn"], "imgUrl": "http://www.wallpaperbetter.com/wallpaper/84/539/806/fantasy-art-armor-knight-1080P-wallpaper-middle-size.jpg" }, { "type": "pawn", "player": "P2", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["pawn"], "imgUrl": "http://www.wallpaperbetter.com/wallpaper/84/539/806/fantasy-art-armor-knight-1080P-wallpaper-middle-size.jpg" }, { "type": "pawn", "player": "P2", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["pawn"], "imgUrl": "http://www.wallpaperbetter.com/wallpaper/84/539/806/fantasy-art-armor-knight-1080P-wallpaper-middle-size.jpg" }, { "type": "pawn", "player": "P2", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["pawn"], "imgUrl": "http://www.wallpaperbetter.com/wallpaper/84/539/806/fantasy-art-armor-knight-1080P-wallpaper-middle-size.jpg" }, { "type": "pawn", "player": "P2", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["pawn"], "imgUrl": "http://www.wallpaperbetter.com/wallpaper/84/539/806/fantasy-art-armor-knight-1080P-wallpaper-middle-size.jpg" }, { "type": "pawn", "player": "P2", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["pawn"], "imgUrl": "http://www.wallpaperbetter.com/wallpaper/84/539/806/fantasy-art-armor-knight-1080P-wallpaper-middle-size.jpg" }, { "type": "pawn", "player": "P2", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["pawn"], "imgUrl": "http://www.wallpaperbetter.com/wallpaper/84/539/806/fantasy-art-armor-knight-1080P-wallpaper-middle-size.jpg" }, { "type": "pawn", "player": "P2", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["pawn"], "imgUrl": "http://www.wallpaperbetter.com/wallpaper/84/539/806/fantasy-art-armor-knight-1080P-wallpaper-middle-size.jpg" }, { "type": "bishop", "player": "P2", "cost": 2, "ready": true, "pos": "reserve", "moveDirs": ["bishop"], "imgUrl": "https://s-media-cache-ak0.pinimg.com/originals/f0/34/df/f034df7627b5cb4dbef613bcb504482b.jpg" }, { "type": "bishop", "player": "P2", "cost": 2, "ready": true, "pos": "reserve", "moveDirs": ["bishop"], "imgUrl": "https://s-media-cache-ak0.pinimg.com/originals/f0/34/df/f034df7627b5cb4dbef613bcb504482b.jpg" }, { "type": "rook", "player": "P2", "cost": 3, "ready": true, "pos": "reserve", "moveDirs": ["rook"], "imgUrl": "http://wallup.net/wp-content/uploads/2016/04/10/297431-fantasy_armor-fantasy_art-sword-knight-angel_wings.png" }, { "type": "rook", "player": "P2", "cost": 3, "ready": true, "pos": "reserve", "moveDirs": ["rook"], "imgUrl": "http://wallup.net/wp-content/uploads/2016/04/10/297431-fantasy_armor-fantasy_art-sword-knight-angel_wings.png" }, { "type": "node", "player": "P2", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["none"], "imgUrl": "https://www.demilked.com/magazine/wp-content/uploads/2016/06/fantasy-jewelry-glow-in-the-dark-manon-richard-thumb640.jpg" }, { "type": "node", "player": "P2", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["none"], "imgUrl": "https://www.demilked.com/magazine/wp-content/uploads/2016/06/fantasy-jewelry-glow-in-the-dark-manon-richard-thumb640.jpg" }, { "type": "node", "player": "P2", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["none"], "imgUrl": "https://www.demilked.com/magazine/wp-content/uploads/2016/06/fantasy-jewelry-glow-in-the-dark-manon-richard-thumb640.jpg" }, { "type": "node", "player": "P2", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["none"], "imgUrl": "https://www.demilked.com/magazine/wp-content/uploads/2016/06/fantasy-jewelry-glow-in-the-dark-manon-richard-thumb640.jpg" }, { "type": "node", "player": "P2", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["none"], "imgUrl": "https://www.demilked.com/magazine/wp-content/uploads/2016/06/fantasy-jewelry-glow-in-the-dark-manon-richard-thumb640.jpg" }, { "type": "node", "player": "P2", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["none"], "imgUrl": "https://www.demilked.com/magazine/wp-content/uploads/2016/06/fantasy-jewelry-glow-in-the-dark-manon-richard-thumb640.jpg" }, { "type": "node", "player": "P2", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["none"], "imgUrl": "https://www.demilked.com/magazine/wp-content/uploads/2016/06/fantasy-jewelry-glow-in-the-dark-manon-richard-thumb640.jpg" }, { "type": "node", "player": "P2", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["none"], "imgUrl": "https://www.demilked.com/magazine/wp-content/uploads/2016/06/fantasy-jewelry-glow-in-the-dark-manon-richard-thumb640.jpg" }, { "type": "node", "player": "P2", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["none"], "imgUrl": "https://www.demilked.com/magazine/wp-content/uploads/2016/06/fantasy-jewelry-glow-in-the-dark-manon-richard-thumb640.jpg" }, { "type": "node", "player": "P2", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["none"], "imgUrl": "https://www.demilked.com/magazine/wp-content/uploads/2016/06/fantasy-jewelry-glow-in-the-dark-manon-richard-thumb640.jpg" }, { "type": "node", "player": "P2", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["none"], "imgUrl": "https://www.demilked.com/magazine/wp-content/uploads/2016/06/fantasy-jewelry-glow-in-the-dark-manon-richard-thumb640.jpg" }, { "type": "node", "player": "P2", "cost": 0, "ready": true, "pos": "reserve", "moveDirs": ["none"], "imgUrl": "https://www.demilked.com/magazine/wp-content/uploads/2016/06/fantasy-jewelry-glow-in-the-dark-manon-richard-thumb640.jpg" }]);
 
 /***/ }),
 /* 299 */
@@ -43043,6 +43028,7 @@ var LoginForm = function (_Component) {
       e.preventDefault();
       var credentials = { user: this.state };
       this.props.loginRequest(credentials);
+      this.props.history.push('/');
     }
   }, {
     key: 'updateUsername',
@@ -43104,7 +43090,7 @@ var LoginForm = function (_Component) {
           _react2.default.createElement('br', null),
           _react2.default.createElement(
             _reactRouterDom.Link,
-            { to: "/profile" },
+            { to: "/" },
             _react2.default.createElement(
               'div',
               { className: 'submit button', type: 'submit', onClick: this.submit },

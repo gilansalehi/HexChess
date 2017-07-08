@@ -28,6 +28,7 @@ class LoginForm extends Component {
     e.preventDefault();
     const credentials = { user: this.state };
     this.props.loginRequest(credentials);
+    this.props.history.push('/');
   }
 
   updateUsername(e) {
@@ -66,7 +67,7 @@ class LoginForm extends Component {
                  placeholder="Enter your password"></input>
           <br></br>
 
-          <Link to={"/profile"}>
+          <Link to={"/"}>
             <div className="submit button" type="submit" onClick={ this.submit }>Log In</div>
           </Link>
         </form>

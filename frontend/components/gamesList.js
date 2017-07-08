@@ -34,8 +34,6 @@ export default class GamesList extends Component {
             <span className='td'>Opponent</span>
             <span className='td'>Status</span>
             <span className='td'>Timestamp</span>
-            <span className='td'>Join</span>
-            <span className='td'>Observe</span>
           </li>
           { gamesList }
         </ul>

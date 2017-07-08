@@ -156,10 +156,10 @@ form input {
   position: absolute;
   color: white;
   font-family: 'Consolas', sans-serif;
-  height: 100%;
-  width: 50px;
   background-color: #555;
   z-index: 505;
+  height: 100%;
+  width: 50px;
 }
 
 .nav-list {
@@ -172,7 +172,7 @@ form input {
   float: left;
   height: 40px;
   width: 40px;
-  margin: 10px 0 0 0;
+  margin: 0 0 10px 0;
   padding: 5px;
   background-color: #777;
   text-align: center;
