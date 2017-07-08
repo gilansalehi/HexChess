@@ -1,0 +1,510 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, or any plugin's
+ * vendor/assets/stylesheets directory can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any other CSS/SCSS
+ * files in this directory. Styles in this file should be added after the last require_* statement.
+ * It is generally better to create a new file per style scope.
+ *
+
+
+ */
+
+
+nav {
+  display: block;
+}
+
+li, ul {
+  list-style: none;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  background-color: #363936;
+}
+
+h1 { margin: 0 }
+
+h2 {
+	color: 'white';
+}
+
+ul, li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 80px;
+}
+
+.App-header {
+  background-color: #222;
+  height: 150px;
+  padding: 20px;
+  color: white;
+}
+
+.App-intro {
+  font-size: large;
+}
+
+.auth-page {
+  font-family: "Consolas";
+  color: white;
+}
+
+a:link {
+  color: white;
+  text-decoration: none;
+}
+
+a:visted {
+  color: #fa0;
+}
+
+form label {
+  display: inline-block;
+  padding: 5px;
+}
+
+form input {
+  display: inline-block;
+  width: 240px;
+  padding: 5px;
+  border-radius: 3px;
+}
+
+.button {
+  display: inline-block;
+  padding: 5px;
+  margin: 10px;
+  width: 200px;
+  background-color: darkGray;
+  border-radius: 3px;
+  text-align: center;
+}
+
+.button:hover {
+  background-color: lightblue;
+}
+
+.clearfix {
+  content: '';
+  display: block;
+  clear: both;
+}
+
+.sixty-left {
+  padding: 10px 60px;
+}
+
+.game {
+  display: block;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+}
+
+.game-link {
+  width: 100%;
+}
+
+.pseudo-table {
+  border: 1px solid white;
+  border-bottom: none;
+}
+
+.header {
+  font-weight: bold;
+}
+.td {
+  display: inline-block;
+  padding: 10px;
+  width: 75px;
+  height: 100%;
+  border-right: 1px solid white;
+}
+.td-last {
+  display: inline-block;
+  padding: 10px;
+  width: 75px;
+}
+
+.tr {
+  border-bottom: 1px solid white;
+}
+
+.group {
+  color: white;
+}
+
+.nav {
+  display: block;
+  position: absolute;
+  color: white;
+  font-family: 'Consolas', sans-serif;
+  background-color: #555;
+  z-index: 505;
+  height: 100%;
+  width: 50px;
+}
+
+.nav-list {
+  display: block;
+  margin: 420px 0 0 0;
+}
+
+.nav-button {
+  display: block;
+  float: left;
+  height: 40px;
+  width: 40px;
+  margin: 0 0 10px 0;
+  padding: 5px;
+  background-color: #777;
+  text-align: center;
+  font-family: 'Consolas';
+  font-weight: bold;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.nav-button:hover {
+  background-color: #999;
+}
+
+.nav-button-value {
+  font-size: 20px;
+}
+
+.banner-message {
+  z-index: 900;
+  position: fixed;
+  top: 50%;
+  width: 100%;
+  background-color: #eee;
+  text-align: center;
+}
+
+.board {
+  display: block;
+  float: left;
+  position: relative;
+  margin: 0 55px;
+}
+
+.odd-column {
+  display: block;
+  float: left;
+  width: 86px;
+  pointer-events: none;
+}
+.even-column {
+  display: block;
+  float: left;
+  width: 86px;
+  margin-top: 50px;
+  pointer-events: none;
+}
+.hex {
+  margin-left: -29px;
+  margin-right: -29px;
+  display: block;
+  float: left;
+  position: relative;
+  width: 173.2px;
+  height: 100px;
+  overflow: hidden;
+}
+.slant1 {
+  display: block;
+  overflow: hidden;
+  position: absolute;
+  background: transparent;
+  width: 173.2px;
+  height: 100px;
+  /*pointer-events: none;*/
+  -webkit-transform: rotate(60deg);
+}
+.blue { background: blue; }
+.green { background: green; }
+.hex-inner {
+  display: block;
+  overflow: hidden;
+  position: relative;
+  color: white;
+  width: 173.2px;
+  height: 100px;
+  pointer-events: none;
+  -webkit-transform: rotate(-120deg);
+}
+img {
+  display: block;
+  position: absolute;
+  width: auto;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+}
+.hitbox {
+  display: flex;
+  background: transparent;
+  position: absolute;
+  height: 100px;
+  width: 57px;
+  left: 57px;
+  top: 0;
+  pointer-events: all;
+  z-index: 500;
+  justify-content: center;
+  cursor: pointer;
+}
+.one {
+  -webkit-transform: rotate(0deg);
+}
+.two {
+  -webkit-transform: rotate(60deg);
+}
+.three {
+  -webkit-transform: rotate(120deg);
+}
+.highlighter {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: yellow;
+  opacity: 0.5;
+}
+
+.piece {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.piece-label {
+  position: absolute;
+  top: 82%;
+  left: 50%;
+  width: 100%;
+  text-align: center;
+  font-family: 'Roboto', sans-serif;
+  text-transform: uppercase;
+  transform: translateX(-50%);
+}
+
+.selector-triangles {
+  display: block;
+  pointer-events: none;
+  border-top: 10px solid yellow;
+  border-bottom: 10px solid yellow;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  height: 81px;
+  width: 100%;
+  opacity: 1;
+  // box-shadow: inset 5px 0 10px black, inset 5px 0 -10px black;
+}
+
+@keyframes blink {
+  0% { opacity: 0; }
+  50% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes slideIn {
+  0% { height: 100px; margin-top: -10px; }
+  50% { height: 90px; margin-top: -5px; }
+  100% { height: 80px; margin-top: 0; }
+}
+
+@keyframes reserveSlideIn {
+  0% { left: -150px; }
+  25% { left: -105px; }
+  50% { left: -50px; }
+  75% { left: 0px; }
+  100% { left: 50px; }
+}
+
+.blink {
+  animation: blink normal 1s infinite ease-in-out; /* Opera and prob css3 final iteration */
+}
+
+.slideIn {
+  animation: slideIn normal 0.5s ease-in-out;
+}
+
+// .reserveSlideIn {
+//   animation: reserveSlideIn normal 0.5s ease-in-out;
+// }
+
+.selected {
+  animation: blink normal 1s infinite ease-in-out; /* Opera and prob css3 final iteration */
+}
+
+.player {
+  display: block;
+  float: left;
+  position: relative;
+  width: 173px;
+  height: 100px;
+  background-color: orange;
+  z-index: 500;
+  pointer-events:visible;
+}
+
+.reserve {
+  display: block;
+  position: fixed;
+  border-left: 4px solid #444;
+  background-color: #555;
+  padding: 10px;
+  width: 140px;
+  height: 1000px;
+  top: 0;
+  left: 50px;
+  z-index: -2;
+}
+
+.hide-reserve {
+  display: inline-block;
+  background-color: #777;
+  color: white;
+  height: 20px;
+  width: 20px;
+  border-radius: 10px;
+  margin: 0 10px;
+  text-align: center;
+}
+
+.legalPip {
+  display: block;
+  position: absolute;
+  background: #39e;
+  width: 15px;
+  height: 15px;
+  border-radius: 7px;
+  top: 40%;
+  left: 40%;
+}
+
+.controls {
+  position: fixed;
+  background-color: lightgray;
+  z-index: 501;
+}
+
+.control-button:hover {
+  cursor: pointer;
+}
+
+.hover-hands-grab {
+  cursor: -webkit-grab;
+}
+
+.hidden {
+  display: none;
+}
+
+.hover-hands {
+  cursor: pointer;
+}
+
+.glow {
+  box-shadow: 0px 0px 5px #fff;
+}
+
+.hex-text {
+  position: absolute;
+  left: 50%;
+  width: 100%;
+  text-align: center;
+  font-family: 'Roboto', sans-serif;
+  font-size: 36px;
+  text-transform: uppercase;
+  transform: translateX(-50%);
+}
+
+.reserve-hex-holder {
+  background-color: #444; //#39b;
+  height: 100px;
+  padding: 0;
+  margin: 15px 0 0 0;
+  box-shadow: 0px 0px 5px #111;
+  // border-top: 1px solid #333;
+  // border-bottom: 1px solid #333;
+}
+
+.reserve-counter {
+  float: right;
+  margin-top: -25px;
+  width: 30px;
+  height: 20px;
+  background: #ddd;
+  color: black;
+  font-family: 'Roboto', sans-serif;
+  font-weight: bold;
+  text-align: center;
+  border: 1px solid #356;
+  border-radius: 2px;
+  padding: 2px 3px;
+}
+
+.reserve-counter-value {
+  font-weight: bold;
+  font-family: 'Lucida Console', sans-serif;
+  font-size: 20px;
+  margin-left: 1px;
+}
+
+.reserve-energy-cost {
+  float: right;
+  margin-bottom: -30px;
+  margin-right: 5px;
+  width: 20px;
+  height: 20px;
+  padding: 4px;
+  background: orange;
+  color: white;
+  border-radius: 15px;
+  font-family: 'Roboto', sans-serif;
+  text-align: center;
+}
+
+.reserve-energy-cost-value {
+  font-weight: bold;
+  font-size: 20px;
+  line-height: 22px;
+  text-shadow: 1px 1px 2px #a73;
+}
+
+.reserve-counter-positioner {
+  display: block;
+  float: right;
+  margin-top: -35px;
+  margin-right: -12px;
+  font-family: 'Lucida Console', sans-serif;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px #369;
+}
+
+.special-character {
+  font-size: 24px;
+  margin-top: -3px;
+}

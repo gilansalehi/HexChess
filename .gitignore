@@ -31,3 +31,5 @@ node_modules
 
 # Ignore application configuration
 /config/application.yml
+/public/packs
+/node_modules
