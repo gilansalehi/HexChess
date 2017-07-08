@@ -180,10 +180,7 @@ DEPENDENCIES
   figaro
   jbuilder (~> 2.5)
   mini_racer
-<<<<<<< HEAD
-=======
   pg
->>>>>>> react-rails
   puma (~> 3.7)
   rails (~> 5.1.1)
   react-rails
