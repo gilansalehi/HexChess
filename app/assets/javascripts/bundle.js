@@ -40341,13 +40341,15 @@ exports.default = function () {
       return 0;
       break;
     case 'JOIN_GAME_SUCCESS':
-      var position = action.payload.position;
+      var _action$payload = action.payload,
+          position = _action$payload.position,
+          player = _action$payload.player;
 
       var _JSON$parse = JSON.parse(position),
           actions = _JSON$parse.actions,
           currentPlayer = _JSON$parse.currentPlayer;
 
-      return actions;
+      return player === 'P1' ? actions : 0;
       break;
   }
   return state;

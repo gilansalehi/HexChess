@@ -9,9 +9,9 @@ export default function (state = initialState, action) {
       return 0;
       break;
     case 'JOIN_GAME_SUCCESS':
-      const { position } = action.payload;
+      const { position, player } = action.payload;
       const { actions, currentPlayer } = JSON.parse(position);
-      return actions;
+      return player === 'P1' ? actions : 0;
       break;
   }
   return state;
