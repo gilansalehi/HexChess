@@ -23899,8 +23899,9 @@ var Game = function (_Component) {
 
     _this.gameOver = false;
 
-    _this.checkForWin = _this.checkForWin.bind(_this);
     _this.gameId = _this.props.match.params.id;
+
+    _this.checkForWin = _this.checkForWin.bind(_this);
     _this.getLegalMoves = _this.getLegalMoves.bind(_this);
     _this.getNodeCount = _this.getNodeCount.bind(_this);
     _this.handleClick = _this.handleClick.bind(_this);
@@ -23942,7 +23943,6 @@ var Game = function (_Component) {
           player = _props.player;
 
       var id = this.gameId;
-      // this.checkForWin(nextPosition);
       // double check that THIS player made the change
       if (nextPosition !== lastPosition && currentPlayer === player.player) {
         var gameState = {
@@ -23956,45 +23956,42 @@ var Game = function (_Component) {
     }
   }, {
     key: 'checkForWin',
-    value: function checkForWin(pieces) {
-      var prisoners = pieces.filter(function (p) {
-        return p.pos === 'prison';
-      });
-      var capturedHeroes = prisoners.filter(function (p) {
-        return p.type === 'hero';
-      });
-      var capturedNodes = prisoners.filter(function (p) {
-        return p.type === 'node';
-      });
-      var capturedBlueNodes = capturedNodes.filter(function (n) {
-        return n.player === 'P1';
-      });
-      var capturedRedNodes = capturedNodes.filter(function (n) {
-        return n.player === 'P2';
-      });
-      var winner = false;
-      var message = '';
-      if (capturedHeroes.length) {
-        winner = capturedHeroes[0].player === 'P2' ? 'Blue' : 'Red';
-        message = winner + ' wins by capturing the enemy hero!';
+    value: function checkForWin(destination) {
+      var _props2 = this.props,
+          pieces = _props2.pieces,
+          player = _props2.player,
+          declareWinner = _props2.declareWinner,
+          postWinner = _props2.postWinner;
+
+      var capture = destination.contents;
+      debugger;
+      if (capture) {
+        // a piece is captured
+        if (capture.type === 'hero') {
+          declareWinner(player.player);
+          postWinner(this.gameId, player.player);
+        }
+        if (capture.type === 'node') {
+          var nodeCount = pieces.filter(function (p) {
+            return p.type === 'node' && p.player === capture.player && p.pos === 'prison';
+          });
+          if (nodeCount >= 2) {
+            declareWinner(player.player);
+            postWinner(this.gameId, player.player);
+          }
+        }
       }
-      if (capturedBlueNodes.length >= 3) {
-        winner = 'Red';
-        message = 'Red wins by capturing three enemy nodes!';
-      }
-      if (capturedRedNodes.length >= 3) {
-        winner = 'Blue';
-        message = 'Blue wins by capturing three enemy nodes!';
-      }
-      if (winner) {
-        this.gameOver = true;
-      }
-      return { winner: winner, message: message };
     }
   }, {
     key: 'fetchGameState',
     value: function fetchGameState() {
-      this.props.fetchGameStateData(this.gameId);
+      var _props3 = this.props,
+          game = _props3.game,
+          fetchGameStateData = _props3.fetchGameStateData;
+
+      if (!game.winner) {
+        fetchGameStateData(this.gameId);
+      }
     }
   }, {
     key: 'getChildContext',
@@ -24024,10 +24021,10 @@ var Game = function (_Component) {
       if (this.gameOver) {
         return false;
       }
-      var _props2 = this.props,
-          currentPlayer = _props2.currentPlayer,
-          selection = _props2.selection,
-          player = _props2.player;
+      var _props4 = this.props,
+          currentPlayer = _props4.currentPlayer,
+          selection = _props4.selection,
+          player = _props4.player;
 
 
       if (!selection) {
@@ -24058,6 +24055,7 @@ var Game = function (_Component) {
             this.hideReserve();
           } else {
             this.props.movePiece(selection, hex);
+            this.checkForWin(hex);
             // check for game winning states?
           }
           // THEN HANDLE TURN LOGIC:
@@ -24081,9 +24079,9 @@ var Game = function (_Component) {
   }, {
     key: 'isLegalMove',
     value: function isLegalMove(pos) {
-      var _props3 = this.props,
-          selection = _props3.selection,
-          player = _props3.player;
+      var _props5 = this.props,
+          selection = _props5.selection,
+          player = _props5.player;
 
       if (!selection) {
         return false;
@@ -24102,9 +24100,9 @@ var Game = function (_Component) {
     value: function getLegalMoves(piece) {
       // calculates a piece's legal moves from its type
       var legalMoves = [];
-      var _props4 = this.props,
-          player = _props4.player,
-          pieces = _props4.pieces;
+      var _props6 = this.props,
+          player = _props6.player,
+          pieces = _props6.pieces;
 
       var thisPlayer = piece.player;
       var moveFuncs = _utils.Util.moveFuncs,
@@ -24151,9 +24149,9 @@ var Game = function (_Component) {
   }, {
     key: 'enoughEnergy',
     value: function enoughEnergy(piece) {
-      var _props5 = this.props,
-          pieces = _props5.pieces,
-          player = _props5.player;
+      var _props7 = this.props,
+          pieces = _props7.pieces,
+          player = _props7.player;
 
       var energy = this.getNodeCount(player, pieces);
       var remainingEnergy = energy - player.energy;
@@ -24171,11 +24169,11 @@ var Game = function (_Component) {
     value: function render() {
       var _this3 = this;
 
-      var _props6 = this.props,
-          player = _props6.player,
-          selection = _props6.selection,
-          pieces = _props6.pieces,
-          currentPlayer = _props6.currentPlayer;
+      var _props8 = this.props,
+          player = _props8.player,
+          selection = _props8.selection,
+          pieces = _props8.pieces,
+          currentPlayer = _props8.currentPlayer;
 
       var legalMoves = selection ? this.getLegalMoves(selection.contents) : [];
       var info = this.buildInfoPanel();
@@ -24276,7 +24274,9 @@ function mapDispatchToProps(dispatch) {
     incrementActions: _gameActions.incrementActions,
     resetActions: _gameActions.resetActions,
     readyAllPieces: _gameActions.readyAllPieces,
-    toggleReserve: _gameActions.toggleReserve
+    toggleReserve: _gameActions.toggleReserve,
+    declareWinner: _gameActions.declareWinner,
+    postWinner: _postGameState.postWinner
   }, dispatch);
 }
 
@@ -39992,11 +39992,33 @@ var currentPlayer = function currentPlayer() {
   return state;
 };
 
+var defaultWinner = null;
+var winner = function winner() {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : defaultWinner;
+  var action = arguments[1];
+
+  switch (action.type) {
+    case 'GAME_OVER':
+      return action.payload;
+      break;
+    case 'POST_WINNER_SUCCESS':
+      debugger;
+      return action.payload.winner;
+      break;
+    case 'FETCH_GAME_STATE_SUCCESS':
+      debugger;
+      return action.payload.winner;
+      break;
+  }
+  return state;
+};
+
 var allReducers = (0, _redux.combineReducers)({
   selection: _selection2.default,
   player: _player2.default,
   position: _pieces2.default,
-  currentPlayer: currentPlayer
+  currentPlayer: currentPlayer,
+  winner: winner
 });
 
 exports.default = allReducers;
@@ -40233,7 +40255,12 @@ var images = exports.images = {
 };
 
 var info = exports.info = {
-  hero: 'This is your hero.  He or she can move one hex in any direction, and deploy pieces to any adjacent hex.'
+  hero: 'This is your hero.  He or she can move one hex in any direction, and deploy pieces to any adjacent hex.  If your hero is captured, you lose the game!',
+  pawn: 'Pawns may move (but not capture!) one hex straight forward, and capture one hex diagonally forward',
+  bishop: 'Bishops may move and capture in an X shape',
+  rook: 'Rooks may move and capture in an inverted Y shape',
+  queen: 'Queens may move and capture in a straight line in any direction',
+  blueGem: 'This is a power node.  You will to deploy power nodes in order to build your energy and deploy your stronger pieces.  But be careful: if your opponent captures three of your power nodes, you will lose!'
 };
 
 /***/ }),
@@ -42891,6 +42918,13 @@ var updateInfo = exports.updateInfo = function updateInfo(obj) {
   };
 };
 
+var declareWinner = exports.declareWinner = function declareWinner(winner) {
+  return {
+    type: 'GAME_OVER',
+    payload: winner
+  };
+};
+
 /***/ }),
 /* 306 */
 /***/ (function(module, exports, __webpack_require__) {
@@ -42901,7 +42935,7 @@ var updateInfo = exports.updateInfo = function updateInfo(obj) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.postGameStateData = undefined;
+exports.postWinner = exports.postGameStateData = undefined;
 
 var _jquery = __webpack_require__(34);
 
@@ -42935,6 +42969,28 @@ function postGameState(gameId, gameState, dispatch) {
     }
   });
 }
+
+var postWinner = exports.postWinner = function postWinner(gameId, winner) {
+  return function (dispatch) {
+    dispatch({ type: 'POST_WINNER_PENDING' });
+    return _jquery2.default.ajax({
+      type: 'PUT',
+      beforeSend: function beforeSend(xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', (0, _jquery2.default)('meta[name="csrf-token"]').attr('content'));
+      },
+      url: '/games/' + gameId,
+      dataType: 'json',
+      contentType: 'application/json',
+      data: JSON.stringify({ game: { winner: winner } }),
+      success: function success(json) {
+        dispatch({ type: 'POST_WINNER_SUCCESS', payload: json });
+      },
+      error: function error(msg) {
+        dispatch({ type: 'POST_WINNER_ERROR', payload: msg });
+      }
+    });
+  };
+};
 
 /***/ }),
 /* 307 */

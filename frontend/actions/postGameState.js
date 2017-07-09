@@ -24,3 +24,23 @@ function postGameState(gameId, gameState, dispatch) {
     }
   });
 }
+
+export const postWinner = (gameId, winner) => {
+  return (dispatch) => {
+    dispatch({ type: 'POST_WINNER_PENDING' });
+    return $.ajax({
+      type: 'PUT',
+      beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+      url: '/games/' + gameId,
+      dataType: 'json',
+      contentType: 'application/json',
+      data: JSON.stringify({ game: { winner: winner } }),
+      success: function(json) {
+        dispatch({ type: 'POST_WINNER_SUCCESS', payload: json });
+      },
+      error: function(msg) {
+        dispatch({ type: 'POST_WINNER_ERROR', payload: msg });
+      }
+    });
+  }
+}

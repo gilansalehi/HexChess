@@ -107,3 +107,10 @@ export const updateInfo = (obj) => {
     payload: obj,
   };
 }
+
+export const declareWinner = (winner) => {
+  return {
+    type: 'GAME_OVER',
+    payload: winner,
+  };
+}

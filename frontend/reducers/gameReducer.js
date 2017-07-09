@@ -25,11 +25,30 @@ const currentPlayer = (state = defaultPlayer, action) => {
   return state;
 };
 
+const defaultWinner = null;
+const winner = (state = defaultWinner, action) => {
+  switch (action.type) {
+    case 'GAME_OVER':
+      return action.payload;
+      break;
+    case 'POST_WINNER_SUCCESS':
+      debugger;
+      return action.payload.winner;
+      break;
+    case 'FETCH_GAME_STATE_SUCCESS':
+      debugger;
+      return action.payload.winner;
+      break;
+  }
+  return state;
+}
+
 const allReducers = combineReducers({
   selection: SelectionReducer,
   player: PlayerReducer,
   position: PositionReducer,
   currentPlayer: currentPlayer,
+  winner: winner,
 });
 
 export default allReducers
