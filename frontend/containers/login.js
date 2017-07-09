@@ -73,7 +73,7 @@ class LoginForm extends Component {
         </form>
 
         <div className="join-block">
-          No account?
+          No account? 
           <Link to={'/signup'}>Sign Up</Link>
         </div>
       </div>

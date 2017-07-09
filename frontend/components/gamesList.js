@@ -26,11 +26,9 @@ export default class GamesList extends Component {
 
     return (
       <div style={{color: 'white' }}>
-        <h1> Games </h1>
         <ul className='pseudo-table'>
-          <li key='header' className='tr' style={{ backgroundColor: '#444', textAlign: 'center' }}>
+          <li key='header' className='tr consolas' style={{ backgroundColor: '#444' }}>
             <span className='td'>Creator</span>
-            <span className='td'>Seeking</span>
             <span className='td'>Opponent</span>
             <span className='td'>Status</span>
             <span className='td'>Timestamp</span>

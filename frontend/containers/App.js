@@ -27,11 +27,15 @@ class App extends Component {
   handleSession() {
     const { user } = this.props;
 
-    if (user) { this.props.logoutRequest(); }
+    if (user) {
+      this.props.logoutRequest();
+    }
   }
 
   buildNav() {
     const { user, logoutRequest } = this.props;
+
+    const userInfo = (<div> Logged in as: { user && user.name } </div>);
 
     return (
       <Nav options={[]}>
@@ -39,9 +43,16 @@ class App extends Component {
           <NavButton option={{ name: 'Home' }} />
         </Link>
         <Link to={user ? '/profile' : '/signup' }>
-          <NavButton option={{ name: user ? 'Hello!' : 'Sign Up'}} />
+          <NavButton
+            option={{
+              name:  user ? 'Hello!' : 'Sign Up',
+              color: user ? '#fa0'   : '#777',
+            }}
+          >
+            { user && userInfo }
+          </NavButton>
         </Link>
-        <Link to={user ? '/logout' : '/login'} onClick={ this.handleSession }>
+        <Link to={user ? '/' : '/login'} onClick={ this.handleSession }>
           <NavButton option={{ name: user ? 'Log Out' : 'Log In'}} />
         </Link>
       </Nav>

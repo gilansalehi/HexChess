@@ -33,6 +33,7 @@ class SignupForm extends Component {
       alert("Make sure your passwords match!");
       return false;
     }
+    this.props.history.push('/')
     this.props.signupRequest(credentials);
   }
 
@@ -89,7 +90,7 @@ class SignupForm extends Component {
         </form>
 
         <div className="join-block">
-          Already Signed Up?
+          Already Signed Up? 
           <Link to={'/'}>Home</Link>
         </div>
       </div>

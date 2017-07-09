@@ -16036,11 +16036,27 @@ var Nav = function (_Component) {
 
     var _this = _possibleConstructorReturn(this, (Nav.__proto__ || Object.getPrototypeOf(Nav)).call(this, props));
 
+    _this.state = {
+      showKids: false
+    };
+
+    _this.showKids = _this.showKids.bind(_this);
+    _this.hideKids = _this.hideKids.bind(_this);
     _this.handleClick = _this.handleClick.bind(_this);
     return _this;
   }
 
   _createClass(Nav, [{
+    key: 'showKids',
+    value: function showKids() {
+      this.setState({ showKids: true });
+    }
+  }, {
+    key: 'hideKids',
+    value: function hideKids() {
+      this.setState({ showKids: false });
+    }
+  }, {
     key: 'handleClick',
     value: function handleClick() {
       var handleClick = this.props.handleClick;
@@ -16051,16 +16067,27 @@ var Nav = function (_Component) {
     key: 'render',
     value: function render() {
       var option = this.props.option;
+      var showKids = this.state.showKids;
 
       var styler = { backgroundColor: option.color || '#777' };
       return _react2.default.createElement(
         'div',
-        { className: 'nav-button hover-hands', onClick: this.handleClick, style: styler },
+        { className: 'nav-button hover-hands',
+          onClick: this.handleClick,
+          style: styler,
+          onMouseEnter: this.showKids,
+          onMouseLeave: this.hideKids
+        },
         option.name,
         _react2.default.createElement(
           'div',
           { className: 'nav-button-value' },
           option.value
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'floaty', style: showKids && this.props.children ? styler : { display: 'none' } },
+          showKids && this.props.children
         )
       );
     }
@@ -23652,9 +23679,11 @@ var GamesIndex = function (_Component) {
     var _this = _possibleConstructorReturn(this, (GamesIndex.__proto__ || Object.getPrototypeOf(GamesIndex)).call(this, props));
 
     _this.state = {
-      active: true
+      filter: 'none'
     };
 
+    _this.applyFilter = _this.applyFilter.bind(_this);
+    _this.setFilter = _this.setFilter.bind(_this);
     _this.newGame = _this.newGame.bind(_this);
     _this.handleClick = _this.handleClick.bind(_this);
     return _this;
@@ -23664,6 +23693,24 @@ var GamesIndex = function (_Component) {
     key: 'componentDidMount',
     value: function componentDidMount() {
       this.props.fetchAllGames();
+    }
+  }, {
+    key: 'applyFilter',
+    value: function applyFilter() {
+      var games = this.props.games;
+      var filter = this.state.filter;
+
+      if (filter === 'none') {
+        return games;
+      }
+      return games.filter(function (g) {
+        return g.status === filter;
+      });
+    }
+  }, {
+    key: 'setFilter',
+    value: function setFilter(filter) {
+      this.setState({ filter: filter });
     }
   }, {
     key: 'newGame',
@@ -23701,15 +23748,53 @@ var GamesIndex = function (_Component) {
   }, {
     key: 'render',
     value: function render() {
+      var _this2 = this;
+
       var _props3 = this.props,
           user = _props3.user,
           games = _props3.games,
           fetchAllGames = _props3.fetchAllGames;
+      var filter = this.state.filter;
 
+
+      var filteredGames = this.applyFilter();
       return _react2.default.createElement(
         'div',
         { className: 'sixty-left' },
-        _react2.default.createElement(_gamesList2.default, { games: games,
+        _react2.default.createElement(
+          'h1',
+          { className: 'header' },
+          ' Games '
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'tab-list clearfix consolas' },
+          _react2.default.createElement(
+            'span',
+            { className: (filter === 'none' ? '' : 'in') + 'active tab',
+              onClick: function onClick(e) {
+                return _this2.setFilter('none');
+              } },
+            'All'
+          ),
+          _react2.default.createElement(
+            'span',
+            { className: (filter === 'seeking' ? '' : 'in') + 'active tab',
+              onClick: function onClick(e) {
+                return _this2.setFilter('seeking');
+              } },
+            'Seeking'
+          ),
+          _react2.default.createElement(
+            'span',
+            { className: (filter === 'in progress' ? '' : 'in') + 'active tab',
+              onClick: function onClick(e) {
+                return _this2.setFilter('in progress');
+              } },
+            'In Progress'
+          )
+        ),
+        _react2.default.createElement(_gamesList2.default, { games: filteredGames,
           newGame: this.newGame,
           refresh: fetchAllGames,
           handleClick: this.handleClick,
@@ -40496,6 +40581,14 @@ var App = function (_Component) {
           logoutRequest = _props.logoutRequest;
 
 
+      var userInfo = _react2.default.createElement(
+        'div',
+        null,
+        ' Logged in as: ',
+        user && user.name,
+        ' '
+      );
+
       return _react2.default.createElement(
         _appNav2.default,
         { options: [] },
@@ -40507,11 +40600,20 @@ var App = function (_Component) {
         _react2.default.createElement(
           _reactRouterDom.Link,
           { to: user ? '/profile' : '/signup' },
-          _react2.default.createElement(_navButton2.default, { option: { name: user ? 'Hello!' : 'Sign Up' } })
+          _react2.default.createElement(
+            _navButton2.default,
+            {
+              option: {
+                name: user ? 'Hello!' : 'Sign Up',
+                color: user ? '#fa0' : '#777'
+              }
+            },
+            user && userInfo
+          )
         ),
         _react2.default.createElement(
           _reactRouterDom.Link,
-          { to: user ? '/logout' : '/login', onClick: this.handleSession },
+          { to: user ? '/' : '/login', onClick: this.handleSession },
           _react2.default.createElement(_navButton2.default, { option: { name: user ? 'Log Out' : 'Log In' } })
         )
       );
@@ -41563,25 +41665,15 @@ var GamesList = function (_Component) {
         'div',
         { style: { color: 'white' } },
         _react2.default.createElement(
-          'h1',
-          null,
-          ' Games '
-        ),
-        _react2.default.createElement(
           'ul',
           { className: 'pseudo-table' },
           _react2.default.createElement(
             'li',
-            { key: 'header', className: 'tr', style: { backgroundColor: '#444', textAlign: 'center' } },
+            { key: 'header', className: 'tr consolas', style: { backgroundColor: '#444' } },
             _react2.default.createElement(
               'span',
               { className: 'td' },
               'Creator'
-            ),
-            _react2.default.createElement(
-              'span',
-              { className: 'td' },
-              'Seeking'
             ),
             _react2.default.createElement(
               'span',
@@ -41681,17 +41773,12 @@ var GameLink = function (_Component) {
         _react2.default.createElement(
           'span',
           { className: 'td' },
-          p1_id && p2_id ? 'vs.' : status
-        ),
-        _react2.default.createElement(
-          'span',
-          { className: 'td' },
           challenger || '-'
         ),
         _react2.default.createElement(
           'span',
           { className: 'td' },
-          winner || 'in progress '
+          status
         ),
         _react2.default.createElement(
           'span',
@@ -43191,6 +43278,7 @@ var SignupForm = function (_Component) {
         alert("Make sure your passwords match!");
         return false;
       }
+      this.props.history.push('/');
       this.props.signupRequest(credentials);
     }
   }, {
