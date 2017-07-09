@@ -34,7 +34,7 @@ export const postWinner = (gameId, winner) => {
       url: '/games/' + gameId,
       dataType: 'json',
       contentType: 'application/json',
-      data: JSON.stringify({ game: { winner: winner } }),
+      data: JSON.stringify({ game: { winner: winner, status: 'finished' } }),
       success: function(json) {
         dispatch({ type: 'POST_WINNER_SUCCESS', payload: json });
       },
