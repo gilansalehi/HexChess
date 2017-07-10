@@ -23693,6 +23693,7 @@ var GamesIndex = function (_Component) {
     key: 'componentDidMount',
     value: function componentDidMount() {
       this.props.fetchAllGames();
+      // ActionCable is straight up bugged in Rails 5.  Can't use websockets until a fix is available.
     }
   }, {
     key: 'applyFilter',
@@ -23819,7 +23820,8 @@ function mapDispatchToProps(dispatch) {
     fetchAllGames: _startup.fetchAllGames,
     postNewGame: _gameIndex.postNewGame,
     joinGame: _gameIndex.joinGame,
-    observeGame: _gameIndex.observeGame
+    observeGame: _gameIndex.observeGame,
+    updateReceived: _gameIndex.updateReceived
     // actionName: action imported from ./actions
   }, dispatch);
 }
@@ -23921,7 +23923,7 @@ var Game = function (_Component) {
       this.props.fetchGameStateData(this.gameId);
 
       this.continuallyFetchGameState = function () {
-        if (_this2.props.currentPlayer !== _this2.props.player.player) {
+        if (_this2.props.currentPlayer !== _this2.props.player.player && !_this2.props.game.winner) {
           _this2.fetchGameState(_this2.gameId);
         }
         window.setTimeout(_this2.continuallyFetchGameState, 1000);
@@ -23943,7 +23945,7 @@ var Game = function (_Component) {
           player = _props.player;
 
       var id = this.gameId;
-      // double check that THIS player made the change
+
       if (nextPosition !== lastPosition && currentPlayer === player.player) {
         var gameState = {
           pieces: nextProps.pieces,
@@ -23964,12 +23966,13 @@ var Game = function (_Component) {
           postWinner = _props2.postWinner;
 
       var capture = destination.contents;
-      debugger;
+
       if (capture) {
         // a piece is captured
         if (capture.type === 'hero') {
           declareWinner(player.player);
           postWinner(this.gameId, player.player);
+          this.props.updateInfo({ text: 'Congratulations, you win!' });
         }
         if (capture.type === 'node') {
           var nodeCount = pieces.filter(function (p) {
@@ -23978,6 +23981,7 @@ var Game = function (_Component) {
           if (nodeCount >= 2) {
             declareWinner(player.player);
             postWinner(this.gameId, player.player);
+            this.props.updateInfo({ text: 'Congratulations, you win!' });
           }
         }
       }
@@ -24056,11 +24060,9 @@ var Game = function (_Component) {
           } else {
             this.props.movePiece(selection, hex);
             this.checkForWin(hex);
-            // check for game winning states?
           }
           // THEN HANDLE TURN LOGIC:
           this.props.incrementActions();
-          // this.checkForWin(selection, hex);
           if (parseInt(player.actions) >= 1) {
             this.props.passTurn();
             this.props.readyAllPieces();
@@ -24183,7 +24185,6 @@ var Game = function (_Component) {
       return _react2.default.createElement(
         'div',
         { className: 'game' },
-        _react2.default.createElement(_bannerMessage2.default, { pieces: pieces }),
         _react2.default.createElement(
           _gameNav2.default,
           {
@@ -24350,7 +24351,7 @@ var Player = function (_Component) {
   }, {
     key: 'showReserve',
     value: function showReserve() {
-      this.setState({ reserve: 'shown' });console.log('playerclicked!');
+      this.setState({ reserve: 'shown' });
     }
   }, {
     key: 'render',
@@ -39927,7 +39928,8 @@ exports.default = function () {
       return state;
       break;
     case 'UPDATE_RECEIVED':
-      return action.payload;
+      debugger;
+      return [].concat(_toConsumableArray(state), [action.payload]);
       break;
   }
   return state;
@@ -40002,11 +40004,9 @@ var winner = function winner() {
       return action.payload;
       break;
     case 'POST_WINNER_SUCCESS':
-      debugger;
       return action.payload.winner;
       break;
     case 'FETCH_GAME_STATE_SUCCESS':
-      debugger;
       return action.payload.winner;
       break;
   }
@@ -40405,24 +40405,20 @@ exports.default = function () {
     case 'CLEAR_INFO':
       return defaultSelection;
       break;
+    case 'FETCH_GAME_STATE_SUCCESS':
+      var winner = action.payload.winner;
+
+      return winner ? { image: null, text: winner + ' has won!' } : state;
+      break;
   }
   return state;
 };
 
-// const WELCOME_MESSAGE = '''
-// Hello, and welcome to HexChess!  Here's a quick primer on the rules:
-//
-// Object: WIN THE GAME by capturing the enemy HERO or three enemy power NODES.
-//
-// Each turn, you may perform TWO actions.  You can either DEPLOY a piece from your RESERVE, or you may MOVE a piece on the board (note: you cannot move the same piece twice, nor may you move a piece the same turn you deploy it).
-//
-// Movement: There are six different types of pieces in Hex Chess: HERO, QUEEN, BISHOP, ROOK, PAWN, and NODE, and each one moves in a different way (power nodes cannot move).
-//
-// Deployment: You can see what pieces are in your Reserve by clicking the Res button at the bottom of the left panel.  You will see a list that displays the six different types of pieces
-// ''';
+var WELCOME_MESSAGE = ["Hello, and welcome to HexChess!  Here's a quick primer on the rules:", "\n", "Object: WIN THE GAME by capturing the enemy HERO or three enemy power NODES.", "\n", "Each turn, you may perform TWO actions.  You can either DEPLOY a piece from", "your RESERVE, or you may MOVE a piece on the board (note: you cannot move the", " same piece twice, nor may you move a piece the same turn you deploy it).", "\n", "Movement: There are six different types of pieces in Hex Chess: ", "HERO, QUEEN, BISHOP, ROOK, PAWN, and NODE, and each one moves in a different", " way (power nodes cannot move).  Select a piece to see its legal moves.", "\n", "Deployment: You can see what pieces are in your Reserve by clicking the Res", " button at the bottom of the left panel.  You will see a list that displays", " the six different types of pieces.  In order to deploy a piece, you must ", "have enough ENERGY to deploy it.  Build up your energy by deploying POWER NODES", " (which cost 0 energy).", "\n", "Good luck!"].join('');
+
 var defaultInfo = {
   image: null,
-  text: null
+  text: WELCOME_MESSAGE
 };
 
 /***/ }),
@@ -40479,7 +40475,6 @@ exports.default = function () {
   var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
   var action = arguments[1];
 
-  console.log(state);
   switch (action.type) {
     case 'LOGIN_REQUEST_PENDING':
       return state;
@@ -41908,7 +41903,7 @@ var fetchGamesError = function fetchGamesError() {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.observeGame = exports.joinGame = exports.postNewGame = undefined;
+exports.updateReceived = exports.observeGame = exports.joinGame = exports.postNewGame = undefined;
 
 var _jquery = __webpack_require__(34);
 
@@ -42008,6 +42003,13 @@ var observeGame = exports.observeGame = function observeGame(gameId) {
         dispatch({ type: 'OBSERVE_GAME_SUCCESS', payload: msg });
       }
     });
+  };
+};
+
+var updateReceived = exports.updateReceived = function updateReceived(data) {
+  return {
+    type: 'UPDATE_RECEIVED',
+    payload: data
   };
 };
 
@@ -42597,6 +42599,8 @@ var InfoPanel = function (_Component) {
     var _this = _possibleConstructorReturn(this, (InfoPanel.__proto__ || Object.getPrototypeOf(InfoPanel)).call(this, props));
 
     _this.styles = styles();
+    _this.buildImage = _this.buildImage.bind(_this);
+    _this.buildText = _this.buildText.bind(_this);
     return _this;
   }
 
@@ -42607,6 +42611,20 @@ var InfoPanel = function (_Component) {
       var image = this.styles.image;
 
       return _react2.default.createElement('img', { src: info.image, style: image, width: '100%', height: 'auto' });
+    }
+  }, {
+    key: 'buildText',
+    value: function buildText(text) {
+      if (!text) {
+        return false;
+      }
+      return text.split('\n').map(function (t) {
+        return _react2.default.createElement(
+          'p',
+          null,
+          t
+        );
+      });
     }
   }, {
     key: 'render',
@@ -42622,6 +42640,7 @@ var InfoPanel = function (_Component) {
           container = _styles.container,
           flexPositioner = _styles.flexPositioner;
 
+      var displayText = this.buildText(info.text);
       return _react2.default.createElement(
         'div',
         { className: 'info-panel', style: container },
@@ -42629,19 +42648,9 @@ var InfoPanel = function (_Component) {
           'div',
           { style: flexPositioner },
           _react2.default.createElement(
-            'span',
-            null,
-            'Active Player: ',
-            currentPlayer === 'P1' ? 'Blue' : 'Red',
-            ' - Remaining Energy: ',
-            remainingEnergy,
-            ' - Remaining Actions: ',
-            remainingActions
-          ),
-          _react2.default.createElement(
             'div',
             { style: text },
-            info.text || "INFO PANEL"
+            displayText || "INFO PANEL"
           )
         )
       );
@@ -42665,7 +42674,7 @@ function styles() {
     height: '100%'
   };
   var text = {
-    display: 'flex',
+    display: 'block',
     position: 'relative',
     backgroundColor: '#999',
     padding: '5px',
@@ -42808,16 +42817,7 @@ exports.default = BannerMessage;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var selectUser = exports.selectUser = function selectUser(user) {
-  console.log("You clicked on user: ", user.first);
-  return {
-    type: 'USER_SELECTED',
-    payload: user
-  };
-};
-
 var clickHex = exports.clickHex = function clickHex(hex) {
-  console.log('Hex ' + hex.pos + ' was clicked');
   return {
     type: 'HEX_CLICKED',
     payload: hex
@@ -42981,7 +42981,7 @@ var postWinner = exports.postWinner = function postWinner(gameId, winner) {
       url: '/games/' + gameId,
       dataType: 'json',
       contentType: 'application/json',
-      data: JSON.stringify({ game: { winner: winner } }),
+      data: JSON.stringify({ game: { winner: winner, status: 'finished' } }),
       success: function success(json) {
         dispatch({ type: 'POST_WINNER_SUCCESS', payload: json });
       },

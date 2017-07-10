@@ -32,11 +32,9 @@ const winner = (state = defaultWinner, action) => {
       return action.payload;
       break;
     case 'POST_WINNER_SUCCESS':
-      debugger;
       return action.payload.winner;
       break;
     case 'FETCH_GAME_STATE_SUCCESS':
-      debugger;
       return action.payload.winner;
       break;
   }

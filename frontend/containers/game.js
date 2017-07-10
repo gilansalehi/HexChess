@@ -69,7 +69,7 @@ class Game extends Component {
     const nextPosition = nextProps.pieces;
     const { currentPlayer, player } = this.props;
     const id = this.gameId;
-    // double check that THIS player made the change
+
     if ( nextPosition !== lastPosition && currentPlayer === player.player ) {
       const gameState = {
         pieces: nextProps.pieces,
@@ -84,11 +84,12 @@ class Game extends Component {
   checkForWin(destination) {
     const { pieces, player, declareWinner, postWinner } = this.props;
     const capture = destination.contents;
-    debugger;
+
     if ( capture ) { // a piece is captured
       if ( capture.type === 'hero' ) {
         declareWinner(player.player);
         postWinner(this.gameId, player.player)
+        this.props.updateInfo({ text: 'Congratulations, you win!' });
       }
       if ( capture.type === 'node' ) {
         const nodeCount = pieces.filter(p => {
@@ -97,6 +98,7 @@ class Game extends Component {
         if (nodeCount >= 2) {
           declareWinner(player.player);
           postWinner(this.gameId, player.player);
+          this.props.updateInfo({ text: 'Congratulations, you win!' });
         }
       }
     }
@@ -150,12 +152,10 @@ class Game extends Component {
           this.hideReserve();
         } else {
           this.props.movePiece(selection, hex);
-          this.checkForWin(hex)
-          // check for game winning states?
+          this.checkForWin(hex);
         }
         // THEN HANDLE TURN LOGIC:
         this.props.incrementActions();
-        // this.checkForWin(selection, hex);
         if ( parseInt(player.actions) >= 1 ) {
           this.props.passTurn();
           this.props.readyAllPieces();
@@ -242,7 +242,6 @@ class Game extends Component {
 
     return (
       <div className="game">
-        <BannerMessage pieces={pieces} />
         <Nav
           options={[
             { name: 'fetch', handleClick: () => { this.fetchGameState() } },

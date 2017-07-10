@@ -18,24 +18,27 @@ class Game < ApplicationRecord
     users.where(['player = false'])
   end
 
-  # def creator=(user)
-  #   # Raise "You cannot change that" if self.creator
-  #   super unless self.creator
-  # end
-  #
-  # def p1_id=(user_id)
-  #   # can't change id of user once game has begun
-  #   super unless self.p1_id
-  # end
-  #
-  # def p2_id=(user_id)
-  #   # can't change id of user once game has begun
-  #   byebug
-  #   super unless self.p2_id
-  # end
-  #
-  # def winner=(user)
-  #   super unless self.winner
-  # end
+  def creator=(user)
+    # Raise "You cannot change that" if self.creator
+    super unless self.creator
+  end
+
+  def p1_id=(user_id)
+    # can't change id of user once game has begun
+    super unless self.p1_id
+  end
+
+  def p2_id=(user_id)
+    # can't change id of user once game has begun
+    super unless self.p2_id
+  end
+
+  def winner=(user)
+    super unless self.winner
+  end
+
+  def status=(string)
+    super unless self.status == "finished"
+  end
 
 end

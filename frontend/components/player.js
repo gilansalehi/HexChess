@@ -26,7 +26,7 @@ export default class Player extends Component {
   }
 
   hideReserve() { this.setState({ reserve: 'hidden' }); }
-  showReserve() { this.setState({ reserve: 'shown' }); console.log('playerclicked!')}
+  showReserve() { this.setState({ reserve: 'shown' }); }
 
   render() {
     // render the player as if he's a piece in bottom left corner.  Give him a

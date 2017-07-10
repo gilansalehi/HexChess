@@ -21,7 +21,8 @@ export default function (state = initialState, action) {
       return state;
       break;
     case 'UPDATE_RECEIVED':
-      return action.payload;
+      debugger;
+      return [...state, action.payload];
       break;
   }
   return state;

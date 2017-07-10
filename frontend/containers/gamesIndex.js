@@ -11,6 +11,7 @@ import {
   postNewGame,
   joinGame,
   observeGame,
+  updateReceived,
 } from '../actions/gameIndex';
 
 class GamesIndex extends Component {
@@ -29,6 +30,7 @@ class GamesIndex extends Component {
 
   componentDidMount() {
     this.props.fetchAllGames();
+    // ActionCable is straight up bugged in Rails 5.  Can't use websockets until a fix is available.
   }
 
   applyFilter() {
@@ -103,6 +105,7 @@ function mapDispatchToProps(dispatch) {
     postNewGame: postNewGame,
     joinGame: joinGame,
     observeGame: observeGame,
+    updateReceived: updateReceived,
     // actionName: action imported from ./actions
   }, dispatch);
 }
