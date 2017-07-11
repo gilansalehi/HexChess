@@ -24188,9 +24188,7 @@ var Game = function (_Component) {
         _react2.default.createElement(
           _gameNav2.default,
           {
-            options: [{ name: 'fetch', handleClick: function handleClick() {
-                _this3.fetchGameState();
-              } }, {
+            options: [{
               name: 'Action',
               value: 2 - player.actions,
               handleClick: function handleClick() {
@@ -40104,12 +40102,15 @@ exports.default = function () {
       break;
     case 'FETCH_GAME_STATE_SUCCESS':
       var position = action.payload.position;
-      // separate position into player and pieces...
 
       var _JSON$parse = JSON.parse(position),
           pieces = _JSON$parse.pieces,
           currentPlayer = _JSON$parse.currentPlayer;
 
+      debugger;
+      if (state.player !== currentPlayer) {
+        return pieces;
+      }
       return pieces || state;
       break;
     case 'JOIN_GAME_SUCCESS':
@@ -43006,7 +43007,7 @@ Object.defineProperty(exports, "__esModule", {
 var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
 
 var fetchGameStateData = exports.fetchGameStateData = function fetchGameStateData(gameId) {
-  return function (dispatch) {
+  return function (dispatch, getState) {
     dispatch(fetchGameStateRequest());
     return fetchGameState(gameId).then(function (_ref) {
       var _ref2 = _slicedToArray(_ref, 2),
@@ -43014,6 +43015,8 @@ var fetchGameStateData = exports.fetchGameStateData = function fetchGameStateDat
           json = _ref2[1];
 
       if (response.status === 200) {
+        var state = getState();
+        debugger;
         dispatch(fetchGameStateSuccess(json));
       } else {
         dispatch(fetchGameStateError(json));

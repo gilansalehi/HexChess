@@ -61,7 +61,6 @@ export default function (state = initialState, action) {
       break;
     case 'FETCH_GAME_STATE_SUCCESS':
       const { position } = action.payload;
-      // separate position into player and pieces...
       const { pieces, currentPlayer } = JSON.parse(position)
       return pieces || state;
       break;

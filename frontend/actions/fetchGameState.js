@@ -1,9 +1,13 @@
 export const fetchGameStateData = (gameId) => {
-  return (dispatch) => {
+  return (dispatch, getState) => {
     dispatch(fetchGameStateRequest());
     return fetchGameState(gameId).then(([response, json]) => {
       if (response.status === 200) {
-        dispatch(fetchGameStateSuccess(json))
+        const { currentPlayer, thisPlayer } = getState().game;
+        if (currentPlayer !== thisPlayer) {
+          // only dispatch an action if it's not our turn yet, because of asynchronicity
+          dispatch(fetchGameStateSuccess(json));
+        }
       } else {
         dispatch(fetchGameStateError(json))
       }

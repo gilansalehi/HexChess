@@ -21,7 +21,7 @@ export default function (state = initialState, action) {
       return state;
       break;
     case 'UPDATE_RECEIVED':
-      debugger;
+      // for when websockets is working
       return [...state, action.payload];
       break;
   }

@@ -41,9 +41,22 @@ const winner = (state = defaultWinner, action) => {
   return state;
 }
 
+const thisPlayer = (state = defaultPlayer, action) => {
+  switch (action.type) {
+    case 'JOIN_GAME_SUCCESS':
+      return action.payload.player;
+      break;
+    case 'OBSERVE_GAME_SUCCESS':
+      return 'observer'
+      break;
+  }
+  return state;
+}
+
 const allReducers = combineReducers({
   selection: SelectionReducer,
   player: PlayerReducer,
+  thisPlayer: thisPlayer,
   position: PositionReducer,
   currentPlayer: currentPlayer,
   winner: winner,

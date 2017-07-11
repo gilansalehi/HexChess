@@ -244,7 +244,6 @@ class Game extends Component {
       <div className="game">
         <Nav
           options={[
-            { name: 'fetch', handleClick: () => { this.fetchGameState() } },
             {
               name: 'Action',
               value: (2 - player.actions),
@@ -300,6 +299,7 @@ function mapStateToProps(state) {
     currentPlayer: game.currentPlayer,
     moveCount: game.moveCount,
     player: game.player,
+    thisPlayer: game.thisPlayer,
     pieces: game.position,
     currentUser: state.user,
   };
