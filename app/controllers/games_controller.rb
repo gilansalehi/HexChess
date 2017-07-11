@@ -33,7 +33,7 @@ class GamesController < ApplicationController
   end
 
   def index
-    @games = Game.where.not({ status: 'finished' })
+    @games = Game.where({ status: ["seeking", "in progress"] }).where("updated_at >= ?", 1.hour.ago)
     render :index
   end
 
