@@ -1,13 +1,4 @@
-export const selectUser = (user) => {
-    console.log("You clicked on user: ", user.first);
-    return {
-        type: 'USER_SELECTED',
-        payload: user
-    }
-};
-
 export const clickHex = (hex) => {
-  console.log(`Hex ${hex.pos} was clicked`);
   return {
     type: 'HEX_CLICKED',
     payload: hex,
@@ -105,5 +96,12 @@ export const updateInfo = (obj) => {
   return {
     type: 'UPDATE_INFO',
     payload: obj,
+  };
+}
+
+export const declareWinner = (winner) => {
+  return {
+    type: 'GAME_OVER',
+    payload: winner,
   };
 }

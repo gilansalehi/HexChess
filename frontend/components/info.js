@@ -6,6 +6,8 @@ export default class InfoPanel extends Component {
     super(props)
 
     this.styles = styles();
+    this.buildImage = this.buildImage.bind(this);
+    this.buildText = this.buildText.bind(this);
   }
 
   buildImage() {
@@ -16,19 +18,22 @@ export default class InfoPanel extends Component {
     )
   }
 
+  buildText(text) {
+    if (!text) { return false }
+    return text.split('\n').map(t => {
+      return (<p>{t}</p>);
+    });
+  }
+
   render() {
     const { info, currentPlayer, remainingEnergy, remainingActions } = this.props;
     const { image, text, container, flexPositioner } = this.styles;
+    const displayText = this.buildText(info.text);
     return (
       <div className='info-panel' style={ container }>
         <div style={ flexPositioner }>
-          <span>
-            Active Player: { currentPlayer === 'P1' ? 'Blue' : 'Red' } -
-            Remaining Energy: { remainingEnergy } -
-            Remaining Actions: { remainingActions }
-          </span>
           <div style={ text }>
-            { info.text || "INFO PANEL"}
+            { displayText || "INFO PANEL" }
           </div>
         </div>
       </div>
@@ -47,7 +52,7 @@ function styles() {
     height: '100%',
   };
   const text = {
-    display: 'flex',
+    display: 'block',
     position: 'relative',
     backgroundColor: '#999',
     padding: '5px',

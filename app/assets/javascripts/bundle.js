@@ -16036,11 +16036,27 @@ var Nav = function (_Component) {
 
     var _this = _possibleConstructorReturn(this, (Nav.__proto__ || Object.getPrototypeOf(Nav)).call(this, props));
 
+    _this.state = {
+      showKids: false
+    };
+
+    _this.showKids = _this.showKids.bind(_this);
+    _this.hideKids = _this.hideKids.bind(_this);
     _this.handleClick = _this.handleClick.bind(_this);
     return _this;
   }
 
   _createClass(Nav, [{
+    key: 'showKids',
+    value: function showKids() {
+      this.setState({ showKids: true });
+    }
+  }, {
+    key: 'hideKids',
+    value: function hideKids() {
+      this.setState({ showKids: false });
+    }
+  }, {
     key: 'handleClick',
     value: function handleClick() {
       var handleClick = this.props.handleClick;
@@ -16051,16 +16067,27 @@ var Nav = function (_Component) {
     key: 'render',
     value: function render() {
       var option = this.props.option;
+      var showKids = this.state.showKids;
 
       var styler = { backgroundColor: option.color || '#777' };
       return _react2.default.createElement(
         'div',
-        { className: 'nav-button hover-hands', onClick: this.handleClick, style: styler },
+        { className: 'nav-button hover-hands',
+          onClick: this.handleClick,
+          style: styler,
+          onMouseEnter: this.showKids,
+          onMouseLeave: this.hideKids
+        },
         option.name,
         _react2.default.createElement(
           'div',
           { className: 'nav-button-value' },
           option.value
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'floaty', style: showKids && this.props.children ? styler : { display: 'none' } },
+          showKids && this.props.children
         )
       );
     }
@@ -23652,9 +23679,11 @@ var GamesIndex = function (_Component) {
     var _this = _possibleConstructorReturn(this, (GamesIndex.__proto__ || Object.getPrototypeOf(GamesIndex)).call(this, props));
 
     _this.state = {
-      active: true
+      filter: 'none'
     };
 
+    _this.applyFilter = _this.applyFilter.bind(_this);
+    _this.setFilter = _this.setFilter.bind(_this);
     _this.newGame = _this.newGame.bind(_this);
     _this.handleClick = _this.handleClick.bind(_this);
     return _this;
@@ -23664,6 +23693,25 @@ var GamesIndex = function (_Component) {
     key: 'componentDidMount',
     value: function componentDidMount() {
       this.props.fetchAllGames();
+      // ActionCable is straight up bugged in Rails 5.  Can't use websockets until a fix is available.
+    }
+  }, {
+    key: 'applyFilter',
+    value: function applyFilter() {
+      var games = this.props.games;
+      var filter = this.state.filter;
+
+      if (filter === 'none') {
+        return games;
+      }
+      return games.filter(function (g) {
+        return g.status === filter;
+      });
+    }
+  }, {
+    key: 'setFilter',
+    value: function setFilter(filter) {
+      this.setState({ filter: filter });
     }
   }, {
     key: 'newGame',
@@ -23701,15 +23749,53 @@ var GamesIndex = function (_Component) {
   }, {
     key: 'render',
     value: function render() {
+      var _this2 = this;
+
       var _props3 = this.props,
           user = _props3.user,
           games = _props3.games,
           fetchAllGames = _props3.fetchAllGames;
+      var filter = this.state.filter;
 
+
+      var filteredGames = this.applyFilter();
       return _react2.default.createElement(
         'div',
         { className: 'sixty-left' },
-        _react2.default.createElement(_gamesList2.default, { games: games,
+        _react2.default.createElement(
+          'h1',
+          { className: 'header' },
+          ' Games '
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'tab-list clearfix consolas' },
+          _react2.default.createElement(
+            'span',
+            { className: (filter === 'none' ? '' : 'in') + 'active tab',
+              onClick: function onClick(e) {
+                return _this2.setFilter('none');
+              } },
+            'All'
+          ),
+          _react2.default.createElement(
+            'span',
+            { className: (filter === 'seeking' ? '' : 'in') + 'active tab',
+              onClick: function onClick(e) {
+                return _this2.setFilter('seeking');
+              } },
+            'Seeking'
+          ),
+          _react2.default.createElement(
+            'span',
+            { className: (filter === 'in progress' ? '' : 'in') + 'active tab',
+              onClick: function onClick(e) {
+                return _this2.setFilter('in progress');
+              } },
+            'In Progress'
+          )
+        ),
+        _react2.default.createElement(_gamesList2.default, { games: filteredGames,
           newGame: this.newGame,
           refresh: fetchAllGames,
           handleClick: this.handleClick,
@@ -23734,7 +23820,8 @@ function mapDispatchToProps(dispatch) {
     fetchAllGames: _startup.fetchAllGames,
     postNewGame: _gameIndex.postNewGame,
     joinGame: _gameIndex.joinGame,
-    observeGame: _gameIndex.observeGame
+    observeGame: _gameIndex.observeGame,
+    updateReceived: _gameIndex.updateReceived
     // actionName: action imported from ./actions
   }, dispatch);
 }
@@ -23814,8 +23901,9 @@ var Game = function (_Component) {
 
     _this.gameOver = false;
 
-    _this.checkForWin = _this.checkForWin.bind(_this);
     _this.gameId = _this.props.match.params.id;
+
+    _this.checkForWin = _this.checkForWin.bind(_this);
     _this.getLegalMoves = _this.getLegalMoves.bind(_this);
     _this.getNodeCount = _this.getNodeCount.bind(_this);
     _this.handleClick = _this.handleClick.bind(_this);
@@ -23835,7 +23923,7 @@ var Game = function (_Component) {
       this.props.fetchGameStateData(this.gameId);
 
       this.continuallyFetchGameState = function () {
-        if (_this2.props.currentPlayer !== _this2.props.player.player) {
+        if (_this2.props.currentPlayer !== _this2.props.player.player && !_this2.props.game.winner) {
           _this2.fetchGameState(_this2.gameId);
         }
         window.setTimeout(_this2.continuallyFetchGameState, 1000);
@@ -23857,8 +23945,7 @@ var Game = function (_Component) {
           player = _props.player;
 
       var id = this.gameId;
-      // this.checkForWin(nextPosition);
-      // double check that THIS player made the change
+
       if (nextPosition !== lastPosition && currentPlayer === player.player) {
         var gameState = {
           pieces: nextProps.pieces,
@@ -23871,45 +23958,44 @@ var Game = function (_Component) {
     }
   }, {
     key: 'checkForWin',
-    value: function checkForWin(pieces) {
-      var prisoners = pieces.filter(function (p) {
-        return p.pos === 'prison';
-      });
-      var capturedHeroes = prisoners.filter(function (p) {
-        return p.type === 'hero';
-      });
-      var capturedNodes = prisoners.filter(function (p) {
-        return p.type === 'node';
-      });
-      var capturedBlueNodes = capturedNodes.filter(function (n) {
-        return n.player === 'P1';
-      });
-      var capturedRedNodes = capturedNodes.filter(function (n) {
-        return n.player === 'P2';
-      });
-      var winner = false;
-      var message = '';
-      if (capturedHeroes.length) {
-        winner = capturedHeroes[0].player === 'P2' ? 'Blue' : 'Red';
-        message = winner + ' wins by capturing the enemy hero!';
+    value: function checkForWin(destination) {
+      var _props2 = this.props,
+          pieces = _props2.pieces,
+          player = _props2.player,
+          declareWinner = _props2.declareWinner,
+          postWinner = _props2.postWinner;
+
+      var capture = destination.contents;
+
+      if (capture) {
+        // a piece is captured
+        if (capture.type === 'hero') {
+          declareWinner(player.player);
+          postWinner(this.gameId, player.player);
+          this.props.updateInfo({ text: 'Congratulations, you win!' });
+        }
+        if (capture.type === 'node') {
+          var nodeCount = pieces.filter(function (p) {
+            return p.type === 'node' && p.player === capture.player && p.pos === 'prison';
+          });
+          if (nodeCount >= 2) {
+            declareWinner(player.player);
+            postWinner(this.gameId, player.player);
+            this.props.updateInfo({ text: 'Congratulations, you win!' });
+          }
+        }
       }
-      if (capturedBlueNodes.length >= 3) {
-        winner = 'Red';
-        message = 'Red wins by capturing three enemy nodes!';
-      }
-      if (capturedRedNodes.length >= 3) {
-        winner = 'Blue';
-        message = 'Blue wins by capturing three enemy nodes!';
-      }
-      if (winner) {
-        this.gameOver = true;
-      }
-      return { winner: winner, message: message };
     }
   }, {
     key: 'fetchGameState',
     value: function fetchGameState() {
-      this.props.fetchGameStateData(this.gameId);
+      var _props3 = this.props,
+          game = _props3.game,
+          fetchGameStateData = _props3.fetchGameStateData;
+
+      if (!game.winner) {
+        fetchGameStateData(this.gameId);
+      }
     }
   }, {
     key: 'getChildContext',
@@ -23939,10 +24025,10 @@ var Game = function (_Component) {
       if (this.gameOver) {
         return false;
       }
-      var _props2 = this.props,
-          currentPlayer = _props2.currentPlayer,
-          selection = _props2.selection,
-          player = _props2.player;
+      var _props4 = this.props,
+          currentPlayer = _props4.currentPlayer,
+          selection = _props4.selection,
+          player = _props4.player;
 
 
       if (!selection) {
@@ -23973,11 +24059,10 @@ var Game = function (_Component) {
             this.hideReserve();
           } else {
             this.props.movePiece(selection, hex);
-            // check for game winning states?
+            this.checkForWin(hex);
           }
           // THEN HANDLE TURN LOGIC:
           this.props.incrementActions();
-          // this.checkForWin(selection, hex);
           if (parseInt(player.actions) >= 1) {
             this.props.passTurn();
             this.props.readyAllPieces();
@@ -23996,9 +24081,9 @@ var Game = function (_Component) {
   }, {
     key: 'isLegalMove',
     value: function isLegalMove(pos) {
-      var _props3 = this.props,
-          selection = _props3.selection,
-          player = _props3.player;
+      var _props5 = this.props,
+          selection = _props5.selection,
+          player = _props5.player;
 
       if (!selection) {
         return false;
@@ -24017,9 +24102,9 @@ var Game = function (_Component) {
     value: function getLegalMoves(piece) {
       // calculates a piece's legal moves from its type
       var legalMoves = [];
-      var _props4 = this.props,
-          player = _props4.player,
-          pieces = _props4.pieces;
+      var _props6 = this.props,
+          player = _props6.player,
+          pieces = _props6.pieces;
 
       var thisPlayer = piece.player;
       var moveFuncs = _utils.Util.moveFuncs,
@@ -24066,9 +24151,9 @@ var Game = function (_Component) {
   }, {
     key: 'enoughEnergy',
     value: function enoughEnergy(piece) {
-      var _props5 = this.props,
-          pieces = _props5.pieces,
-          player = _props5.player;
+      var _props7 = this.props,
+          pieces = _props7.pieces,
+          player = _props7.player;
 
       var energy = this.getNodeCount(player, pieces);
       var remainingEnergy = energy - player.energy;
@@ -24086,11 +24171,11 @@ var Game = function (_Component) {
     value: function render() {
       var _this3 = this;
 
-      var _props6 = this.props,
-          player = _props6.player,
-          selection = _props6.selection,
-          pieces = _props6.pieces,
-          currentPlayer = _props6.currentPlayer;
+      var _props8 = this.props,
+          player = _props8.player,
+          selection = _props8.selection,
+          pieces = _props8.pieces,
+          currentPlayer = _props8.currentPlayer;
 
       var legalMoves = selection ? this.getLegalMoves(selection.contents) : [];
       var info = this.buildInfoPanel();
@@ -24100,7 +24185,6 @@ var Game = function (_Component) {
       return _react2.default.createElement(
         'div',
         { className: 'game' },
-        _react2.default.createElement(_bannerMessage2.default, { pieces: pieces }),
         _react2.default.createElement(
           _gameNav2.default,
           {
@@ -24191,7 +24275,9 @@ function mapDispatchToProps(dispatch) {
     incrementActions: _gameActions.incrementActions,
     resetActions: _gameActions.resetActions,
     readyAllPieces: _gameActions.readyAllPieces,
-    toggleReserve: _gameActions.toggleReserve
+    toggleReserve: _gameActions.toggleReserve,
+    declareWinner: _gameActions.declareWinner,
+    postWinner: _postGameState.postWinner
   }, dispatch);
 }
 
@@ -24265,7 +24351,7 @@ var Player = function (_Component) {
   }, {
     key: 'showReserve',
     value: function showReserve() {
-      this.setState({ reserve: 'shown' });console.log('playerclicked!');
+      this.setState({ reserve: 'shown' });
     }
   }, {
     key: 'render',
@@ -39842,7 +39928,8 @@ exports.default = function () {
       return state;
       break;
     case 'UPDATE_RECEIVED':
-      return action.payload;
+      debugger;
+      return [].concat(_toConsumableArray(state), [action.payload]);
       break;
   }
   return state;
@@ -39907,11 +39994,31 @@ var currentPlayer = function currentPlayer() {
   return state;
 };
 
+var defaultWinner = null;
+var winner = function winner() {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : defaultWinner;
+  var action = arguments[1];
+
+  switch (action.type) {
+    case 'GAME_OVER':
+      return action.payload;
+      break;
+    case 'POST_WINNER_SUCCESS':
+      return action.payload.winner;
+      break;
+    case 'FETCH_GAME_STATE_SUCCESS':
+      return action.payload.winner;
+      break;
+  }
+  return state;
+};
+
 var allReducers = (0, _redux.combineReducers)({
   selection: _selection2.default,
   player: _player2.default,
   position: _pieces2.default,
-  currentPlayer: currentPlayer
+  currentPlayer: currentPlayer,
+  winner: winner
 });
 
 exports.default = allReducers;
@@ -40148,7 +40255,12 @@ var images = exports.images = {
 };
 
 var info = exports.info = {
-  hero: 'This is your hero.  He or she can move one hex in any direction, and deploy pieces to any adjacent hex.'
+  hero: 'This is your hero.  He or she can move one hex in any direction, and deploy pieces to any adjacent hex.  If your hero is captured, you lose the game!',
+  pawn: 'Pawns may move (but not capture!) one hex straight forward, and capture one hex diagonally forward',
+  bishop: 'Bishops may move and capture in an X shape',
+  rook: 'Rooks may move and capture in an inverted Y shape',
+  queen: 'Queens may move and capture in a straight line in any direction',
+  blueGem: 'This is a power node.  You will to deploy power nodes in order to build your energy and deploy your stronger pieces.  But be careful: if your opponent captures three of your power nodes, you will lose!'
 };
 
 /***/ }),
@@ -40293,24 +40405,20 @@ exports.default = function () {
     case 'CLEAR_INFO':
       return defaultSelection;
       break;
+    case 'FETCH_GAME_STATE_SUCCESS':
+      var winner = action.payload.winner;
+
+      return winner ? { image: null, text: winner + ' has won!' } : state;
+      break;
   }
   return state;
 };
 
-// const WELCOME_MESSAGE = '''
-// Hello, and welcome to HexChess!  Here's a quick primer on the rules:
-//
-// Object: WIN THE GAME by capturing the enemy HERO or three enemy power NODES.
-//
-// Each turn, you may perform TWO actions.  You can either DEPLOY a piece from your RESERVE, or you may MOVE a piece on the board (note: you cannot move the same piece twice, nor may you move a piece the same turn you deploy it).
-//
-// Movement: There are six different types of pieces in Hex Chess: HERO, QUEEN, BISHOP, ROOK, PAWN, and NODE, and each one moves in a different way (power nodes cannot move).
-//
-// Deployment: You can see what pieces are in your Reserve by clicking the Res button at the bottom of the left panel.  You will see a list that displays the six different types of pieces
-// ''';
+var WELCOME_MESSAGE = ["Hello, and welcome to HexChess!  Here's a quick primer on the rules:", "\n", "Object: WIN THE GAME by capturing the enemy HERO or three enemy power NODES.", "\n", "Each turn, you may perform TWO actions.  You can either DEPLOY a piece from ", "your RESERVE, or you may MOVE a piece on the board (note: you cannot move the", " same piece twice, nor may you move a piece the same turn you deploy it).", "\n", "Movement: There are six different types of pieces in Hex Chess: ", "HERO, QUEEN, BISHOP, ROOK, PAWN, and NODE, and each one moves in a different", " way (power nodes cannot move).  Select a piece to see its legal moves.", "\n", "Deployment: You can see what pieces are in your Reserve by clicking the Res", " button at the bottom of the left panel.  You will see a list that displays", " the six different types of pieces.  In order to deploy a piece, you must ", "have enough ENERGY to deploy it.  Build up your energy by deploying POWER NODES", " (which cost 0 energy).", "\n", "Good luck!"].join('');
+
 var defaultInfo = {
   image: null,
-  text: null
+  text: WELCOME_MESSAGE
 };
 
 /***/ }),
@@ -40367,7 +40475,6 @@ exports.default = function () {
   var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
   var action = arguments[1];
 
-  console.log(state);
   switch (action.type) {
     case 'LOGIN_REQUEST_PENDING':
       return state;
@@ -40496,6 +40603,14 @@ var App = function (_Component) {
           logoutRequest = _props.logoutRequest;
 
 
+      var userInfo = _react2.default.createElement(
+        'div',
+        null,
+        ' Logged in as: ',
+        user && user.name,
+        ' '
+      );
+
       return _react2.default.createElement(
         _appNav2.default,
         { options: [] },
@@ -40507,11 +40622,20 @@ var App = function (_Component) {
         _react2.default.createElement(
           _reactRouterDom.Link,
           { to: user ? '/profile' : '/signup' },
-          _react2.default.createElement(_navButton2.default, { option: { name: user ? 'Hello!' : 'Sign Up' } })
+          _react2.default.createElement(
+            _navButton2.default,
+            {
+              option: {
+                name: user ? 'Hello!' : 'Sign Up',
+                color: user ? '#fa0' : '#777'
+              }
+            },
+            user && userInfo
+          )
         ),
         _react2.default.createElement(
           _reactRouterDom.Link,
-          { to: user ? '/logout' : '/login', onClick: this.handleSession },
+          { to: user ? '/' : '/login', onClick: this.handleSession },
           _react2.default.createElement(_navButton2.default, { option: { name: user ? 'Log Out' : 'Log In' } })
         )
       );
@@ -41563,25 +41687,15 @@ var GamesList = function (_Component) {
         'div',
         { style: { color: 'white' } },
         _react2.default.createElement(
-          'h1',
-          null,
-          ' Games '
-        ),
-        _react2.default.createElement(
           'ul',
           { className: 'pseudo-table' },
           _react2.default.createElement(
             'li',
-            { key: 'header', className: 'tr', style: { backgroundColor: '#444', textAlign: 'center' } },
+            { key: 'header', className: 'tr consolas', style: { backgroundColor: '#444' } },
             _react2.default.createElement(
               'span',
               { className: 'td' },
               'Creator'
-            ),
-            _react2.default.createElement(
-              'span',
-              { className: 'td' },
-              'Seeking'
             ),
             _react2.default.createElement(
               'span',
@@ -41681,17 +41795,12 @@ var GameLink = function (_Component) {
         _react2.default.createElement(
           'span',
           { className: 'td' },
-          p1_id && p2_id ? 'vs.' : status
-        ),
-        _react2.default.createElement(
-          'span',
-          { className: 'td' },
           challenger || '-'
         ),
         _react2.default.createElement(
           'span',
           { className: 'td' },
-          winner || 'in progress '
+          status
         ),
         _react2.default.createElement(
           'span',
@@ -41794,7 +41903,7 @@ var fetchGamesError = function fetchGamesError() {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.observeGame = exports.joinGame = exports.postNewGame = undefined;
+exports.updateReceived = exports.observeGame = exports.joinGame = exports.postNewGame = undefined;
 
 var _jquery = __webpack_require__(34);
 
@@ -41894,6 +42003,13 @@ var observeGame = exports.observeGame = function observeGame(gameId) {
         dispatch({ type: 'OBSERVE_GAME_SUCCESS', payload: msg });
       }
     });
+  };
+};
+
+var updateReceived = exports.updateReceived = function updateReceived(data) {
+  return {
+    type: 'UPDATE_RECEIVED',
+    payload: data
   };
 };
 
@@ -42483,6 +42599,8 @@ var InfoPanel = function (_Component) {
     var _this = _possibleConstructorReturn(this, (InfoPanel.__proto__ || Object.getPrototypeOf(InfoPanel)).call(this, props));
 
     _this.styles = styles();
+    _this.buildImage = _this.buildImage.bind(_this);
+    _this.buildText = _this.buildText.bind(_this);
     return _this;
   }
 
@@ -42493,6 +42611,20 @@ var InfoPanel = function (_Component) {
       var image = this.styles.image;
 
       return _react2.default.createElement('img', { src: info.image, style: image, width: '100%', height: 'auto' });
+    }
+  }, {
+    key: 'buildText',
+    value: function buildText(text) {
+      if (!text) {
+        return false;
+      }
+      return text.split('\n').map(function (t) {
+        return _react2.default.createElement(
+          'p',
+          null,
+          t
+        );
+      });
     }
   }, {
     key: 'render',
@@ -42508,6 +42640,7 @@ var InfoPanel = function (_Component) {
           container = _styles.container,
           flexPositioner = _styles.flexPositioner;
 
+      var displayText = this.buildText(info.text);
       return _react2.default.createElement(
         'div',
         { className: 'info-panel', style: container },
@@ -42515,19 +42648,9 @@ var InfoPanel = function (_Component) {
           'div',
           { style: flexPositioner },
           _react2.default.createElement(
-            'span',
-            null,
-            'Active Player: ',
-            currentPlayer === 'P1' ? 'Blue' : 'Red',
-            ' - Remaining Energy: ',
-            remainingEnergy,
-            ' - Remaining Actions: ',
-            remainingActions
-          ),
-          _react2.default.createElement(
             'div',
             { style: text },
-            info.text || "INFO PANEL"
+            displayText || "INFO PANEL"
           )
         )
       );
@@ -42551,7 +42674,7 @@ function styles() {
     height: '100%'
   };
   var text = {
-    display: 'flex',
+    display: 'block',
     position: 'relative',
     backgroundColor: '#999',
     padding: '5px',
@@ -42694,16 +42817,7 @@ exports.default = BannerMessage;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-var selectUser = exports.selectUser = function selectUser(user) {
-  console.log("You clicked on user: ", user.first);
-  return {
-    type: 'USER_SELECTED',
-    payload: user
-  };
-};
-
 var clickHex = exports.clickHex = function clickHex(hex) {
-  console.log('Hex ' + hex.pos + ' was clicked');
   return {
     type: 'HEX_CLICKED',
     payload: hex
@@ -42804,6 +42918,13 @@ var updateInfo = exports.updateInfo = function updateInfo(obj) {
   };
 };
 
+var declareWinner = exports.declareWinner = function declareWinner(winner) {
+  return {
+    type: 'GAME_OVER',
+    payload: winner
+  };
+};
+
 /***/ }),
 /* 306 */
 /***/ (function(module, exports, __webpack_require__) {
@@ -42814,7 +42935,7 @@ var updateInfo = exports.updateInfo = function updateInfo(obj) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.postGameStateData = undefined;
+exports.postWinner = exports.postGameStateData = undefined;
 
 var _jquery = __webpack_require__(34);
 
@@ -42848,6 +42969,28 @@ function postGameState(gameId, gameState, dispatch) {
     }
   });
 }
+
+var postWinner = exports.postWinner = function postWinner(gameId, winner) {
+  return function (dispatch) {
+    dispatch({ type: 'POST_WINNER_PENDING' });
+    return _jquery2.default.ajax({
+      type: 'PUT',
+      beforeSend: function beforeSend(xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', (0, _jquery2.default)('meta[name="csrf-token"]').attr('content'));
+      },
+      url: '/games/' + gameId,
+      dataType: 'json',
+      contentType: 'application/json',
+      data: JSON.stringify({ game: { winner: winner, status: 'finished' } }),
+      success: function success(json) {
+        dispatch({ type: 'POST_WINNER_SUCCESS', payload: json });
+      },
+      error: function error(msg) {
+        dispatch({ type: 'POST_WINNER_ERROR', payload: msg });
+      }
+    });
+  };
+};
 
 /***/ }),
 /* 307 */
@@ -43191,6 +43334,7 @@ var SignupForm = function (_Component) {
         alert("Make sure your passwords match!");
         return false;
       }
+      this.props.history.push('/');
       this.props.signupRequest(credentials);
     }
   }, {

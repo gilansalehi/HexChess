@@ -33,7 +33,7 @@ class GamesController < ApplicationController
   end
 
   def index
-    @games = Game.all #.where({ status: 'seeking' })
+    @games = Game.where.not({ status: 'finished' })
     render :index
   end
 

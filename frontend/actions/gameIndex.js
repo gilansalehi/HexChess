@@ -88,3 +88,10 @@ export const observeGame = (gameId) => {
     });
   }
 }
+
+export const updateReceived = (data) => {
+  return {
+    type: 'UPDATE_RECEIVED',
+    payload: data,
+  };
+}

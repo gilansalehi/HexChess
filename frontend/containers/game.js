@@ -23,8 +23,9 @@ import {
   resetActions,
   passTurn,
   readyAllPieces,
+  declareWinner,
 } from '../actions/gameActions';
-import { postGameStateData } from '../actions/postGameState';
+import { postGameStateData, postWinner } from '../actions/postGameState';
 import { fetchGameStateData } from '../actions/fetchGameState';
 // import { fetchGameData, } from '../actions/startup';
 
@@ -34,8 +35,9 @@ class Game extends Component {
     super(props);
     this.gameOver = false;
 
-    this.checkForWin = this.checkForWin.bind(this);
     this.gameId = this.props.match.params.id;
+
+    this.checkForWin = this.checkForWin.bind(this);
     this.getLegalMoves = this.getLegalMoves.bind(this);
     this.getNodeCount = this.getNodeCount.bind(this);
     this.handleClick = this.handleClick.bind(this);
@@ -50,7 +52,7 @@ class Game extends Component {
     this.props.fetchGameStateData(this.gameId);
 
     this.continuallyFetchGameState = () => {
-      if ( this.props.currentPlayer !== this.props.player.player ) {
+      if ( this.props.currentPlayer !== this.props.player.player && !this.props.game.winner ) {
         this.fetchGameState(this.gameId);
       }
       window.setTimeout(this.continuallyFetchGameState, 1000);
@@ -67,8 +69,7 @@ class Game extends Component {
     const nextPosition = nextProps.pieces;
     const { currentPlayer, player } = this.props;
     const id = this.gameId;
-    // this.checkForWin(nextPosition);
-    // double check that THIS player made the change
+
     if ( nextPosition !== lastPosition && currentPlayer === player.player ) {
       const gameState = {
         pieces: nextProps.pieces,
@@ -80,32 +81,32 @@ class Game extends Component {
     }
   }
 
-  checkForWin(pieces) {
-    const prisoners = pieces.filter(p => p.pos === 'prison');
-    const capturedHeroes = prisoners.filter(p => p.type === 'hero');
-    const capturedNodes = prisoners.filter(p => p.type === 'node');
-    const capturedBlueNodes = capturedNodes.filter(n => n.player === 'P1');
-    const capturedRedNodes  = capturedNodes.filter(n => n.player === 'P2');
-    let winner = false;
-    let message = '';
-    if ( capturedHeroes.length ) {
-      winner = capturedHeroes[0].player === 'P2' ? 'Blue' : 'Red';
-      message = `${winner} wins by capturing the enemy hero!`;
+  checkForWin(destination) {
+    const { pieces, player, declareWinner, postWinner } = this.props;
+    const capture = destination.contents;
+
+    if ( capture ) { // a piece is captured
+      if ( capture.type === 'hero' ) {
+        declareWinner(player.player);
+        postWinner(this.gameId, player.player)
+        this.props.updateInfo({ text: 'Congratulations, you win!' });
+      }
+      if ( capture.type === 'node' ) {
+        const nodeCount = pieces.filter(p => {
+          return p.type === 'node' && p.player === capture.player && p.pos === 'prison';
+        });
+        if (nodeCount >= 2) {
+          declareWinner(player.player);
+          postWinner(this.gameId, player.player);
+          this.props.updateInfo({ text: 'Congratulations, you win!' });
+        }
+      }
     }
-    if ( capturedBlueNodes.length >= 3 ) {
-      winner = 'Red';
-      message = 'Red wins by capturing three enemy nodes!';
-    }
-    if ( capturedRedNodes.length >= 3 ) {
-      winner = 'Blue';
-      message = 'Blue wins by capturing three enemy nodes!';
-    }
-    if (winner) { this.gameOver = true; }
-    return { winner, message };
   }
 
   fetchGameState() {
-    this.props.fetchGameStateData(this.gameId);
+    const { game, fetchGameStateData } = this.props;
+    if ( !game.winner ) { fetchGameStateData(this.gameId); }
   }
 
   getChildContext() {
@@ -151,11 +152,10 @@ class Game extends Component {
           this.hideReserve();
         } else {
           this.props.movePiece(selection, hex);
-          // check for game winning states?
+          this.checkForWin(hex);
         }
         // THEN HANDLE TURN LOGIC:
         this.props.incrementActions();
-        // this.checkForWin(selection, hex);
         if ( parseInt(player.actions) >= 1 ) {
           this.props.passTurn();
           this.props.readyAllPieces();
@@ -242,7 +242,6 @@ class Game extends Component {
 
     return (
       <div className="game">
-        <BannerMessage pieces={pieces} />
         <Nav
           options={[
             { name: 'fetch', handleClick: () => { this.fetchGameState() } },
@@ -324,6 +323,8 @@ function mapDispatchToProps(dispatch) {
     resetActions: resetActions,
     readyAllPieces: readyAllPieces,
     toggleReserve: toggleReserve,
+    declareWinner: declareWinner,
+    postWinner: postWinner,
   }, dispatch);
 
 }
