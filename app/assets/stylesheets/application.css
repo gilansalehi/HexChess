@@ -151,6 +151,11 @@ form input {
   background: lightblue;
 }
 
+.game-link-buttons {
+  display: inline-block;
+  padding: 7px;
+}
+
 .pseudo-table {
 }
 
@@ -158,6 +163,13 @@ form input {
   font-weight: bold;
   text-align: center;
 }
+.sub-header {
+  display: flex;
+  justify-content: center;
+  padding: 5px;
+  font-family: Cambria Math, serif;
+}
+
 .td {
   display: inline-block;
   padding: 10px;

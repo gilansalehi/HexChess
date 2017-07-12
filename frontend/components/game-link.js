@@ -15,7 +15,7 @@ export default class GameLink extends Component {
 
     const user = this.context.getUser();
     const creatorButtons = (
-      <span className='pull-right'>
+      <span className='game-link-buttons'>
         <Button text={'×'}
           info={'cancel'}
           handleClick={ () => this.props.cancelSeek(id) }

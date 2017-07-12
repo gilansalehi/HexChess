@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
+import {Link} from 'react-router-dom';
 import GamesList from '../components/gamesList';
 import Rules from '../components/rules';
 
@@ -88,12 +89,27 @@ class GamesIndex extends Component {
   render() {
     const { user, games, fetchAllGames, cancelSeek } = this.props;
     const { filter } = this.state;
+    let info;
+    if (user) {
+      info = (
+        <span>
+          Click a game below to join, or observe a game already in progress.
+        </span>
+      );
+    } else {
+      info = (
+        <span>
+          Click a game below to spectate.  You must <Link to={'/login'}>log in</Link> to play.
+        </span>
+      );
+    }
 
     const filteredGames = this.applyFilter();
     return (
       <div className="sixty-left center-pane">
 
         <h1 className="header"> Games </h1>
+        <span className="sub-header">{ info }</span>
         <div className="tab-list clearfix consolas">
           <span className={`${filter === 'none' ? '' : 'in'}active tab`}
             onClick={e => this.setFilter('none')}>All</span>
