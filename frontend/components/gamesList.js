@@ -21,7 +21,7 @@ export default class GamesList extends Component {
 
   render() {
     const { games, newGame, refresh } = this.props;
-    const gamesList = this.mapGamesToList(games);
+    const gamesList = games.length ? this.mapGamesToList(games) : <span className='td-empty'>No one is playing at the moment</span>;
 
     return (
       <div style={{color: 'white' }}>

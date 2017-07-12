@@ -40,7 +40,7 @@ class SignupForm extends Component {
       alert("Make sure your passwords match!");
       return false;
     }
-    this.props.history.push('/')
+    this.props.history.push('/play')
     this.props.signupRequest(credentials);
   }
 

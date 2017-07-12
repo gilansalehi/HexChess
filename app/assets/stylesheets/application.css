@@ -199,10 +199,11 @@ form input {
   width: 100px;
   height: 100%;
 }
-.td-last {
+.td-empty {
   display: inline-block;
   padding: 10px;
-  width: 75px;
+  width: 100%;
+  text-align: center;
 }
 
 .tr {
@@ -214,7 +215,7 @@ form input {
 
 .nav {
   display: block;
-  position: absolute;
+  position: fixed;
   color: white;
   font-family: 'Consolas', sans-serif;
   background-color: #555;

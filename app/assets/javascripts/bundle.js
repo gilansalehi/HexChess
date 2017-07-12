@@ -23923,7 +23923,7 @@ var Rules = function (_Component) {
         { style: { fontFamily: "Cambria Math" }, className: 'sixty-left center-pane' },
         _react2.default.createElement(
           'h1',
-          null,
+          { className: 'header' },
           'The Rules of HexChess:'
         ),
         _react2.default.createElement(
@@ -23934,7 +23934,18 @@ var Rules = function (_Component) {
         _react2.default.createElement(
           'div',
           null,
-          'Capture the enemy hero or capture three enemy power nodes'
+          'Capture the enemy ',
+          _react2.default.createElement(
+            'strong',
+            null,
+            'hero'
+          ),
+          ' or capture three enemy ',
+          _react2.default.createElement(
+            'strong',
+            null,
+            'power nodes'
+          )
         ),
         _react2.default.createElement(
           'h3',
@@ -41990,7 +42001,11 @@ var GamesList = function (_Component) {
           newGame = _props2.newGame,
           refresh = _props2.refresh;
 
-      var gamesList = this.mapGamesToList(games);
+      var gamesList = games.length ? this.mapGamesToList(games) : _react2.default.createElement(
+        'span',
+        { className: 'td-empty' },
+        'No one is playing at the moment'
+      );
 
       return _react2.default.createElement(
         'div',
@@ -44093,7 +44108,7 @@ var Home = function (_Component) {
           ' are very simple, but the gameplay is incredibly deep and complex. Create a free ',
           _react2.default.createElement(
             _reactRouterDom.Link,
-            { to: '/signin', style: { textDecoration: 'underline' } },
+            { to: '/signup', style: { textDecoration: 'underline' } },
             'account'
           ),
           ', and challenge your friends to a game today!'

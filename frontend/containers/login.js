@@ -35,7 +35,7 @@ class LoginForm extends Component {
     e.preventDefault();
     const credentials = { user: this.state };
     this.props.loginRequest(credentials);
-    this.props.history.push('/');
+    this.props.history.push('/play');
   }
 
   updateUsername(e) {

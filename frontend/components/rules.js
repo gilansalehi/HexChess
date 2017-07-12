@@ -4,10 +4,11 @@ export default class Rules extends Component {
   render() {
     return (
       <div style={{fontFamily:"Cambria Math"}} className='sixty-left center-pane'>
-        <h1>The Rules of HexChess:</h1>
+        <h1 className='header'>The Rules</h1>
+        <p className='sub-header'>Learn to Play</p>
 
         <h3>How to Win:</h3>
-        <div>Capture the enemy hero or capture three enemy power nodes</div>
+        <div>Capture the enemy <strong>hero</strong> or capture three enemy <strong>power nodes</strong></div>
 
         <h3>Game Zones:</h3>
         <div>
