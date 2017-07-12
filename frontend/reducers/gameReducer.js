@@ -46,6 +46,9 @@ const thisPlayer = (state = defaultPlayer, action) => {
     case 'JOIN_GAME_SUCCESS':
       return action.payload.player;
       break;
+    case 'JOIN_GAME_ERROR':
+      return 'observer';
+      break;
     case 'OBSERVE_GAME_SUCCESS':
       return 'observer'
       break;

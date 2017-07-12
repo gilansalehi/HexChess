@@ -38,6 +38,9 @@ export default function (state = defaultInfo, action) {
       const { winner } = action.payload;
       return winner ? { image: null, text: winner + ' has won!' } : state;
       break;
+    case 'JOIN_GAME_ERROR':
+      return { image: null, text: 'ALERT: An error occurred joining this game. Please refresh and try again.' }
+      break;
   }
   return state;
 }

@@ -161,7 +161,7 @@ form input {
 .td {
   display: inline-block;
   padding: 10px;
-  width: 75px;
+  width: 100px;
   height: 100%;
 }
 .td-last {

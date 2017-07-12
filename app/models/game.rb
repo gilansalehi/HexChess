@@ -5,6 +5,7 @@ class Game < ApplicationRecord
   # has_and_belongs_to_many :observers, class_name: :users
 
   validates :creator_id, presence: true
+  validate :updateable
 
   def challenger
     User.find_by_id(p2_id)
@@ -38,8 +39,8 @@ class Game < ApplicationRecord
   end
 
   def status=(string)
-    raise "Game was abandoned" if self.status == "abandoned"
-    super unless self.status == "finished"
+    raise ArgumentError if self.status == 'abandoned'
+    super unless self.status == 'finished'
   end
 
   def data
@@ -54,5 +55,9 @@ class Game < ApplicationRecord
       p1_id:      self.p1_id,
       p2_id:      self.p2_id
     }
+  end
+
+  def updateable
+    status != 'abandoned'
   end
 end

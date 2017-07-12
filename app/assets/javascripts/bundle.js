@@ -39945,7 +39945,9 @@ exports.default = function () {
       return state;
       break;
     case 'POST_NEW_GAME_SUCCESS':
-      return [].concat(_toConsumableArray(state), [action.payload]);
+      return [].concat(_toConsumableArray(state.filter(function (g) {
+        return g.id !== action.payload.id;
+      })), [action.payload]);
       break;
     case 'POST_NEW_GAME_ERROR':
       return state;
@@ -39955,7 +39957,9 @@ exports.default = function () {
       return [].concat(_toConsumableArray(state), [action.payload]);
       break;
     case 'GAME_CREATED':
-      return [].concat(_toConsumableArray(state), [action.payload]);
+      return [].concat(_toConsumableArray(state.filter(function (g) {
+        return g.id !== action.payload.id;
+      })), [action.payload]);
       break;
     case 'GAME_DELETED':
       return state.filter(function (g) {
@@ -40056,6 +40060,9 @@ var thisPlayer = function thisPlayer() {
   switch (action.type) {
     case 'JOIN_GAME_SUCCESS':
       return action.payload.player;
+      break;
+    case 'JOIN_GAME_ERROR':
+      return 'observer';
       break;
     case 'OBSERVE_GAME_SUCCESS':
       return 'observer';
@@ -40460,6 +40467,10 @@ exports.default = function () {
       var winner = action.payload.winner;
 
       return winner ? { image: null, text: winner + ' has won!' } : state;
+      break;
+    case 'JOIN_GAME_ERROR':
+      debugger;
+      return { image: null, text: 'ALERT: An error occurred joining this game. Please refresh and try again.' };
       break;
   }
   return state;
@@ -41859,9 +41870,13 @@ var GameLink = function (_Component) {
       var creatorButtons = _react2.default.createElement(
         'span',
         { className: 'pull-right' },
-        _react2.default.createElement(_button2.default, { text: '×', handleClick: function handleClick() {
+        _react2.default.createElement(_button2.default, { text: '×',
+          info: 'cancel',
+          handleClick: function handleClick() {
             return _this2.props.cancelSeek(id);
-          }, size: 15 })
+          },
+          size: 15
+        })
       );
 
       return _react2.default.createElement(
@@ -41897,7 +41912,7 @@ var GameLink = function (_Component) {
             )
           )
         ),
-        user && user.id === p1_id && creatorButtons
+        user && user.id === p1_id && status === 'seeking' && creatorButtons
       );
     }
   }]);
@@ -42266,7 +42281,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var postNewGame = exports.postNewGame = function postNewGame(currentUser) {
   return function (dispatch) {
-    dispatch(postNewGameRequest());
+    dispatch({ type: "POST_NEW_GAME_REQUEST" });
     return postGame(currentUser, dispatch);
   };
 };
@@ -42332,7 +42347,8 @@ var joinGame = exports.joinGame = function joinGame(userData, gameId) {
         dispatch({ type: 'JOIN_GAME_SUCCESS', payload: json });
       },
       error: function error(msg) {
-        dispatch({ type: 'JOIN_GAME_SUCCESS', payload: msg });
+        debugger;
+        dispatch({ type: 'JOIN_GAME_ERROR', payload: msg });
       }
     });
   };

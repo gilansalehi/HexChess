@@ -2,7 +2,7 @@ import $ from 'jquery';
 
 export const postNewGame = (currentUser) => {
   return (dispatch) => {
-    dispatch(postNewGameRequest());
+    dispatch({ type: "POST_NEW_GAME_REQUEST" });
     return postGame(currentUser, dispatch)
   }
 }
@@ -64,7 +64,7 @@ export const joinGame = (userData, gameId) => {
         dispatch({ type: 'JOIN_GAME_SUCCESS', payload: json });
       },
       error: function(msg) {
-        dispatch({ type: 'JOIN_GAME_SUCCESS', payload: msg });
+        dispatch({ type: 'JOIN_GAME_ERROR', payload: msg });
       }
     });
   }

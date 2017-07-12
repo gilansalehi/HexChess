@@ -16,7 +16,11 @@ export default class GameLink extends Component {
     const user = this.context.getUser();
     const creatorButtons = (
       <span className='pull-right'>
-        <Button text={'×'} handleClick={ () => this.props.cancelSeek(id) } size={15} />
+        <Button text={'×'}
+          info={'cancel'}
+          handleClick={ () => this.props.cancelSeek(id) }
+          size={15}
+        />
       </span>
     );
 
@@ -30,7 +34,7 @@ export default class GameLink extends Component {
           <span className='td'>{ minutesAgo + ' mins' || '-'}</span>
         </Link>
         </span>
-        { user && user.id === p1_id && creatorButtons }
+        { user && user.id === p1_id && status === 'seeking' && creatorButtons }
       </div>
     );
   }

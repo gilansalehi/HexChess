@@ -15,7 +15,7 @@ export default function (state = initialState, action) {
       return state;
       break;
     case 'POST_NEW_GAME_SUCCESS':
-      return [...state, action.payload];
+      return [...state.filter(g => g.id !== action.payload.id), action.payload];
       break;
     case 'POST_NEW_GAME_ERROR':
       return state;
@@ -25,7 +25,7 @@ export default function (state = initialState, action) {
       return [...state, action.payload];
       break;
     case 'GAME_CREATED':
-      return [...state, action.payload];
+      return [...state.filter(g => g.id !== action.payload.id), action.payload];
       break;
     case 'GAME_DELETED':
       return state.filter(g => g.id !== action.payload.id);

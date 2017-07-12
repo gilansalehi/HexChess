@@ -29,10 +29,11 @@ class GamesController < ApplicationController
   def update
     @game = Game.find(params[:id])
 
-    if @game.update(game_params)
+    if @game.updateable
+      @game.update(game_params)
       render :show
     else
-      flash :errors
+      render :show, status: 422
     end
   end
 
@@ -44,7 +45,7 @@ class GamesController < ApplicationController
   def destroy
     # user is attempting to cancel a seek they've posted.
     @game = Game.find(params[:id])
-
+    # check if there is a challenger yet?
     if @game.update({ status: 'abandoned' })
       ActionCable.server.broadcast 'games',
         type: 'CANCEL_SEEK_SUCCESS',
