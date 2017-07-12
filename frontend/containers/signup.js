@@ -93,12 +93,12 @@ class SignupForm extends Component {
                  placeholder="Confirm your Password"></input>
           <br></br>
 
-          <Link to={"/profile"} className="submit button" type="submit" onClick={ this.submit }>Sign Up</Link>
+          <Link to={"/profile"} className="submit-button" type="submit" onClick={ this.submit }>Sign Up</Link>
         </form>
 
         <div className="join-block">
           Already Signed Up? &nbsp;
-          <Link to={'/'}>Home</Link>
+          <Link to={'/login'} style={{textDecoration:'underline'}}>Log In</Link>
         </div>
       </div>
     );

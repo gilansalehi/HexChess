@@ -39,7 +39,9 @@ class GamesIndex extends Component {
     if (typeof App !== 'undefined'){
       console.log(' setting up action cable on front end... ' )
       App.games = App.cable.subscriptions.create("GamesChannel", {
-        connected: function() {},
+        connected: function() {
+          console.log('successfully connected');
+        },
         disconnected: function() {},
         received: function(data) {
           self.props.createAction(data);
@@ -99,7 +101,7 @@ class GamesIndex extends Component {
     } else {
       info = (
         <span>
-          Click a game below to spectate.  You must <Link to={'/login'}>log in</Link> to play.
+          Click a game below to spectate.  You must <Link to={'/login'} style={{textDecoration:'underline'}}>log in</Link> to play.
         </span>
       );
     }

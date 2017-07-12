@@ -9,6 +9,8 @@ import NavButton from '../components/nav-button.js';
 import LoginForm from '../containers/login';
 import SignupForm from '../containers/signup';
 import Profile from '../containers/user';
+import Home from '../components/home';
+import Rules from '../components/rules';
 import {
   keydown
 } from '../actions/index.js';
@@ -50,11 +52,14 @@ class App extends Component {
         <Link to={'/'}>
           <NavButton option={{ name: 'Home' }} />
         </Link>
+        <Link to={'/play'} >
+          <NavButton option={{ name: 'Play' }} />
+        </Link>
         <Link to={user ? '/profile' : '/signup' }>
           <NavButton
             option={{
               name:  user ? 'Hello!' : 'Sign Up',
-              color: user ? '#fa0'   : '#777',
+              color: user ? 'cadetblue'   : '#777',
             }}
           >
             { user && userInfo }
@@ -78,7 +83,9 @@ class App extends Component {
         <div className="main group">
           { nav }
           <div className="routes">
-            <Route exact path={'/'} component={GamesIndex} />
+            <Route exact path={'/'} component={Home} />
+            <Route path={'/play'} component={GamesIndex} />
+            <Route path={'/rules'} component={Rules} />
             <Route path={'/login'} component={LoginForm} />
             <Route path={'/signup'} component={SignupForm} />
             <Route path={'/games/:id'} component={Game} />

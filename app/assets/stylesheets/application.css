@@ -85,6 +85,7 @@ form input {
   width: 240px;
   padding: 5px;
   border-radius: 3px;
+  border: 1px solid gray;
 }
 
 .button {
@@ -98,6 +99,21 @@ form input {
 }
 
 .button:hover {
+  background-color: lightblue;
+  color: #333;
+}
+
+.submit-button {
+  display: block;
+  padding: 5px;
+  margin: 20px auto;
+  width: 200px;
+  background-color: darkGray;
+  border-radius: 3px;
+  text-align: center;
+}
+
+.submit-button:hover {
   background-color: lightblue;
   color: #333;
 }
@@ -117,7 +133,6 @@ form input {
   font-weight: bold;
 }
 
-
 .clearfix {
   content: '';
   display: block;
@@ -134,6 +149,14 @@ form input {
 
 .consolas {
   font-family: Consolas;
+}
+
+.text-link {
+  text-decoration: underline;
+}
+
+.text-link:hover {
+  color: lightblue;
 }
 
 .game {

@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 export default class Rules extends Component {
   render() {
     return (
-      <div style={{fontFamily:"Cambria Math"}}>
+      <div style={{fontFamily:"Cambria Math"}} className='sixty-left center-pane'>
         <h1>The Rules of HexChess:</h1>
 
         <h3>How to Win:</h3>
@@ -50,7 +50,7 @@ export default class Rules extends Component {
         <div>
           You can see what pieces are in your Reserve by clicking the 'Res' button on your Command Panel.  In order to deploy a piece, you must have enough ENERGY to deploy it (you get 1 energy for each Power Node you have on the board; your energy refreshes at the start of each turn).  You may deploy pieces to any hex adjacent to your hero.  The Reserve panel displays the energy cost of each piece in orange, as well as how many copies of that piece are still left in your Reserve in blue.  More powerful pieces cost more energy to deploy, so you will need to deploy Power Nodes in order to get your strongest pieces on the board!
         </div>
-
+        <br></br>
         <div>Good luck!</div>
       </div>
     )

@@ -74,14 +74,14 @@ class LoginForm extends Component {
                  placeholder="Enter your password"></input>
           <br></br>
 
-          <Link to={"/"}>
-            <div className="submit button" type="submit" onClick={ this.submit }>Log In</div>
+          <Link to={"/play"}>
+            <div className="submit-button" type="submit" onClick={ this.submit }>Log In</div>
           </Link>
         </form>
 
         <div className="join-block">
           No account? &nbsp;
-          <Link to={'/signup'}>Sign Up</Link>
+          <Link to={'/signup'} style={{textDecoration:'underline'}}>Sign Up</Link>
         </div>
       </div>
     );
