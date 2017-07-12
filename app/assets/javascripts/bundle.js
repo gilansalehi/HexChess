@@ -23924,7 +23924,12 @@ var Rules = function (_Component) {
         _react2.default.createElement(
           'h1',
           { className: 'header' },
-          'The Rules of HexChess:'
+          'The Rules'
+        ),
+        _react2.default.createElement(
+          'p',
+          { className: 'sub-header' },
+          'Learn to Play'
         ),
         _react2.default.createElement(
           'h3',
@@ -43637,7 +43642,7 @@ var LoginForm = function (_Component) {
       e.preventDefault();
       var credentials = { user: this.state };
       this.props.loginRequest(credentials);
-      this.props.history.push('/');
+      this.props.history.push('/play');
     }
   }, {
     key: 'updateUsername',
@@ -43814,7 +43819,7 @@ var SignupForm = function (_Component) {
         alert("Make sure your passwords match!");
         return false;
       }
-      this.props.history.push('/');
+      this.props.history.push('/play');
       this.props.signupRequest(credentials);
     }
   }, {
