@@ -24,6 +24,15 @@ export default function (state = initialState, action) {
       // for when websockets is working
       return [...state, action.payload];
       break;
+    case 'GAME_CREATED':
+      return [...state, action.payload];
+      break;
+    case 'GAME_DELETED':
+      return state.filter(g => g.id !== action.payload.id);
+      break;
+    case 'CANCEL_SEEK_SUCCESS':
+      return state.filter(g => g.id !== action.payload.id);
+      break;
   }
   return state;
 }

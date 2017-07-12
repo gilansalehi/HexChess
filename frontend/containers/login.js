@@ -19,9 +19,16 @@ class LoginForm extends Component {
       password: '',
     }
 
+    this.handleKeyDown = this.handleKeyDown.bind(this);
     this.updateUsername = this.updateUsername.bind(this);
     this.updatePassword = this.updatePassword.bind(this);
     this.submit = this.submit.bind(this);
+  }
+
+  handleKeyDown(e) {
+    if ( e.keyCode === 13 ) { // ENTER
+      this.submit(e)
+    }
   }
 
   submit(e) {
@@ -47,7 +54,7 @@ class LoginForm extends Component {
       <div className="auth-page group sixty-left">
         <h1>Log in</h1>
 
-        <form onSubmit={ this.submit } className="clearfix" >
+        <form onSubmit={ this.submit } className="clearfix" onKeyDown={ e => this.handleKeyDown(e) }>
 
           <label htmlFor="username">Username:</label><br></br>
           <input id="username"
@@ -73,7 +80,7 @@ class LoginForm extends Component {
         </form>
 
         <div className="join-block">
-          No account? 
+          No account? &nbsp;
           <Link to={'/signup'}>Sign Up</Link>
         </div>
       </div>

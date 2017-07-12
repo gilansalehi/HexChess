@@ -8,13 +8,12 @@ export default class GamesList extends Component {
   }
 
   mapGamesToList(games) {
+    const { user, handleClick, cancelSeek } = this.props;
     return games.map((g, i) => {
       const bgColor = i % 2 ? '#666' : '#777';
       return (
         <li key={i} style={{color:'white', backgroundColor: bgColor }}>
-          <Link to={ `/games/${g.id}` } onClick={ () => this.props.handleClick(g.id) }>
-            <GameLink game={g} />
-          </Link>
+          <GameLink game={g} handleClick={ handleClick } cancelSeek={ cancelSeek } />
         </li>
       );
     })
@@ -26,12 +25,12 @@ export default class GamesList extends Component {
 
     return (
       <div style={{color: 'white' }}>
-        <ul className='pseudo-table'>
+        <ul className='pseudo-table consolas'>
           <li key='header' className='tr consolas' style={{ backgroundColor: '#444' }}>
             <span className='td'>Creator</span>
             <span className='td'>Opponent</span>
             <span className='td'>Status</span>
-            <span className='td'>Timestamp</span>
+            <span className='td'>Age</span>
           </li>
           { gamesList }
         </ul>

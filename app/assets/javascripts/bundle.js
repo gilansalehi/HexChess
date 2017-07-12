@@ -23658,9 +23658,13 @@ var _gamesList = __webpack_require__(295);
 
 var _gamesList2 = _interopRequireDefault(_gamesList);
 
-var _startup = __webpack_require__(297);
+var _rules = __webpack_require__(298);
 
-var _gameIndex = __webpack_require__(298);
+var _rules2 = _interopRequireDefault(_rules);
+
+var _startup = __webpack_require__(299);
+
+var _gameIndex = __webpack_require__(300);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -23694,6 +23698,22 @@ var GamesIndex = function (_Component) {
     value: function componentDidMount() {
       this.props.fetchAllGames();
       // ActionCable is straight up bugged in Rails 5.  Can't use websockets until a fix is available.
+      var self = this;
+      if (typeof App !== 'undefined') {
+        console.log(' setting up action cable on front end... ');
+        App.games = App.cable.subscriptions.create("GamesChannel", {
+          connected: function connected() {},
+          disconnected: function disconnected() {},
+          received: function received(data) {
+            self.props.createAction(data);
+          },
+          speak: function speak(data) {
+            return this.perform('speak', {
+              data: data
+            });
+          }
+        });
+      }
     }
   }, {
     key: 'applyFilter',
@@ -23754,14 +23774,15 @@ var GamesIndex = function (_Component) {
       var _props3 = this.props,
           user = _props3.user,
           games = _props3.games,
-          fetchAllGames = _props3.fetchAllGames;
+          fetchAllGames = _props3.fetchAllGames,
+          cancelSeek = _props3.cancelSeek;
       var filter = this.state.filter;
 
 
       var filteredGames = this.applyFilter();
       return _react2.default.createElement(
         'div',
-        { className: 'sixty-left' },
+        { className: 'sixty-left center-pane' },
         _react2.default.createElement(
           'h1',
           { className: 'header' },
@@ -23799,7 +23820,8 @@ var GamesIndex = function (_Component) {
           newGame: this.newGame,
           refresh: fetchAllGames,
           handleClick: this.handleClick,
-          user: user
+          user: user,
+          cancelSeek: cancelSeek
         })
       );
     }
@@ -23821,7 +23843,9 @@ function mapDispatchToProps(dispatch) {
     postNewGame: _gameIndex.postNewGame,
     joinGame: _gameIndex.joinGame,
     observeGame: _gameIndex.observeGame,
-    updateReceived: _gameIndex.updateReceived
+    updateReceived: _gameIndex.updateReceived,
+    createAction: _gameIndex.createAction,
+    cancelSeek: _gameIndex.cancelSeek
     // actionName: action imported from ./actions
   }, dispatch);
 }
@@ -23849,11 +23873,11 @@ var _redux = __webpack_require__(13);
 
 var _reactRedux = __webpack_require__(22);
 
-var _board = __webpack_require__(299);
+var _board = __webpack_require__(301);
 
 var _board2 = _interopRequireDefault(_board);
 
-var _gameNav = __webpack_require__(302);
+var _gameNav = __webpack_require__(304);
 
 var _gameNav2 = _interopRequireDefault(_gameNav);
 
@@ -23863,21 +23887,21 @@ var _navButton2 = _interopRequireDefault(_navButton);
 
 var _reactRouterDom = __webpack_require__(17);
 
-var _info = __webpack_require__(303);
+var _info = __webpack_require__(305);
 
 var _info2 = _interopRequireDefault(_info);
 
-var _bannerMessage = __webpack_require__(304);
+var _bannerMessage = __webpack_require__(306);
 
 var _bannerMessage2 = _interopRequireDefault(_bannerMessage);
 
 var _utils = __webpack_require__(27);
 
-var _gameActions = __webpack_require__(305);
+var _gameActions = __webpack_require__(307);
 
-var _postGameState = __webpack_require__(306);
+var _postGameState = __webpack_require__(308);
 
-var _fetchGameState = __webpack_require__(307);
+var _fetchGameState = __webpack_require__(309);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -24251,6 +24275,7 @@ function mapStateToProps(state) {
     currentPlayer: game.currentPlayer,
     moveCount: game.moveCount,
     player: game.player,
+    thisPlayer: game.thisPlayer,
     pieces: game.position,
     currentUser: state.user
   };
@@ -24411,7 +24436,7 @@ var _hex = __webpack_require__(43);
 
 var _hex2 = _interopRequireDefault(_hex);
 
-var _miniHex = __webpack_require__(300);
+var _miniHex = __webpack_require__(302);
 
 var _miniHex2 = _interopRequireDefault(_miniHex);
 
@@ -39926,8 +39951,21 @@ exports.default = function () {
       return state;
       break;
     case 'UPDATE_RECEIVED':
-      debugger;
+      // for when websockets is working
       return [].concat(_toConsumableArray(state), [action.payload]);
+      break;
+    case 'GAME_CREATED':
+      return [].concat(_toConsumableArray(state), [action.payload]);
+      break;
+    case 'GAME_DELETED':
+      return state.filter(function (g) {
+        return g.id !== action.payload.id;
+      });
+      break;
+    case 'CANCEL_SEEK_SUCCESS':
+      return state.filter(function (g) {
+        return g.id !== action.payload.id;
+      });
       break;
   }
   return state;
@@ -40011,9 +40049,25 @@ var winner = function winner() {
   return state;
 };
 
+var thisPlayer = function thisPlayer() {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : defaultPlayer;
+  var action = arguments[1];
+
+  switch (action.type) {
+    case 'JOIN_GAME_SUCCESS':
+      return action.payload.player;
+      break;
+    case 'OBSERVE_GAME_SUCCESS':
+      return 'observer';
+      break;
+  }
+  return state;
+};
+
 var allReducers = (0, _redux.combineReducers)({
   selection: _selection2.default,
   player: _player2.default,
+  thisPlayer: thisPlayer,
   position: _pieces2.default,
   currentPlayer: currentPlayer,
   winner: winner
@@ -40107,10 +40161,6 @@ exports.default = function () {
           pieces = _JSON$parse.pieces,
           currentPlayer = _JSON$parse.currentPlayer;
 
-      debugger;
-      if (state.player !== currentPlayer) {
-        return pieces;
-      }
       return pieces || state;
       break;
     case 'JOIN_GAME_SUCCESS':
@@ -40541,7 +40591,7 @@ var _game = __webpack_require__(118);
 
 var _game2 = _interopRequireDefault(_game);
 
-var _appNav = __webpack_require__(308);
+var _appNav = __webpack_require__(310);
 
 var _appNav2 = _interopRequireDefault(_appNav);
 
@@ -40549,19 +40599,19 @@ var _navButton = __webpack_require__(45);
 
 var _navButton2 = _interopRequireDefault(_navButton);
 
-var _login = __webpack_require__(309);
+var _login = __webpack_require__(311);
 
 var _login2 = _interopRequireDefault(_login);
 
-var _signup = __webpack_require__(310);
+var _signup = __webpack_require__(312);
 
 var _signup2 = _interopRequireDefault(_signup);
 
-var _user = __webpack_require__(311);
+var _user = __webpack_require__(313);
 
 var _user2 = _interopRequireDefault(_user);
 
-var _index = __webpack_require__(312);
+var _index = __webpack_require__(314);
 
 var _login3 = __webpack_require__(71);
 
@@ -40587,6 +40637,17 @@ var App = function (_Component) {
   }
 
   _createClass(App, [{
+    key: 'getChildContext',
+    value: function getChildContext() {
+      var self = this;
+      // EXPOSE ACTIONS TO CHILDREN
+      return {
+        getUser: function getUser() {
+          return self.props.user;
+        }
+      };
+    }
+  }, {
     key: 'handleSession',
     value: function handleSession() {
       var user = this.props.user;
@@ -40677,6 +40738,10 @@ var App = function (_Component) {
 
   return App;
 }(_react.Component);
+
+App.childContextTypes = {
+  getUser: _react2.default.PropTypes.func
+};
 
 function mapStateToProps(state) {
   return {
@@ -41657,30 +41722,27 @@ var GamesList = function (_Component) {
   _createClass(GamesList, [{
     key: 'mapGamesToList',
     value: function mapGamesToList(games) {
-      var _this2 = this;
+      var _props = this.props,
+          user = _props.user,
+          handleClick = _props.handleClick,
+          cancelSeek = _props.cancelSeek;
 
       return games.map(function (g, i) {
         var bgColor = i % 2 ? '#666' : '#777';
         return _react2.default.createElement(
           'li',
           { key: i, style: { color: 'white', backgroundColor: bgColor } },
-          _react2.default.createElement(
-            _reactRouterDom.Link,
-            { to: '/games/' + g.id, onClick: function onClick() {
-                return _this2.props.handleClick(g.id);
-              } },
-            _react2.default.createElement(_gameLink2.default, { game: g })
-          )
+          _react2.default.createElement(_gameLink2.default, { game: g, handleClick: handleClick, cancelSeek: cancelSeek })
         );
       });
     }
   }, {
     key: 'render',
     value: function render() {
-      var _props = this.props,
-          games = _props.games,
-          newGame = _props.newGame,
-          refresh = _props.refresh;
+      var _props2 = this.props,
+          games = _props2.games,
+          newGame = _props2.newGame,
+          refresh = _props2.refresh;
 
       var gamesList = this.mapGamesToList(games);
 
@@ -41689,7 +41751,7 @@ var GamesList = function (_Component) {
         { style: { color: 'white' } },
         _react2.default.createElement(
           'ul',
-          { className: 'pseudo-table' },
+          { className: 'pseudo-table consolas' },
           _react2.default.createElement(
             'li',
             { key: 'header', className: 'tr consolas', style: { backgroundColor: '#444' } },
@@ -41711,7 +41773,7 @@ var GamesList = function (_Component) {
             _react2.default.createElement(
               'span',
               { className: 'td' },
-              'Timestamp'
+              'Age'
             )
           ),
           gamesList
@@ -41754,6 +41816,10 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRouterDom = __webpack_require__(17);
 
+var _button = __webpack_require__(297);
+
+var _button2 = _interopRequireDefault(_button);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -41774,6 +41840,8 @@ var GameLink = function (_Component) {
   _createClass(GameLink, [{
     key: 'render',
     value: function render() {
+      var _this2 = this;
+
       var _props$game = this.props.game,
           creator = _props$game.creator,
           status = _props$game.status,
@@ -41785,29 +41853,51 @@ var GameLink = function (_Component) {
           p2_id = _props$game.p2_id;
 
 
+      var minutesAgo = Math.floor((Date.now() - new Date(created_at).valueOf()) / 60000);
+
+      var user = this.context.getUser();
+      var creatorButtons = _react2.default.createElement(
+        'span',
+        { className: 'pull-right' },
+        _react2.default.createElement(_button2.default, { text: '×', handleClick: function handleClick() {
+            return _this2.props.cancelSeek(id);
+          }, size: 15 })
+      );
+
       return _react2.default.createElement(
         'div',
-        { className: 'game-link tr' },
+        { className: 'tr' },
         _react2.default.createElement(
           'span',
-          { className: 'td' },
-          creator || 'anon '
+          { className: 'game-link' },
+          _react2.default.createElement(
+            _reactRouterDom.Link,
+            { to: '/games/' + id, onClick: function onClick() {
+                return _this2.props.handleClick(id);
+              } },
+            _react2.default.createElement(
+              'span',
+              { className: 'td' },
+              creator || 'anon '
+            ),
+            _react2.default.createElement(
+              'span',
+              { className: 'td' },
+              challenger || '-'
+            ),
+            _react2.default.createElement(
+              'span',
+              { className: 'td' },
+              status
+            ),
+            _react2.default.createElement(
+              'span',
+              { className: 'td' },
+              minutesAgo + ' mins' || '-'
+            )
+          )
         ),
-        _react2.default.createElement(
-          'span',
-          { className: 'td' },
-          challenger || '-'
-        ),
-        _react2.default.createElement(
-          'span',
-          { className: 'td' },
-          status
-        ),
-        _react2.default.createElement(
-          'span',
-          { className: 'td' },
-          created_at || '-'
-        )
+        user && user.id === p1_id && creatorButtons
       );
     }
   }]);
@@ -41817,8 +41907,270 @@ var GameLink = function (_Component) {
 
 exports.default = GameLink;
 
+
+GameLink.contextTypes = {
+  getUser: _react2.default.PropTypes.func
+};
+
 /***/ }),
 /* 297 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(3);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Button = function (_Component) {
+  _inherits(Button, _Component);
+
+  function Button() {
+    _classCallCheck(this, Button);
+
+    return _possibleConstructorReturn(this, (Button.__proto__ || Object.getPrototypeOf(Button)).apply(this, arguments));
+  }
+
+  _createClass(Button, [{
+    key: 'render',
+    value: function render() {
+      var _props = this.props,
+          text = _props.text,
+          handleClick = _props.handleClick,
+          size = _props.size,
+          info = _props.info;
+
+      var style = {
+        height: size + 'px',
+        width: size + 'px',
+        lineHeight: size + 'px',
+        fontSize: size * 1.6 + 'px'
+      };
+      return _react2.default.createElement(
+        'div',
+        { className: 'square-button',
+          onClick: handleClick,
+          style: style,
+          title: info
+        },
+        text
+      );
+    }
+  }]);
+
+  return Button;
+}(_react.Component);
+
+exports.default = Button;
+
+/***/ }),
+/* 298 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(3);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Rules = function (_Component) {
+  _inherits(Rules, _Component);
+
+  function Rules() {
+    _classCallCheck(this, Rules);
+
+    return _possibleConstructorReturn(this, (Rules.__proto__ || Object.getPrototypeOf(Rules)).apply(this, arguments));
+  }
+
+  _createClass(Rules, [{
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        'div',
+        { style: { fontFamily: "Cambria Math" } },
+        _react2.default.createElement(
+          'h1',
+          null,
+          'The Rules of HexChess:'
+        ),
+        _react2.default.createElement(
+          'h3',
+          null,
+          'How to Win:'
+        ),
+        _react2.default.createElement(
+          'div',
+          null,
+          'Capture the enemy hero or capture three enemy power nodes'
+        ),
+        _react2.default.createElement(
+          'h3',
+          null,
+          'Game Zones:'
+        ),
+        _react2.default.createElement(
+          'div',
+          null,
+          'Each player begins the game with their hero piece on the board and the rest of their pieces in their ',
+          _react2.default.createElement(
+            'strong',
+            null,
+            'Reserve'
+          ),
+          '.  Captured pieces are removed from the board.  The Command Panel on the left side of the screen shows you whose turn it is, how many actions your have left, and how much energy you have left to use this turn.'
+        ),
+        _react2.default.createElement(
+          'h3',
+          null,
+          'How to Play:'
+        ),
+        _react2.default.createElement(
+          'div',
+          null,
+          'Each turn, you get TWO actions.  For each action, you can either ',
+          _react2.default.createElement(
+            'strong',
+            null,
+            'DEPLOY'
+          ),
+          ' a piece from your Reserve, or you can ',
+          _react2.default.createElement(
+            'strong',
+            null,
+            'MOVE'
+          ),
+          ' a piece on the board. You may not move the same piece twice in a turn, or move a piece you just deployed, but otherwise you may do these actions in any combination you like (move two pieces, deploy two pieces, move then deploy, etc.). (note: Player 1 only gets one action on their first turn to negate the advantage of moving first)'
+        ),
+        _react2.default.createElement(
+          'h3',
+          null,
+          'Movement:'
+        ),
+        _react2.default.createElement(
+          'div',
+          null,
+          'Each type of piece moves in a unique way, except power nodes, which cannot move.  Unless otherwise noted, a piece can capture any enemy piece by moving to its hex.',
+          _react2.default.createElement(
+            'ul',
+            { style: { listStyle: 'disc', margin: '10px' } },
+            _react2.default.createElement(
+              'li',
+              { style: { listStyle: 'disc', margin: '5px' } },
+              _react2.default.createElement(
+                'strong',
+                null,
+                'Heroes'
+              ),
+              ' can move one hex in any direction.'
+            ),
+            _react2.default.createElement(
+              'li',
+              { style: { listStyle: 'disc', margin: '5px' } },
+              _react2.default.createElement(
+                'strong',
+                null,
+                'Queens'
+              ),
+              ' may move any number of hexes in a straight line in any direction.'
+            ),
+            _react2.default.createElement(
+              'li',
+              { style: { listStyle: 'disc', margin: '5px' } },
+              _react2.default.createElement(
+                'strong',
+                null,
+                'Rooks'
+              ),
+              ' can move any number of hexes straight forward, back-left, or back-right (like an inverted Y shape)'
+            ),
+            _react2.default.createElement(
+              'li',
+              { style: { listStyle: 'disc', margin: '5px' } },
+              _react2.default.createElement(
+                'strong',
+                null,
+                'Bishops'
+              ),
+              ' can move any number of hexes in a straight line diagonally (like an X shape)'
+            ),
+            _react2.default.createElement(
+              'li',
+              { style: { listStyle: 'disc', margin: '5px' } },
+              _react2.default.createElement(
+                'strong',
+                null,
+                'Pawns'
+              ),
+              ' may move (but not capture!) one hex forward, and may capture (but not move!) one hex diagonally forward.'
+            ),
+            _react2.default.createElement(
+              'li',
+              { style: { listStyle: 'disc', margin: '5px' } },
+              _react2.default.createElement(
+                'strong',
+                null,
+                'Power Nodes'
+              ),
+              ' may not move.'
+            )
+          )
+        ),
+        _react2.default.createElement(
+          'h3',
+          null,
+          'Deployment:'
+        ),
+        _react2.default.createElement(
+          'div',
+          null,
+          'You can see what pieces are in your Reserve by clicking the \'Res\' button on your Command Panel.  In order to deploy a piece, you must have enough ENERGY to deploy it (you get 1 energy for each Power Node you have on the board; your energy refreshes at the start of each turn).  You may deploy pieces to any hex adjacent to your hero.  The Reserve panel displays the energy cost of each piece in orange, as well as how many copies of that piece are still left in your Reserve in blue.  More powerful pieces cost more energy to deploy, so you will need to deploy Power Nodes in order to get your strongest pieces on the board!'
+        ),
+        _react2.default.createElement(
+          'div',
+          null,
+          'Good luck!'
+        )
+      );
+    }
+  }]);
+
+  return Rules;
+}(_react.Component);
+
+exports.default = Rules;
+
+/***/ }),
+/* 299 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -41895,7 +42247,7 @@ var fetchGamesError = function fetchGamesError() {
 // }
 
 /***/ }),
-/* 298 */
+/* 300 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -41904,7 +42256,7 @@ var fetchGamesError = function fetchGamesError() {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.updateReceived = exports.observeGame = exports.joinGame = exports.postNewGame = undefined;
+exports.createAction = exports.updateReceived = exports.cancelSeek = exports.observeGame = exports.joinGame = exports.postNewGame = undefined;
 
 var _jquery = __webpack_require__(34);
 
@@ -42007,6 +42359,27 @@ var observeGame = exports.observeGame = function observeGame(gameId) {
   };
 };
 
+var cancelSeek = exports.cancelSeek = function cancelSeek(gameId) {
+  return function (dispatch) {
+    dispatch({ type: 'CANCEL_SEEK_PENDING' });
+    return _jquery2.default.ajax({
+      type: 'DELETE',
+      beforeSend: function beforeSend(xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', (0, _jquery2.default)('meta[name="csrf-token"]').attr('content'));
+      },
+      url: '/games/' + gameId,
+      dataType: 'json',
+      contentType: 'application/json',
+      success: function success(json) {
+        dispatch({ type: 'CANCEL_SEEK_SUCCESS', payload: json });
+      },
+      error: function error(msg) {
+        dispatch({ type: 'CANCEL_SEEK_ERROR', payload: msg });
+      }
+    });
+  };
+};
+
 var updateReceived = exports.updateReceived = function updateReceived(data) {
   return {
     type: 'UPDATE_RECEIVED',
@@ -42014,8 +42387,13 @@ var updateReceived = exports.updateReceived = function updateReceived(data) {
   };
 };
 
+var createAction = exports.createAction = function createAction(data) {
+  // data should already be formatted with type and payload
+  return data;
+};
+
 /***/ }),
-/* 299 */
+/* 301 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -42041,7 +42419,7 @@ var _player = __webpack_require__(119);
 
 var _player2 = _interopRequireDefault(_player);
 
-var _energyCounter = __webpack_require__(301);
+var _energyCounter = __webpack_require__(303);
 
 var _energyCounter2 = _interopRequireDefault(_energyCounter);
 
@@ -42217,7 +42595,7 @@ Board.contextTypes = {
 };
 
 /***/ }),
-/* 300 */
+/* 302 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -42354,7 +42732,7 @@ function styles(scale, color) {
 }
 
 /***/ }),
-/* 301 */
+/* 303 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -42456,7 +42834,7 @@ function styles() {
 };
 
 /***/ }),
-/* 302 */
+/* 304 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -42565,7 +42943,7 @@ var Nav = function (_Component) {
 exports.default = Nav;
 
 /***/ }),
-/* 303 */
+/* 305 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -42619,10 +42997,10 @@ var InfoPanel = function (_Component) {
       if (!text) {
         return false;
       }
-      return text.split('\n').map(function (t) {
+      return text.split('\n').map(function (t, i) {
         return _react2.default.createElement(
           'p',
-          null,
+          { key: i },
           t
         );
       });
@@ -42701,7 +43079,7 @@ function styles() {
 };
 
 /***/ }),
-/* 304 */
+/* 306 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -42809,7 +43187,7 @@ var BannerMessage = function (_Component) {
 exports.default = BannerMessage;
 
 /***/ }),
-/* 305 */
+/* 307 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -42927,7 +43305,7 @@ var declareWinner = exports.declareWinner = function declareWinner(winner) {
 };
 
 /***/ }),
-/* 306 */
+/* 308 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -42994,7 +43372,7 @@ var postWinner = exports.postWinner = function postWinner(gameId, winner) {
 };
 
 /***/ }),
-/* 307 */
+/* 309 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -43015,9 +43393,14 @@ var fetchGameStateData = exports.fetchGameStateData = function fetchGameStateDat
           json = _ref2[1];
 
       if (response.status === 200) {
-        var state = getState();
-        debugger;
-        dispatch(fetchGameStateSuccess(json));
+        var _getState$game = getState().game,
+            currentPlayer = _getState$game.currentPlayer,
+            thisPlayer = _getState$game.thisPlayer;
+
+        if (currentPlayer !== thisPlayer) {
+          // only dispatch an action if it's not our turn yet, because of asynchronicity
+          dispatch(fetchGameStateSuccess(json));
+        }
       } else {
         dispatch(fetchGameStateError(json));
       }
@@ -43053,7 +43436,7 @@ var fetchGameStateError = function fetchGameStateError(payload) {
 };
 
 /***/ }),
-/* 308 */
+/* 310 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -43110,7 +43493,7 @@ var Nav = function (_Component) {
 exports.default = Nav;
 
 /***/ }),
-/* 309 */
+/* 311 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -43159,6 +43542,7 @@ var LoginForm = function (_Component) {
       password: ''
     };
 
+    _this.handleKeyDown = _this.handleKeyDown.bind(_this);
     _this.updateUsername = _this.updateUsername.bind(_this);
     _this.updatePassword = _this.updatePassword.bind(_this);
     _this.submit = _this.submit.bind(_this);
@@ -43166,6 +43550,14 @@ var LoginForm = function (_Component) {
   }
 
   _createClass(LoginForm, [{
+    key: 'handleKeyDown',
+    value: function handleKeyDown(e) {
+      if (e.keyCode === 13) {
+        // ENTER
+        this.submit(e);
+      }
+    }
+  }, {
     key: 'submit',
     value: function submit(e) {
       e.preventDefault();
@@ -43200,7 +43592,9 @@ var LoginForm = function (_Component) {
         ),
         _react2.default.createElement(
           'form',
-          { onSubmit: this.submit, className: 'clearfix' },
+          { onSubmit: this.submit, className: 'clearfix', onKeyDown: function onKeyDown(e) {
+              return _this2.handleKeyDown(e);
+            } },
           _react2.default.createElement(
             'label',
             { htmlFor: 'username' },
@@ -43244,7 +43638,7 @@ var LoginForm = function (_Component) {
         _react2.default.createElement(
           'div',
           { className: 'join-block' },
-          'No account?',
+          'No account? \xA0',
           _react2.default.createElement(
             _reactRouterDom.Link,
             { to: '/signup' },
@@ -43271,7 +43665,7 @@ function mapDispatchToProps(dispatch) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(LoginForm);
 
 /***/ }),
-/* 310 */
+/* 312 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -43321,6 +43715,7 @@ var SignupForm = function (_Component) {
       confirmPassword: ''
     };
 
+    _this.handleKeyDown = _this.handleKeyDown.bind(_this);
     _this.updateUsername = _this.updateUsername.bind(_this);
     _this.updatePassword = _this.updatePassword.bind(_this);
     _this.updateConfirmPassword = _this.updateConfirmPassword.bind(_this);
@@ -43329,6 +43724,14 @@ var SignupForm = function (_Component) {
   }
 
   _createClass(SignupForm, [{
+    key: 'handleKeyDown',
+    value: function handleKeyDown(e) {
+      if (e.keyCode === 13) {
+        // ENTER
+        this.submit(e);
+      }
+    }
+  }, {
     key: 'submit',
     value: function submit(e) {
       e.preventDefault();
@@ -43373,7 +43776,9 @@ var SignupForm = function (_Component) {
         ),
         _react2.default.createElement(
           'form',
-          { onSubmit: this.submit, className: 'clearfix' },
+          { onSubmit: this.submit, className: 'clearfix', onKeyDown: function onKeyDown(e) {
+              return _this2.handleKeyDown(e);
+            } },
           _react2.default.createElement(
             'label',
             { htmlFor: 'username' },
@@ -43428,7 +43833,7 @@ var SignupForm = function (_Component) {
         _react2.default.createElement(
           'div',
           { className: 'join-block' },
-          'Already Signed Up?',
+          'Already Signed Up? \xA0',
           _react2.default.createElement(
             _reactRouterDom.Link,
             { to: '/' },
@@ -43455,7 +43860,7 @@ function mapDispatchToProps(dispatch) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(SignupForm);
 
 /***/ }),
-/* 311 */
+/* 313 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -43551,7 +43956,7 @@ function mapDispatchToProps(dispatch) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Profile);
 
 /***/ }),
-/* 312 */
+/* 314 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

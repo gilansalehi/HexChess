@@ -99,7 +99,24 @@ form input {
 
 .button:hover {
   background-color: lightblue;
+  color: #333;
 }
+
+.square-button {
+  display: inline-block;
+  padding: 5px;
+  background-color: darkGray;
+  border-radius: 3px;
+  text-align: center;
+}
+
+.square-button:hover {
+  cursor: pointer;
+  background-color: lightgray;
+  color: #333;
+  font-weight: bold;
+}
+
 
 .clearfix {
   content: '';
@@ -108,7 +125,11 @@ form input {
 }
 
 .sixty-left {
-  padding: 10px 60px;
+  padding: 10px 70px;
+}
+
+.center-pane {
+  max-width: 800px;
 }
 
 .consolas {
@@ -123,8 +144,9 @@ form input {
 }
 
 .game-link {
-  width: 100%;
+  display: inline-block;
 }
+
 .game-link:hover {
   background: lightblue;
 }

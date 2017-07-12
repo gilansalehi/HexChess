@@ -20,10 +20,17 @@ class SignupForm extends Component {
       confirmPassword: '',
     }
 
+    this.handleKeyDown = this.handleKeyDown.bind(this);
     this.updateUsername = this.updateUsername.bind(this);
     this.updatePassword = this.updatePassword.bind(this);
     this.updateConfirmPassword = this.updateConfirmPassword.bind(this);
     this.submit = this.submit.bind(this);
+  }
+
+  handleKeyDown(e) {
+    if ( e.keyCode === 13 ) { // ENTER
+      this.submit(e)
+    }
   }
 
   submit(e) {
@@ -58,7 +65,7 @@ class SignupForm extends Component {
       <div className="auth-page group sixty-left">
         <h1>Sign Up</h1>
 
-        <form onSubmit={ this.submit } className="clearfix" >
+        <form onSubmit={ this.submit } className="clearfix" onKeyDown={ e => this.handleKeyDown(e) }>
 
           <label htmlFor="username">Username:</label><br></br>
           <input id="username"
@@ -90,7 +97,7 @@ class SignupForm extends Component {
         </form>
 
         <div className="join-block">
-          Already Signed Up? 
+          Already Signed Up? &nbsp;
           <Link to={'/'}>Home</Link>
         </div>
       </div>

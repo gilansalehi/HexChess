@@ -89,9 +89,33 @@ export const observeGame = (gameId) => {
   }
 }
 
+export const cancelSeek = (gameId) => {
+  return (dispatch) => {
+    dispatch({ type: 'CANCEL_SEEK_PENDING' });
+    return $.ajax({
+      type: 'DELETE',
+      beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
+      url: '/games/' + gameId,
+      dataType: 'json',
+      contentType: 'application/json',
+      success: function(json) {
+        dispatch({ type: 'CANCEL_SEEK_SUCCESS', payload: json });
+      },
+      error: function(msg) {
+        dispatch({ type: 'CANCEL_SEEK_ERROR', payload: msg });
+      }
+    });
+  }
+}
+
 export const updateReceived = (data) => {
   return {
     type: 'UPDATE_RECEIVED',
     payload: data,
   };
+}
+
+export const createAction = (data) => {
+  // data should already be formatted with type and payload
+  return data;
 }

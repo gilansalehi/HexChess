@@ -38,7 +38,21 @@ class Game < ApplicationRecord
   end
 
   def status=(string)
+    raise "Game was abandoned" if self.status == "abandoned"
     super unless self.status == "finished"
   end
 
+  def data
+    return {
+      creator:    self.creator.try(:name),
+      challenger: self.challenger.try(:name),
+      status:     self.status,
+      winner:     self.winner,
+      id:         self.id,
+      position:   self.position,
+      created_at: self.created_at,
+      p1_id:      self.p1_id,
+      p2_id:      self.p2_id
+    }
+  end
 end

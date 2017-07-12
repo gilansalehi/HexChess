@@ -24,6 +24,14 @@ class App extends Component {
     this.handleSession = this.handleSession.bind(this);
   }
 
+  getChildContext() {
+    var self = this;
+    // EXPOSE ACTIONS TO CHILDREN
+    return {
+      getUser() { return self.props.user; },
+    }
+  }
+
   handleSession() {
     const { user } = this.props;
 
@@ -82,6 +90,10 @@ class App extends Component {
     );
   }
 }
+
+App.childContextTypes = {
+  getUser: React.PropTypes.func,
+};
 
 function mapStateToProps(state) {
   return {

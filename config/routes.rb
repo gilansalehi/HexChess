@@ -14,7 +14,7 @@ Rails.application.routes.draw do
   resources :chatrooms, param: :slug
   resources :messages
 
-  resources :games, only: [:new, :create, :update, :show, :index]
+  resources :games, only: [:new, :create, :update, :show, :destroy, :index, :cancel]
 
   get '/logout', controller: :sessions, action: :destroy
 

@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import GamesList from '../components/gamesList';
+import Rules from '../components/rules';
 
 import {
   fetchAllGames,
@@ -12,6 +13,8 @@ import {
   joinGame,
   observeGame,
   updateReceived,
+  createAction,
+  cancelSeek,
 } from '../actions/gameIndex';
 
 class GamesIndex extends Component {
@@ -31,6 +34,23 @@ class GamesIndex extends Component {
   componentDidMount() {
     this.props.fetchAllGames();
     // ActionCable is straight up bugged in Rails 5.  Can't use websockets until a fix is available.
+    const self = this;
+    if (typeof App !== 'undefined'){
+      console.log(' setting up action cable on front end... ' )
+      App.games = App.cable.subscriptions.create("GamesChannel", {
+        connected: function() {},
+        disconnected: function() {},
+        received: function(data) {
+          self.props.createAction(data);
+        },
+        speak: function(data) {
+          return this.perform('speak', {
+            data: data
+          });
+        }
+      });
+    }
+
   }
 
   applyFilter() {
@@ -66,12 +86,13 @@ class GamesIndex extends Component {
   }
 
   render() {
-    const { user, games, fetchAllGames } = this.props;
+    const { user, games, fetchAllGames, cancelSeek } = this.props;
     const { filter } = this.state;
 
     const filteredGames = this.applyFilter();
     return (
-      <div className="sixty-left">
+      <div className="sixty-left center-pane">
+
         <h1 className="header"> Games </h1>
         <div className="tab-list clearfix consolas">
           <span className={`${filter === 'none' ? '' : 'in'}active tab`}
@@ -81,11 +102,13 @@ class GamesIndex extends Component {
           <span className={`${filter === 'in progress' ? '' : 'in'}active tab`}
             onClick={e => this.setFilter('in progress')}>In Progress</span>
         </div>
+
         <GamesList games={ filteredGames }
                    newGame={ this.newGame }
                    refresh={ fetchAllGames }
                    handleClick={ this.handleClick }
                    user={ user }
+                   cancelSeek={ cancelSeek }
         />
       </div>
     )
@@ -106,6 +129,8 @@ function mapDispatchToProps(dispatch) {
     joinGame: joinGame,
     observeGame: observeGame,
     updateReceived: updateReceived,
+    createAction: createAction,
+    cancelSeek: cancelSeek,
     // actionName: action imported from ./actions
   }, dispatch);
 }

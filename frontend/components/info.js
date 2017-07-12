@@ -20,8 +20,8 @@ export default class InfoPanel extends Component {
 
   buildText(text) {
     if (!text) { return false }
-    return text.split('\n').map(t => {
-      return (<p>{t}</p>);
+    return text.split('\n').map((t, i) => {
+      return (<p key={i}>{t}</p>);
     });
   }
 
