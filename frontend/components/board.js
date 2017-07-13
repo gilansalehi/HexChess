@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import Hex from './hex.js';
 import Player from './player.js';
 import EnergyCounter from './energy-counter.js';
+import ReserveButton from './reserve-button.js';
 import Util from '../utils/utils.js';
 
 export default class Board extends Component {
@@ -14,7 +15,7 @@ export default class Board extends Component {
 
     this.drawBoard = this.drawBoard.bind(this);
     this.drawEnergyCounter = this.drawEnergyCounter.bind(this);
-    this.drawCancelButton = this.drawCancelButton.bind(this);
+    this.drawReserveButton = this.drawReserveButton.bind(this);
     this.resetEnergy = this.resetEnergy.bind(this);
   }
 
@@ -37,10 +38,8 @@ export default class Board extends Component {
     );
   }
 
-  drawCancelButton() {
-    return (
-      <div>Cancel</div>
-    );
+  drawReserveButton() {
+    return ( <ReserveButton /> );
   }
 
   resetEnergy() {
@@ -56,7 +55,7 @@ export default class Board extends Component {
 
     const lmarr = legalMoves && legalMoves.map((arr) => { return arr.join(','); });
     const energyCount = this.drawEnergyCounter();
-    const cancelButton = this.drawCancelButton();
+    const reserveButton = this.drawReserveButton();
 
     var self = this;
     const columns = xnums.map((x) => {
@@ -81,13 +80,13 @@ export default class Board extends Component {
             results = <Hex key={ key }
               pos={pos} col={ x + 5 }
               contents={{ type: 'button', text: energyCount }}
-              handleClick={ this.showReserve }
+              handleClick={ this.context.toggleReserve }
             />
         } else if ( key === '4,-6,2' ) {
             results = <Hex key={ key }
               pos={ pos } col={ x + 5 }
-              contents={{ type: 'button', text: cancelButton }}
-              handleClick={ this.resetEnergy }
+              contents={{ type: 'button', text: reserveButton }}
+              handleClick={ this.context.toggleReserve }
             />
           } else {
             results = <Hex key={ key }
@@ -126,4 +125,5 @@ export default class Board extends Component {
 
 Board.contextTypes = {
   resetEnergy: React.PropTypes.func,
+  toggleReserve: React.PropTypes.func,
 };

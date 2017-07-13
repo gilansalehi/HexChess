@@ -115,6 +115,7 @@ class Game extends Component {
     return {
       handleClick(hex) { self.handleClick(hex); },
       hideReserve() { self.hideReserve(); },
+      toggleReserve() { self.props.toggleReserve(); },
       deployPiece(x, y, z) { self.deployPiece(x, y, z); },
       resetEnergy() { self.props.resetEnergy(); },
       player: this.props.player,
@@ -286,9 +287,10 @@ class Game extends Component {
 Game.childContextTypes = {
   handleClick: React.PropTypes.func,
   hideReserve: React.PropTypes.func,
-  player: React.PropTypes.object,
   deployPiece: React.PropTypes.func,
   resetEnergy: React.PropTypes.func,
+  toggleReserve: React.PropTypes.func,
+  player: React.PropTypes.object,
 };
 
 function mapStateToProps(state) {
