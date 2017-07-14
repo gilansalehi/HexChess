@@ -37,30 +37,30 @@ class GamesIndex extends Component {
 
     // Heroku does not support action cable using separate ports for streaming;
     // Poll the db every ten seconds instead.
-    // const self = this;
-    // if (typeof App !== 'undefined'){
-    //   console.log(' setting up action cable on front end... ' )
-    //   App.games = App.cable.subscriptions.create("GamesChannel", {
-    //     connected: function() {
-    //       console.log('successfully connected');
-    //     },
-    //     disconnected: function() {},
-    //     received: function(data) {
-    //       self.props.createAction(data);
-    //     },
-    //     speak: function(data) {
-    //       return this.perform('speak', {
-    //         data: data
-    //       });
-    //     }
-    //   });
-    // }
-
-    this.pollGamesIndex = () => {
-      this.props.fetchAllGames();
-      window.setTimeout(this.pollGamesIndex, 10000);
+    const self = this;
+    if (typeof App !== 'undefined'){
+      console.log(' setting up action cable on front end... ' )
+      App.games = App.cable.subscriptions.create("GamesChannel", {
+        connected: function() {
+          console.log('successfully connected');
+        },
+        disconnected: function() {},
+        received: function(data) {
+          self.props.createAction(data);
+        },
+        speak: function(data) {
+          return this.perform('speak', {
+            data: data
+          });
+        }
+      });
     }
-    this.pollGamesIndex();
+    //
+    // this.pollGamesIndex = () => {
+    //   this.props.fetchAllGames();
+    //   window.setTimeout(this.pollGamesIndex, 10000);
+    // }
+    // this.pollGamesIndex();
   }
 
   componentWillUnmount() {
