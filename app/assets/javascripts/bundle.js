@@ -23690,9 +23690,11 @@ var GamesIndex = function (_Component) {
     };
 
     _this.applyFilter = _this.applyFilter.bind(_this);
-    _this.setFilter = _this.setFilter.bind(_this);
-    _this.newGame = _this.newGame.bind(_this);
     _this.handleClick = _this.handleClick.bind(_this);
+    _this.newGame = _this.newGame.bind(_this);
+    _this.setFilter = _this.setFilter.bind(_this);
+    _this.setupActionCable = _this.setupActionCable.bind(_this);
+    _this.setupPollGamesIndex = _this.setupPollGamesIndex.bind(_this);
     return _this;
   }
 
@@ -23701,40 +23703,49 @@ var GamesIndex = function (_Component) {
     value: function componentDidMount() {
       this.props.fetchAllGames();
 
-      // Heroku does not support action cable using separate ports for streaming;
-      // Poll the db every ten seconds instead.
-      var self = this;
-      debugger;
       if (typeof App !== 'undefined') {
-        console.log(' setting up action cable on front end... ');
-        App.games = App.cable.subscriptions.create("GamesChannel", {
-          connected: function connected() {
-            console.log('GAMES_INDEX_SUCCESSFULLY_CONNECTED');
-          },
-          disconnected: function disconnected() {
-            console.log('GAMES_INDEX_DISCONNECTED');
-          },
-          received: function received(data) {
-            self.props.createAction(data);
-          },
-          speak: function speak(data) {
-            return this.perform('speak', {
-              data: data
-            });
-          }
-        });
+        this.setupActionCable();
+      } else {
+        this.setupPollGamesIndex();
       }
-      //
-      // this.pollGamesIndex = () => {
-      //   this.props.fetchAllGames();
-      //   window.setTimeout(this.pollGamesIndex, 10000);
-      // }
-      // this.pollGamesIndex();
     }
   }, {
     key: 'componentWillUnmount',
     value: function componentWillUnmount() {
       this.pollGamesIndex = false;
+    }
+  }, {
+    key: 'setupActionCable',
+    value: function setupActionCable() {
+      var self = this;
+      console.log('Setting up Action Cable.');
+      App.games = App.cable.subscriptions.create("GamesChannel", {
+        connected: function connected() {
+          console.log('GAMES_INDEX_SUCCESSFULLY_CONNECTED');
+        },
+        disconnected: function disconnected() {
+          console.log('GAMES_INDEX_DISCONNECTED');
+        },
+        received: function received(data) {
+          self.props.createAction(data);
+        },
+        speak: function speak(data) {
+          console.log('cable is speaking...');
+          return this.perform('speak', { data: data });
+        }
+      });
+    }
+  }, {
+    key: 'setupPollGamesIndex',
+    value: function setupPollGamesIndex() {
+      var _this2 = this;
+
+      console.log('Action Cable unavailable, setting up db poll.');
+      this.pollGamesIndex = function () {
+        _this2.props.fetchAllGames();
+        window.setTimeout(_this2.pollGamesIndex, 10000);
+      };
+      this.pollGamesIndex();
     }
   }, {
     key: 'applyFilter',
@@ -23790,7 +23801,7 @@ var GamesIndex = function (_Component) {
   }, {
     key: 'render',
     value: function render() {
-      var _this2 = this;
+      var _this3 = this;
 
       var _props3 = this.props,
           user = _props3.user,
@@ -23841,7 +23852,7 @@ var GamesIndex = function (_Component) {
             'span',
             { className: (filter === 'none' ? '' : 'in') + 'active tab',
               onClick: function onClick(e) {
-                return _this2.setFilter('none');
+                return _this3.setFilter('none');
               } },
             'All'
           ),
@@ -23849,7 +23860,7 @@ var GamesIndex = function (_Component) {
             'span',
             { className: (filter === 'seeking' ? '' : 'in') + 'active tab',
               onClick: function onClick(e) {
-                return _this2.setFilter('seeking');
+                return _this3.setFilter('seeking');
               } },
             'Seeking'
           ),
@@ -23857,7 +23868,7 @@ var GamesIndex = function (_Component) {
             'span',
             { className: (filter === 'in progress' ? '' : 'in') + 'active tab',
               onClick: function onClick(e) {
-                return _this2.setFilter('in progress');
+                return _this3.setFilter('in progress');
               } },
             'In Progress'
           )
