@@ -18535,6 +18535,7 @@ var login = function login(credentials, dispatch) {
       dispatch({ type: 'LOGIN_SUCCESS', payload: currentUser });
     },
     error: function error(msg) {
+      debugger;
       dispatch({ type: 'LOGIN_ERROR', payload: msg });
     }
   });
@@ -23703,13 +23704,16 @@ var GamesIndex = function (_Component) {
       // Heroku does not support action cable using separate ports for streaming;
       // Poll the db every ten seconds instead.
       var self = this;
+      debugger;
       if (typeof App !== 'undefined') {
         console.log(' setting up action cable on front end... ');
         App.games = App.cable.subscriptions.create("GamesChannel", {
           connected: function connected() {
-            console.log('successfully connected');
+            console.log('GAMES_INDEX_SUCCESSFULLY_CONNECTED');
           },
-          disconnected: function disconnected() {},
+          disconnected: function disconnected() {
+            console.log('GAMES_INDEX_DISCONNECTED');
+          },
           received: function received(data) {
             self.props.createAction(data);
           },

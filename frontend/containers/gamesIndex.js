@@ -27,44 +27,48 @@ class GamesIndex extends Component {
     };
 
     this.applyFilter = this.applyFilter.bind(this);
-    this.setFilter = this.setFilter.bind(this);
-    this.newGame = this.newGame.bind(this);
     this.handleClick = this.handleClick.bind(this);
+    this.newGame = this.newGame.bind(this);
+    this.setFilter = this.setFilter.bind(this);
+    this.setupActionCable = this.setupActionCable.bind(this);
+    this.setupPollGamesIndex = this.setupPollGamesIndex.bind(this);
   }
 
   componentDidMount() {
     this.props.fetchAllGames();
 
-    // Heroku does not support action cable using separate ports for streaming;
-    // Poll the db every ten seconds instead.
-    const self = this;
-    if (typeof App !== 'undefined'){
-      console.log(' setting up action cable on front end... ' )
-      App.games = App.cable.subscriptions.create("GamesChannel", {
-        connected: function() {
-          console.log('successfully connected');
-        },
-        disconnected: function() {},
-        received: function(data) {
-          self.props.createAction(data);
-        },
-        speak: function(data) {
-          return this.perform('speak', {
-            data: data
-          });
-        }
-      });
+    if (typeof App !== 'undefined') {
+      this.setupActionCable();
+    } else {
+      this.setupPollGamesIndex();
     }
-    //
-    // this.pollGamesIndex = () => {
-    //   this.props.fetchAllGames();
-    //   window.setTimeout(this.pollGamesIndex, 10000);
-    // }
-    // this.pollGamesIndex();
   }
 
   componentWillUnmount() {
     this.pollGamesIndex = false;
+  }
+
+  setupActionCable() {
+    const self = this;
+    console.log('Setting up Action Cable.' );
+    App.games = App.cable.subscriptions.create("GamesChannel", {
+      connected:    function() { console.log('GAMES_INDEX_SUCCESSFULLY_CONNECTED'); },
+      disconnected: function() { console.log('GAMES_INDEX_DISCONNECTED'); },
+      received:     function(data) { self.props.createAction(data); },
+      speak: function(data) {
+        console.log('cable is speaking...');
+        return this.perform('speak', { data: data });
+      }
+    });
+  }
+
+  setupPollGamesIndex() {
+    console.log('Action Cable unavailable, setting up db poll.')
+    this.pollGamesIndex = () => {
+      this.props.fetchAllGames();
+      window.setTimeout(this.pollGamesIndex, 10000);
+    }
+    this.pollGamesIndex();
   }
 
   applyFilter() {
