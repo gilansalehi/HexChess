@@ -1363,31 +1363,31 @@ if (process.env.NODE_ENV !== 'production' && typeof isCrushed.name === 'string' 
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__BrowserRouter__ = __webpack_require__(282);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__BrowserRouter__ = __webpack_require__(283);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "BrowserRouter", function() { return __WEBPACK_IMPORTED_MODULE_0__BrowserRouter__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__HashRouter__ = __webpack_require__(284);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__HashRouter__ = __webpack_require__(285);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "HashRouter", function() { return __WEBPACK_IMPORTED_MODULE_1__HashRouter__["a"]; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Link__ = __webpack_require__(116);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Link", function() { return __WEBPACK_IMPORTED_MODULE_2__Link__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__MemoryRouter__ = __webpack_require__(286);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__MemoryRouter__ = __webpack_require__(287);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "MemoryRouter", function() { return __WEBPACK_IMPORTED_MODULE_3__MemoryRouter__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__NavLink__ = __webpack_require__(287);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__NavLink__ = __webpack_require__(288);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "NavLink", function() { return __WEBPACK_IMPORTED_MODULE_4__NavLink__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__Prompt__ = __webpack_require__(288);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__Prompt__ = __webpack_require__(289);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Prompt", function() { return __WEBPACK_IMPORTED_MODULE_5__Prompt__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__Redirect__ = __webpack_require__(289);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__Redirect__ = __webpack_require__(290);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Redirect", function() { return __WEBPACK_IMPORTED_MODULE_6__Redirect__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__Route__ = __webpack_require__(290);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__Route__ = __webpack_require__(291);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Route", function() { return __WEBPACK_IMPORTED_MODULE_7__Route__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__Router__ = __webpack_require__(291);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__Router__ = __webpack_require__(292);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Router", function() { return __WEBPACK_IMPORTED_MODULE_8__Router__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__StaticRouter__ = __webpack_require__(292);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__StaticRouter__ = __webpack_require__(293);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "StaticRouter", function() { return __WEBPACK_IMPORTED_MODULE_9__StaticRouter__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__Switch__ = __webpack_require__(293);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__Switch__ = __webpack_require__(294);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "Switch", function() { return __WEBPACK_IMPORTED_MODULE_10__Switch__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__matchPath__ = __webpack_require__(294);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__matchPath__ = __webpack_require__(295);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "matchPath", function() { return __WEBPACK_IMPORTED_MODULE_11__matchPath__["a"]; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__withRouter__ = __webpack_require__(295);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__withRouter__ = __webpack_require__(296);
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "withRouter", function() { return __WEBPACK_IMPORTED_MODULE_12__withRouter__["a"]; });
 
 
@@ -23656,7 +23656,7 @@ var _reactRedux = __webpack_require__(22);
 
 var _reactRouterDom = __webpack_require__(14);
 
-var _gamesList = __webpack_require__(296);
+var _gamesList = __webpack_require__(297);
 
 var _gamesList2 = _interopRequireDefault(_gamesList);
 
@@ -23664,9 +23664,9 @@ var _rules = __webpack_require__(118);
 
 var _rules2 = _interopRequireDefault(_rules);
 
-var _startup = __webpack_require__(299);
+var _startup = __webpack_require__(300);
 
-var _gameIndex = __webpack_require__(300);
+var _gameIndex = __webpack_require__(301);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -23720,7 +23720,7 @@ var GamesIndex = function (_Component) {
           }
         });
       }
-      // 
+      //
       // this.pollGamesIndex = () => {
       //   this.props.fetchAllGames();
       //   window.setTimeout(this.pollGamesIndex, 10000);
@@ -24123,11 +24123,11 @@ var _redux = __webpack_require__(13);
 
 var _reactRedux = __webpack_require__(22);
 
-var _board = __webpack_require__(301);
+var _board = __webpack_require__(302);
 
 var _board2 = _interopRequireDefault(_board);
 
-var _gameNav = __webpack_require__(305);
+var _gameNav = __webpack_require__(306);
 
 var _gameNav2 = _interopRequireDefault(_gameNav);
 
@@ -24137,21 +24137,21 @@ var _navButton2 = _interopRequireDefault(_navButton);
 
 var _reactRouterDom = __webpack_require__(14);
 
-var _info = __webpack_require__(306);
+var _info = __webpack_require__(307);
 
 var _info2 = _interopRequireDefault(_info);
 
-var _bannerMessage = __webpack_require__(307);
+var _bannerMessage = __webpack_require__(308);
 
 var _bannerMessage2 = _interopRequireDefault(_bannerMessage);
 
 var _utils = __webpack_require__(23);
 
-var _gameActions = __webpack_require__(308);
+var _gameActions = __webpack_require__(309);
 
-var _postGameState = __webpack_require__(309);
+var _postGameState = __webpack_require__(310);
 
-var _fetchGameState = __webpack_require__(310);
+var _fetchGameState = __webpack_require__(311);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -24690,7 +24690,7 @@ var _hex = __webpack_require__(43);
 
 var _hex2 = _interopRequireDefault(_hex);
 
-var _miniHex = __webpack_require__(302);
+var _miniHex = __webpack_require__(303);
 
 var _miniHex2 = _interopRequireDefault(_miniHex);
 
@@ -24864,7 +24864,7 @@ var _index = __webpack_require__(267);
 
 var _index2 = _interopRequireDefault(_index);
 
-var _App = __webpack_require__(281);
+var _App = __webpack_require__(282);
 
 var _App2 = _interopRequireDefault(_App);
 
@@ -40126,6 +40126,10 @@ var _userReducer = __webpack_require__(280);
 
 var _userReducer2 = _interopRequireDefault(_userReducer);
 
+var _errorsReducer = __webpack_require__(281);
+
+var _errorsReducer2 = _interopRequireDefault(_errorsReducer);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var placeholder = function placeholder() {
@@ -40136,7 +40140,8 @@ var allReducers = (0, _redux.combineReducers)({
   user: _userReducer2.default,
   input: _input2.default,
   games: _gamesIndex2.default,
-  game: _gameReducer2.default
+  game: _gameReducer2.default,
+  errors: _errorsReducer2.default
 });
 
 exports.default = allReducers;
@@ -40834,6 +40839,41 @@ var initialState = false;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.default = errors;
+var initialState = {};
+
+function errors() {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
+  var action = arguments[1];
+
+  switch (action.type) {
+    case 'LOGIN_ERROR':
+      debugger;
+      return Object.assign({}, state, { login: action.payload.message });
+      break;
+    case 'LOGIN_SUCCESS':
+      return Object.assign({}, state, { login: [] });
+      break;
+    case 'SIGNUP_ERROR':
+      debugger;
+      return Object.assign({}, state, { signup: action.payload.message });
+      break;
+    case 'SIGNUP_SUCCESS':
+      return Object.assign({}, state, { signup: [] });
+  }
+  return state;
+}
+
+/***/ }),
+/* 282 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -40855,7 +40895,7 @@ var _game = __webpack_require__(119);
 
 var _game2 = _interopRequireDefault(_game);
 
-var _appNav = __webpack_require__(311);
+var _appNav = __webpack_require__(312);
 
 var _appNav2 = _interopRequireDefault(_appNav);
 
@@ -40863,19 +40903,19 @@ var _navButton = __webpack_require__(45);
 
 var _navButton2 = _interopRequireDefault(_navButton);
 
-var _login = __webpack_require__(312);
+var _login = __webpack_require__(313);
 
 var _login2 = _interopRequireDefault(_login);
 
-var _signup = __webpack_require__(313);
+var _signup = __webpack_require__(314);
 
 var _signup2 = _interopRequireDefault(_signup);
 
-var _user = __webpack_require__(314);
+var _user = __webpack_require__(315);
 
 var _user2 = _interopRequireDefault(_user);
 
-var _home = __webpack_require__(315);
+var _home = __webpack_require__(316);
 
 var _home2 = _interopRequireDefault(_home);
 
@@ -40883,7 +40923,7 @@ var _rules = __webpack_require__(118);
 
 var _rules2 = _interopRequireDefault(_rules);
 
-var _index = __webpack_require__(316);
+var _index = __webpack_require__(317);
 
 var _login3 = __webpack_require__(71);
 
@@ -41039,7 +41079,7 @@ function mapDispatchToProps(dispatch) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(App);
 
 /***/ }),
-/* 282 */
+/* 283 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -41047,7 +41087,7 @@ exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types__ = __webpack_require__(8);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_prop_types__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_history_createBrowserHistory__ = __webpack_require__(283);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_history_createBrowserHistory__ = __webpack_require__(284);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_history_createBrowserHistory___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_history_createBrowserHistory__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_react_router__ = __webpack_require__(10);
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -41099,7 +41139,7 @@ BrowserRouter.propTypes = {
 /* harmony default export */ __webpack_exports__["a"] = (BrowserRouter);
 
 /***/ }),
-/* 283 */
+/* 284 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -41412,7 +41452,7 @@ var createBrowserHistory = function createBrowserHistory() {
 exports.default = createBrowserHistory;
 
 /***/ }),
-/* 284 */
+/* 285 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -41420,7 +41460,7 @@ exports.default = createBrowserHistory;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types__ = __webpack_require__(8);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_prop_types__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_history_createHashHistory__ = __webpack_require__(285);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_history_createHashHistory__ = __webpack_require__(286);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_history_createHashHistory___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_history_createHashHistory__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_react_router__ = __webpack_require__(10);
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -41471,7 +41511,7 @@ HashRouter.propTypes = {
 /* harmony default export */ __webpack_exports__["a"] = (HashRouter);
 
 /***/ }),
-/* 285 */
+/* 286 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -41801,7 +41841,7 @@ var createHashHistory = function createHashHistory() {
 exports.default = createHashHistory;
 
 /***/ }),
-/* 286 */
+/* 287 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -41810,7 +41850,7 @@ exports.default = createHashHistory;
 
 
 /***/ }),
-/* 287 */
+/* 288 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -41887,7 +41927,7 @@ NavLink.defaultProps = {
 /* harmony default export */ __webpack_exports__["a"] = (NavLink);
 
 /***/ }),
-/* 288 */
+/* 289 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -41896,7 +41936,7 @@ NavLink.defaultProps = {
 
 
 /***/ }),
-/* 289 */
+/* 290 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -41905,7 +41945,7 @@ NavLink.defaultProps = {
 
 
 /***/ }),
-/* 290 */
+/* 291 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -41914,7 +41954,7 @@ NavLink.defaultProps = {
 
 
 /***/ }),
-/* 291 */
+/* 292 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -41923,7 +41963,7 @@ NavLink.defaultProps = {
 
 
 /***/ }),
-/* 292 */
+/* 293 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -41932,7 +41972,7 @@ NavLink.defaultProps = {
 
 
 /***/ }),
-/* 293 */
+/* 294 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -41941,7 +41981,7 @@ NavLink.defaultProps = {
 
 
 /***/ }),
-/* 294 */
+/* 295 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -41950,7 +41990,7 @@ NavLink.defaultProps = {
 
 
 /***/ }),
-/* 295 */
+/* 296 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -41959,7 +41999,7 @@ NavLink.defaultProps = {
 
 
 /***/ }),
-/* 296 */
+/* 297 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -41977,7 +42017,7 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRouterDom = __webpack_require__(14);
 
-var _gameLink = __webpack_require__(297);
+var _gameLink = __webpack_require__(298);
 
 var _gameLink2 = _interopRequireDefault(_gameLink);
 
@@ -42081,7 +42121,7 @@ var GamesList = function (_Component) {
 exports.default = GamesList;
 
 /***/ }),
-/* 297 */
+/* 298 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -42099,7 +42139,7 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRouterDom = __webpack_require__(14);
 
-var _button = __webpack_require__(298);
+var _button = __webpack_require__(299);
 
 var _button2 = _interopRequireDefault(_button);
 
@@ -42200,7 +42240,7 @@ GameLink.contextTypes = {
 };
 
 /***/ }),
-/* 298 */
+/* 299 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -42266,7 +42306,7 @@ var Button = function (_Component) {
 exports.default = Button;
 
 /***/ }),
-/* 299 */
+/* 300 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -42343,7 +42383,7 @@ var fetchGamesError = function fetchGamesError() {
 // }
 
 /***/ }),
-/* 300 */
+/* 301 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -42489,7 +42529,7 @@ var createAction = exports.createAction = function createAction(data) {
 };
 
 /***/ }),
-/* 301 */
+/* 302 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -42515,11 +42555,11 @@ var _player = __webpack_require__(120);
 
 var _player2 = _interopRequireDefault(_player);
 
-var _energyCounter = __webpack_require__(303);
+var _energyCounter = __webpack_require__(304);
 
 var _energyCounter2 = _interopRequireDefault(_energyCounter);
 
-var _reserveButton = __webpack_require__(304);
+var _reserveButton = __webpack_require__(305);
 
 var _reserveButton2 = _interopRequireDefault(_reserveButton);
 
@@ -42692,7 +42732,7 @@ Board.contextTypes = {
 };
 
 /***/ }),
-/* 302 */
+/* 303 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -42829,7 +42869,7 @@ function styles(scale, color) {
 }
 
 /***/ }),
-/* 303 */
+/* 304 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -42931,7 +42971,7 @@ function styles() {
 };
 
 /***/ }),
-/* 304 */
+/* 305 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -43018,7 +43058,7 @@ function styles() {
 };
 
 /***/ }),
-/* 305 */
+/* 306 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -43127,7 +43167,7 @@ var Nav = function (_Component) {
 exports.default = Nav;
 
 /***/ }),
-/* 306 */
+/* 307 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -43263,7 +43303,7 @@ function styles() {
 };
 
 /***/ }),
-/* 307 */
+/* 308 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -43371,7 +43411,7 @@ var BannerMessage = function (_Component) {
 exports.default = BannerMessage;
 
 /***/ }),
-/* 308 */
+/* 309 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -43489,7 +43529,7 @@ var declareWinner = exports.declareWinner = function declareWinner(winner) {
 };
 
 /***/ }),
-/* 309 */
+/* 310 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -43556,7 +43596,7 @@ var postWinner = exports.postWinner = function postWinner(gameId, winner) {
 };
 
 /***/ }),
-/* 310 */
+/* 311 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -43620,7 +43660,7 @@ var fetchGameStateError = function fetchGameStateError(payload) {
 };
 
 /***/ }),
-/* 311 */
+/* 312 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -43677,7 +43717,7 @@ var Nav = function (_Component) {
 exports.default = Nav;
 
 /***/ }),
-/* 312 */
+/* 313 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -43837,7 +43877,10 @@ var LoginForm = function (_Component) {
 }(_react.Component);
 
 function mapStateToProps(state) {
-  return {};
+  return {
+    user: state.user,
+    error: state.errors.login
+  };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -43849,7 +43892,7 @@ function mapDispatchToProps(dispatch) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(LoginForm);
 
 /***/ }),
-/* 313 */
+/* 314 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -44044,7 +44087,7 @@ function mapDispatchToProps(dispatch) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(SignupForm);
 
 /***/ }),
-/* 314 */
+/* 315 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -44140,7 +44183,7 @@ function mapDispatchToProps(dispatch) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Profile);
 
 /***/ }),
-/* 315 */
+/* 316 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -44243,7 +44286,7 @@ var Home = function (_Component) {
 exports.default = Home;
 
 /***/ }),
-/* 316 */
+/* 317 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

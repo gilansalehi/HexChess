@@ -18,6 +18,7 @@ const login = (credentials, dispatch) => {
       dispatch({ type: 'LOGIN_SUCCESS', payload: currentUser });
     },
     error: function (msg) {
+      debugger;
       dispatch({ type: 'LOGIN_ERROR', payload: msg });
     }
   });
