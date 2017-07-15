@@ -10,7 +10,7 @@ Rails.application.routes.draw do
   end
 
   # Heroku only supports one port... will need a different service when upgrading to websockets.
-  # mount ActionCable.server => '/cable'
+  mount ActionCable.server => '/cable'
 
   resources :chatrooms, param: :slug
   resources :messages

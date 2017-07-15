@@ -90,6 +90,12 @@ Rails.application.configure do
   config.active_record.dump_schema_after_migration = false
 
   # Set up heroku action cable middleware to let app run on Heroku Dynos
-  config.middleware.use HerokuCable
-  config.web_socket_server_url = "wss://hex-chess.herokuapp.com"
+  # config.middleware.use HerokuCable
+  # config/environments/production.rb
+
+  config.action_cable.allowed_request_origins = [
+    'https://hex-chess.herokuapp.com',
+    'http://hex-chess.herokuapp.com'
+  ]
+  config.web_socket_server_url = "wss://hex-chess.herokuapp.com/cable"
 end

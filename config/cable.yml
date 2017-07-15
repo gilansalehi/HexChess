@@ -1,14 +1,9 @@
-development: &development
-  :url: redis://localhost:6379
-  :host: localhost
-  :port: 6379
-  :timeout: 1
-  :inline: true
-test: *development
-production: &production
-  :url:  redis://h:pcf0707f9644fd864b1c54ea74a5cb86878dc528a5509ab2c2f86e86e9bc5a7e3@ec2-34-226-55-20.compute-1.amazonaws.com:19829
-  :host: ec2-34-226-55-20.compute-1.amazonaws.com
-  :port: 19829
-  :password: pcf0707f9644fd864b1c54ea74a5cb86878dc528a5509ab2c2f86e86e9bc5a7e3
-  :inline: true
-  :timeout: 5
+production:
+  adapter: redis
+  url: redis://redistogo:a8f7a63de9f5fe03120ec89715f674c6@crestfish.redistogo.com:11581/
+
+development:
+  adapter: async
+
+test:
+  adapter: async
