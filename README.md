@@ -21,12 +21,12 @@ Capture the enemy hero or capture three enemy power nodes
 ### Movement:
 
   Each type of piece moves in a unique way, except power nodes, which cannot move.  Unless otherwise noted, a piece can capture any enemy piece by moving to its hex.
-      + Heroes can move one hex in any direction.
-      + Queens may move any number of hexes in a straight line in any direction.
-      + Rooks can move any number of hexes straight forward, back-left, or back-right (like an inverted Y shape)
-      + Bishops can move any number of hexes in a straight line diagonally (like an X shape)
-      + Pawns may move (but not capture!) one hex forward, and may capture (but not move!) one hex diagonally forward.
-      + Power Nodes may not move.
++ Heroes can move one hex in any direction.
++ Queens may move any number of hexes in a straight line in any direction.
++ Rooks can move any number of hexes straight forward, back-left, or back-right (like an inverted Y shape)
++ Bishops can move any number of hexes in a straight line diagonally (like an X shape)
++ Pawns may move (but not capture!) one hex forward, and may capture (but not move!) one hex diagonally forward.
++ Power Nodes may not move.
 
 ### Deployment:
 
