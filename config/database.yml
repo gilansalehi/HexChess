@@ -20,6 +20,8 @@ development:
 # Do not set this db to the same as development or production.
 test:
   <<: *default
+  username: rspec_tester
+  password: i_am_rspec
   database: db/hex_chess_test
 
 production:
