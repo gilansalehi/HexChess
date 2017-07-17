@@ -11,6 +11,10 @@ class Game < ApplicationRecord
     User.find_by_id(p2_id)
   end
 
+  def challenger=(user)
+    self.p2_id = user.id
+  end
+
   def players
     users.where(['player = true'])
   end
@@ -21,6 +25,7 @@ class Game < ApplicationRecord
 
   def creator=(user)
     # Raise "You cannot change that" if self.creator
+    # self.creator_id = user.id
     super unless self.creator
   end
 
@@ -45,11 +50,11 @@ class Game < ApplicationRecord
 
   def data
     return {
+      id:         self.id,
       creator:    self.creator.try(:name),
       challenger: self.challenger.try(:name),
       status:     self.status,
       winner:     self.winner,
-      id:         self.id,
       position:   self.position,
       created_at: self.created_at,
       p1_id:      self.p1_id,

@@ -1,11 +1,10 @@
-require 'rspec'
 require 'rails_helper'
 
 describe User do
   describe "username" do
     it "is present" do
       a = User.create({ password: 'hihihi' })
-      b = User.create({ name: 'ann', password: 'hihihi' })
+      b = build(:user)
 
       expect(b.valid?).to be(true)
       expect(a.valid?).to be(false)
