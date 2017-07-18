@@ -1,13 +1,13 @@
 import $ from 'jquery';
 
-export const loginRequest = (credentials) => {
+export const loginRequest = (credentials, callbacks) => {
   return (dispatch) => {
     dispatch({ type: 'LOGIN_REQUEST_PENDING' });
-    return login(credentials, dispatch);
+    return login(credentials, dispatch, callbacks);
   }
 }
 
-const login = (credentials, dispatch) => {
+const login = (credentials, dispatch, callbacks) => {
   $.ajax({
     url: '/session',
     beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
@@ -16,10 +16,11 @@ const login = (credentials, dispatch) => {
     data: credentials,
     success: function (currentUser) {
       dispatch({ type: 'LOGIN_SUCCESS', payload: currentUser });
+      callbacks && callbacks.success();
     },
     error: function (msg) {
-      debugger;
-      dispatch({ type: 'LOGIN_ERROR', payload: msg });
+      dispatch({ type: 'LOGIN_ERROR', payload: 'Invalid credentials.' });
+      callbacks && callbacks.error();
     }
   });
 }

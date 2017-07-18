@@ -13,6 +13,8 @@ default: &default
 
 development:
   <<: *default
+  username: rspec_tester
+  password: i_am_rspec
   database: db/hex_chess_development
 
 # Warning: The database defined as "test" will be erased and

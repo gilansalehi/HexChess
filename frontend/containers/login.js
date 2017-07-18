@@ -2,6 +2,7 @@
 import React, {Component} from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
+import Notification from '../components/notification';
 
 import $ from 'jquery';
 import { Link } from 'react-router-dom';
@@ -20,6 +21,7 @@ class LoginForm extends Component {
     }
 
     this.handleKeyDown = this.handleKeyDown.bind(this);
+    this.showErrorNotification = this.showErrorNotification.bind(this);
     this.updateUsername = this.updateUsername.bind(this);
     this.updatePassword = this.updatePassword.bind(this);
     this.submit = this.submit.bind(this);
@@ -31,11 +33,21 @@ class LoginForm extends Component {
     }
   }
 
+  showErrorNotification(text) {
+    return (
+      <Notification text={text} />
+    );
+  }
+
   submit(e) {
     e.preventDefault();
+    const self = this;
     const credentials = { user: this.state };
-    this.props.loginRequest(credentials);
-    this.props.history.push('/play');
+    const callbacks = {
+      success: () => { self.props.history.push('/') },
+      error: () => { self.props.history.push('/login') }
+    };
+    this.props.loginRequest(credentials, callbacks);
   }
 
   updateUsername(e) {
@@ -49,11 +61,12 @@ class LoginForm extends Component {
   }
 
   render() {
+    const { error } = this.props;
 
     return (
       <div className="auth-page group sixty-left">
         <h1>Log in</h1>
-
+        <div>{ error && error.length && this.showErrorNotification(error) }</div>
         <form onSubmit={ this.submit } className="clearfix" onKeyDown={ e => this.handleKeyDown(e) }>
 
           <label htmlFor="username">Username:</label><br></br>
@@ -90,6 +103,7 @@ class LoginForm extends Component {
 }
 
 function mapStateToProps(state) {
+  debugger;
   return {
     user: state.user,
     error: state.errors.login

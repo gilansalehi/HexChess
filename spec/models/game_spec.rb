@@ -79,5 +79,15 @@ describe Game do
       expect { game.status = 'finished' }.to raise_error(ArgumentError)
       expect(game.status).to eq('abandoned')
     end
+
+    it 'cannot overwrite winner once a winner is declared' do
+      expect(game.winner).to be(nil)
+
+      game.winner = player_1
+      expect(game.winner.id).to be(player_1.id)
+
+      game.winner = player_2 #does nothing now
+      expect(game.winner.id).to be(player_1.id)
+    end
   end
 end

@@ -15,7 +15,7 @@ class SessionsController < ApplicationController
       render json: @user
     else
       flash.now[:errors] = ["Invalid username or password"]
-      render :new
+      render json: 'invalid credentials', status: 403 #invalid credentials!
     end
   end
 
