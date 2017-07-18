@@ -40122,7 +40122,20 @@ var thisPlayer = function thisPlayer() {
   return state;
 };
 
+var gameId = function gameId() {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+  var action = arguments[1];
+
+  switch (action.type) {
+    case 'JOIN_GAME_SUCCESS':
+      return action.payload.id;
+      break;
+  }
+  return state;
+};
+
 var allReducers = (0, _redux.combineReducers)({
+  id: gameId,
   selection: _selection2.default,
   player: _player2.default,
   thisPlayer: thisPlayer,
@@ -40603,7 +40616,7 @@ exports.default = function () {
       return state;
       break;
     case 'LOGOUT_REQUEST_PENDING':
-      return state;
+      return initialState;
       break;
     case 'LOGOUT_SUCCESS':
       return initialState;
@@ -42884,7 +42897,8 @@ var Game = function (_Component) {
           selection = _props8.selection,
           pieces = _props8.pieces,
           currentPlayer = _props8.currentPlayer,
-          game = _props8.game;
+          game = _props8.game,
+          gameInfo = _props8.gameInfo;
 
       var legalMoves = selection ? this.getLegalMoves(selection.contents) : [];
       var info = this.buildInfoPanel();
@@ -42933,6 +42947,7 @@ var Game = function (_Component) {
         }),
         _react2.default.createElement(_info2.default, { info: info,
           game: game,
+          gameInfo: gameInfo,
           remainingEnergy: nodeCount - player.energy,
           remainingActions: 2 - player.actions,
           currentPlayer: currentPlayer
@@ -42956,8 +42971,12 @@ Game.childContextTypes = {
 function mapStateToProps(state) {
   var game = state.game;
 
+  var gameInfo = state.games.filter(function (g) {
+    return g.id === game.id;
+  })[0];
   return {
     game: state.game,
+    gameInfo: gameInfo,
     selection: game.selection,
     currentPlayer: game.currentPlayer,
     moveCount: game.moveCount,
@@ -43702,7 +43721,8 @@ var InfoPanel = function (_Component) {
           currentPlayer = _props.currentPlayer,
           remainingEnergy = _props.remainingEnergy,
           remainingActions = _props.remainingActions,
-          game = _props.game;
+          game = _props.game,
+          gameInfo = _props.gameInfo;
       var _styles = this.styles,
           image = _styles.image,
           text = _styles.text,
@@ -43710,7 +43730,8 @@ var InfoPanel = function (_Component) {
           flexPositioner = _styles.flexPositioner;
 
       var displayText = this.buildText(info);
-      debugger;
+      var userStatus = game.player === 'observer' ? 'observing' : game.player === 'P1' ? 'playing Blue' : 'playing Red';
+
       return _react2.default.createElement(
         'div',
         { className: 'info-panel', style: container },
@@ -43722,15 +43743,25 @@ var InfoPanel = function (_Component) {
             { className: 'game-info' },
             _react2.default.createElement(
               'span',
-              { style: { color: 'blue' } },
-              'Player 1: ',
-              game.creator
+              null,
+              'You are ',
+              userStatus
+            ),
+            _react2.default.createElement('br', null),
+            _react2.default.createElement(
+              'span',
+              { style: { color: 'blue', fontSize: '24px' } },
+              gameInfo ? gameInfo.creator : 'loading...'
             ),
             _react2.default.createElement(
               'span',
-              { style: { color: 'red' } },
-              'Player 2: ',
-              game.challenger || 'waiting...'
+              null,
+              ' vs. '
+            ),
+            _react2.default.createElement(
+              'span',
+              { style: { color: 'red', fontSize: '24px' } },
+              gameInfo ? gameInfo.challenger : 'waiting...'
             )
           ),
           _react2.default.createElement(

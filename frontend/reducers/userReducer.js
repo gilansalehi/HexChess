@@ -12,7 +12,7 @@ export default function(state = initialState, action) {
       return state;
       break;
     case 'LOGOUT_REQUEST_PENDING':
-      return state;
+      return initialState;
       break;
     case 'LOGOUT_SUCCESS':
       return initialState;

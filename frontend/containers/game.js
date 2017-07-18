@@ -237,7 +237,7 @@ class Game extends Component {
   }
 
   render() {
-    const { player, selection, pieces, currentPlayer, game } = this.props;
+    const { player, selection, pieces, currentPlayer, game, gameInfo } = this.props;
     const legalMoves = selection ? this.getLegalMoves(selection.contents) : [];
     const info = this.buildInfoPanel();
     const nodeCount = this.getNodeCount(player, pieces);
@@ -278,6 +278,7 @@ class Game extends Component {
         />
         <InfoPanel info={ info }
           game={game}
+          gameInfo={gameInfo}
           remainingEnergy={ nodeCount - player.energy }
           remainingActions={ 2 - player.actions }
           currentPlayer={ currentPlayer }
@@ -298,8 +299,10 @@ Game.childContextTypes = {
 
 function mapStateToProps(state) {
   const {game} = state;
+  const gameInfo = state.games.filter(g => g.id === game.id)[0];
   return {
     game: state.game,
+    gameInfo: gameInfo,
     selection: game.selection,
     currentPlayer: game.currentPlayer,
     moveCount: game.moveCount,

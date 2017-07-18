@@ -56,7 +56,17 @@ const thisPlayer = (state = defaultPlayer, action) => {
   return state;
 }
 
+const gameId = (state = null, action) => {
+  switch (action.type) {
+    case 'JOIN_GAME_SUCCESS':
+      return action.payload.id;
+      break;
+  }
+  return state;
+}
+
 const allReducers = combineReducers({
+  id: gameId,
   selection: SelectionReducer,
   player: PlayerReducer,
   thisPlayer: thisPlayer,

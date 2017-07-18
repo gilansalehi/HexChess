@@ -306,6 +306,15 @@ form input {
   overflow-y: scroll;
 }
 
+.game-info {
+  display: block;
+  background-color: #999;
+  font-weight: bold;
+  padding: 5px;
+  margin: 10px 0;
+  text-align: center;
+}
+
 .no-scroll {
   overflow: hidden;
 }
