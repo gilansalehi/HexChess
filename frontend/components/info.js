@@ -31,8 +31,8 @@ export default class InfoPanel extends Component {
     const { info, currentPlayer, remainingEnergy, remainingActions, game, gameInfo } = this.props;
     const { image, text, container, flexPositioner } = this.styles;
     const displayText = this.buildText(info);
-    const userStatus = game.player === 'observer' ? 'observing' :
-                       game.player === 'P1' ? 'playing Blue' : 'playing Red';
+    const userStatus = game.player.player === 'observer' ? 'observing' :
+                       game.player.player === 'P1' ? 'playing Blue' : 'playing Red';
 
     return (
       <div className='info-panel' style={ container }>
@@ -45,7 +45,7 @@ export default class InfoPanel extends Component {
             </span>
             <span> vs. </span>
             <span style={{color: 'red', fontSize: '24px' }}>
-              { gameInfo ? gameInfo.challenger : 'waiting...' }
+              { gameInfo && gameInfo.challenger ? gameInfo.challenger : 'waiting...' }
             </span>
           </div>
           <div className='info-log'>

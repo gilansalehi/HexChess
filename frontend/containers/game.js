@@ -6,6 +6,7 @@ import Nav from '../components/game-nav.js';
 import NavButton from '../components/nav-button';
 import { BrowserRouter as Router, Link, Route } from 'react-router-dom';
 import InfoPanel from '../components/info.js';
+import { info } from '../utils/info';
 import BannerMessage from '../components/banner-message';
 import { Util } from '../utils/utils';
 import {
@@ -70,7 +71,6 @@ class Game extends Component {
     const nextPosition = nextProps.pieces;
     const { currentPlayer, player } = this.props;
     const id = this.gameId;
-    console.log(player);
 
     if ( nextPosition !== lastPosition && currentPlayer === player.player ) {
       const gameState = {
@@ -132,7 +132,10 @@ class Game extends Component {
       if ( hex.player === player.player ) {
         this.props.setSelection(hex);
       }
-      this.props.updateInfo({ image: hex.contents.imgUrl, text: hex.contents.info });
+      if ( hex.contents.type ) {
+        const infotext = info[hex.contents.type];
+        this.props.updateInfo({ text: infotext });
+      }
     } else { // selection exists
       const moveIsLegal  = this.isLegalMove(hex.pos);
       const isMyTurn     = currentPlayer === player.player;

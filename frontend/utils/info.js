@@ -9,10 +9,10 @@ export const images = {
 };
 
 export const info = {
-  hero: 'This is your hero.  He or she can move one hex in any direction, and deploy pieces to any adjacent hex.  If your hero is captured, you lose the game!',
-  pawn: 'Pawns may move (but not capture!) one hex straight forward, and capture one hex diagonally forward',
-  bishop: 'Bishops may move and capture in an X shape',
-  rook: 'Rooks may move and capture in an inverted Y shape',
-  queen: 'Queens may move and capture in a straight line in any direction',
-  blueGem: 'This is a power node.  You will to deploy power nodes in order to build your energy and deploy your stronger pieces.  But be careful: if your opponent captures three of your power nodes, you will lose!',
+  hero:    'This is your hero.  He or she can move one hex in any direction, and deploy pieces to any adjacent hex.  If your hero is captured, you lose the game!',
+  pawn:    'Pawns may move (but not capture!) one hex straight forward, and capture one hex diagonally forward',
+  bishop:  'Bishops may move and capture in an X shape',
+  rook:    'Rooks may move and capture in an inverted Y shape',
+  queen:   'Queens may move and capture in a straight line in any direction',
+  blueGem: 'Nodes cannot move.  You will to deploy power nodes in order to build your energy and deploy your stronger pieces.  But be careful: if your opponent captures three of your power nodes, you will lose!',
 };

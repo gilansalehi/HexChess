@@ -61,6 +61,9 @@ const gameId = (state = null, action) => {
     case 'JOIN_GAME_SUCCESS':
       return action.payload.id;
       break;
+    case 'OBSERVE_GAME_SUCCESS':
+      return action.payload.id;
+      break;
   }
   return state;
 }
