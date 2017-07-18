@@ -42883,7 +42883,8 @@ var Game = function (_Component) {
           player = _props8.player,
           selection = _props8.selection,
           pieces = _props8.pieces,
-          currentPlayer = _props8.currentPlayer;
+          currentPlayer = _props8.currentPlayer,
+          game = _props8.game;
 
       var legalMoves = selection ? this.getLegalMoves(selection.contents) : [];
       var info = this.buildInfoPanel();
@@ -42931,6 +42932,7 @@ var Game = function (_Component) {
           player: player
         }),
         _react2.default.createElement(_info2.default, { info: info,
+          game: game,
           remainingEnergy: nodeCount - player.energy,
           remainingActions: 2 - player.actions,
           currentPlayer: currentPlayer
@@ -43699,7 +43701,8 @@ var InfoPanel = function (_Component) {
           info = _props.info,
           currentPlayer = _props.currentPlayer,
           remainingEnergy = _props.remainingEnergy,
-          remainingActions = _props.remainingActions;
+          remainingActions = _props.remainingActions,
+          game = _props.game;
       var _styles = this.styles,
           image = _styles.image,
           text = _styles.text,
@@ -43707,12 +43710,29 @@ var InfoPanel = function (_Component) {
           flexPositioner = _styles.flexPositioner;
 
       var displayText = this.buildText(info);
+      debugger;
       return _react2.default.createElement(
         'div',
         { className: 'info-panel', style: container },
         _react2.default.createElement(
           'div',
           { style: flexPositioner },
+          _react2.default.createElement(
+            'div',
+            { className: 'game-info' },
+            _react2.default.createElement(
+              'span',
+              { style: { color: 'blue' } },
+              'Player 1: ',
+              game.creator
+            ),
+            _react2.default.createElement(
+              'span',
+              { style: { color: 'red' } },
+              'Player 2: ',
+              game.challenger || 'waiting...'
+            )
+          ),
           _react2.default.createElement(
             'div',
             { className: 'info-log' },

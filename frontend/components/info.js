@@ -28,12 +28,17 @@ export default class InfoPanel extends Component {
   }
 
   render() {
-    const { info, currentPlayer, remainingEnergy, remainingActions } = this.props;
+    const { info, currentPlayer, remainingEnergy, remainingActions, game } = this.props;
     const { image, text, container, flexPositioner } = this.styles;
     const displayText = this.buildText(info);
+    debugger;
     return (
       <div className='info-panel' style={ container }>
         <div style={ flexPositioner }>
+          <div className='game-info'>
+            <span style={{color: 'blue'}}>Player 1: { game.creator }</span>
+            <span style={{color: 'red'}}>Player 2: { game.challenger || 'waiting...' }</span>
+          </div>
           <div className='info-log'>
             { displayText }
           </div>
