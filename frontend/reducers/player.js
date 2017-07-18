@@ -4,7 +4,7 @@ import EnergyReducer from './energy1';
 import InfoReducer from './info';
 import ActionsReducer from './actions';
 
-const defaultPlayer = 'P1';
+const defaultPlayer = 'observer';
 
 function playerReducer(state = defaultPlayer, action) {
   switch (action.type) {

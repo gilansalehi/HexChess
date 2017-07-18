@@ -20,26 +20,34 @@ const WELCOME_MESSAGE = [
   "Good luck!",
 ].join('');
 
-const defaultInfo = {
-  image: null,
-  text: WELCOME_MESSAGE,
-};
+const defaultInfo = [
+  {
+    image: null,
+    text: WELCOME_MESSAGE,
+  },
+];
 
 export default function (state = defaultInfo, action) {
   const { type, payload } = action;
   switch (type) {
     case 'UPDATE_INFO':
-      return { image: payload.image, text: payload.text };
+      return [payload, ...state];
       break;
     case 'CLEAR_INFO':
       return defaultSelection;
       break;
     case 'FETCH_GAME_STATE_SUCCESS':
       const { winner } = action.payload;
-      return winner ? { image: null, text: winner + ' has won!' } : state;
+      return winner ? [{ image: null, text: winner + ' has won!' }, ...state] : state;
       break;
     case 'JOIN_GAME_ERROR':
-      return { image: null, text: 'ALERT: An error occurred joining this game. Please refresh and try again.' }
+      return [
+        {
+          image: null,
+          text: 'ALERT: An error occurred joining this game. Please refresh and try again.'
+        },
+        ...state,
+      ];
       break;
   }
   return state;

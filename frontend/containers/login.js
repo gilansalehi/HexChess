@@ -103,7 +103,6 @@ class LoginForm extends Component {
 }
 
 function mapStateToProps(state) {
-  debugger;
   return {
     user: state.user,
     error: state.errors.login

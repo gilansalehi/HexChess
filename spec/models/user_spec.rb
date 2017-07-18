@@ -77,4 +77,22 @@ describe User do
       expect(ariel.session_token).not_to eq(x)
     end
   end
+
+  describe "self#find_by_credentials" do
+    it "returns early if there is no user by that name" do
+      expect(User.find_by_credentials('nemo', nil)).to eq(nil)
+    end
+
+    it "checks password if user exists" do
+      b = User.create!({ name: 'batman', password: 'marthalol' })
+
+      expect(
+        User.find_by_credentials('batman', 'marthalol')
+      ).not_to eq(nil)
+
+      expect(
+        User.find_by_credentials('batman', 'gotham')
+      ).to eq(nil)
+    end
+  end
 end

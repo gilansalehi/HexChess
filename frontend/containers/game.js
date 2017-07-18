@@ -70,6 +70,7 @@ class Game extends Component {
     const nextPosition = nextProps.pieces;
     const { currentPlayer, player } = this.props;
     const id = this.gameId;
+    console.log(player);
 
     if ( nextPosition !== lastPosition && currentPlayer === player.player ) {
       const gameState = {
@@ -243,7 +244,7 @@ class Game extends Component {
     const energyString = player.energy ? `${nodeCount - player.energy}/${nodeCount}` : nodeCount;
 
     return (
-      <div className="game">
+      <div className="game no-scroll">
         <Nav
           options={[
             {

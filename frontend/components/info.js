@@ -20,20 +20,22 @@ export default class InfoPanel extends Component {
 
   buildText(text) {
     if (!text) { return false }
-    return text.split('\n').map((t, i) => {
-      return (<p key={i}>{t}</p>);
+    return text.map((blob, i) => {
+      return (
+        <p key={i}>{blob.text}</p>
+      );
     });
   }
 
   render() {
     const { info, currentPlayer, remainingEnergy, remainingActions } = this.props;
     const { image, text, container, flexPositioner } = this.styles;
-    const displayText = this.buildText(info.text);
+    const displayText = this.buildText(info);
     return (
       <div className='info-panel' style={ container }>
         <div style={ flexPositioner }>
-          <div style={ text }>
-            { displayText || "INFO PANEL" }
+          <div className='info-log'>
+            { displayText }
           </div>
         </div>
       </div>

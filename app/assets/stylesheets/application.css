@@ -298,6 +298,18 @@ form input {
   margin: 0px 10px;
 }
 
+.info-log {
+  display: block;
+  background-color: #999;
+  padding: 5px;
+  height: 600px;
+  overflow-y: scroll;
+}
+
+.no-scroll {
+  overflow: hidden;
+}
+
 .board {
   display: block;
   float: left;

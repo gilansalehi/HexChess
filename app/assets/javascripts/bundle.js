@@ -40403,7 +40403,7 @@ var _actions2 = _interopRequireDefault(_actions);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var defaultPlayer = 'P1';
+var defaultPlayer = 'observer';
 
 function playerReducer() {
   var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : defaultPlayer;
@@ -40509,7 +40509,7 @@ exports.default = function () {
 
   switch (type) {
     case 'UPDATE_INFO':
-      return { image: payload.image, text: payload.text };
+      return [payload].concat(_toConsumableArray(state));
       break;
     case 'CLEAR_INFO':
       return defaultSelection;
@@ -40517,21 +40517,26 @@ exports.default = function () {
     case 'FETCH_GAME_STATE_SUCCESS':
       var winner = action.payload.winner;
 
-      return winner ? { image: null, text: winner + ' has won!' } : state;
+      return winner ? [{ image: null, text: winner + ' has won!' }].concat(_toConsumableArray(state)) : state;
       break;
     case 'JOIN_GAME_ERROR':
-      return { image: null, text: 'ALERT: An error occurred joining this game. Please refresh and try again.' };
+      return [{
+        image: null,
+        text: 'ALERT: An error occurred joining this game. Please refresh and try again.'
+      }].concat(_toConsumableArray(state));
       break;
   }
   return state;
 };
 
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 var WELCOME_MESSAGE = ["Hello, and welcome to HexChess!  Here's a quick primer on the rules:", "\n", "Object: WIN THE GAME by capturing the enemy HERO or three enemy power NODES.", "\n", "Each turn, you may perform TWO actions.  You can either DEPLOY a piece from ", "your RESERVE, or you may MOVE a piece on the board (note: you cannot move the", " same piece twice, nor may you move a piece the same turn you deploy it).", "\n", "Movement: There are six different types of pieces in Hex Chess: ", "HERO, QUEEN, BISHOP, ROOK, PAWN, and NODE, and each one moves in a different", " way (power nodes cannot move).  Select a piece to see its legal moves.", "\n", "Deployment: You can see what pieces are in your Reserve by clicking the Res", " button at the bottom of the left panel.  You will see a list that displays", " the six different types of pieces.  In order to deploy a piece, you must ", "have enough ENERGY to deploy it.  Build up your energy by deploying POWER NODES", " (which cost 0 energy).", "\n", "Good luck!"].join('');
 
-var defaultInfo = {
+var defaultInfo = [{
   image: null,
   text: WELCOME_MESSAGE
-};
+}];
 
 /***/ }),
 /* 284 */
@@ -42644,6 +42649,7 @@ var Game = function (_Component) {
           player = _props.player;
 
       var id = this.gameId;
+      console.log(player);
 
       if (nextPosition !== lastPosition && currentPlayer === player.player) {
         var gameState = {
@@ -42886,7 +42892,7 @@ var Game = function (_Component) {
 
       return _react2.default.createElement(
         'div',
-        { className: 'game' },
+        { className: 'game no-scroll' },
         _react2.default.createElement(
           _gameNav2.default,
           {
@@ -43678,11 +43684,11 @@ var InfoPanel = function (_Component) {
       if (!text) {
         return false;
       }
-      return text.split('\n').map(function (t, i) {
+      return text.map(function (blob, i) {
         return _react2.default.createElement(
           'p',
           { key: i },
-          t
+          blob.text
         );
       });
     }
@@ -43700,7 +43706,7 @@ var InfoPanel = function (_Component) {
           container = _styles.container,
           flexPositioner = _styles.flexPositioner;
 
-      var displayText = this.buildText(info.text);
+      var displayText = this.buildText(info);
       return _react2.default.createElement(
         'div',
         { className: 'info-panel', style: container },
@@ -43709,8 +43715,8 @@ var InfoPanel = function (_Component) {
           { style: flexPositioner },
           _react2.default.createElement(
             'div',
-            { style: text },
-            displayText || "INFO PANEL"
+            { className: 'info-log' },
+            displayText
           )
         )
       );
@@ -44360,7 +44366,6 @@ var LoginForm = function (_Component) {
 }(_react.Component);
 
 function mapStateToProps(state) {
-  debugger;
   return {
     user: state.user,
     error: state.errors.login
