@@ -33,3 +33,6 @@ node_modules
 /config/application.yml
 /public/packs
 /node_modules
+
+# Ignore coverage data
+/coverage

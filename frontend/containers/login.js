@@ -44,8 +44,8 @@ class LoginForm extends Component {
     const self = this;
     const credentials = { user: this.state };
     const callbacks = {
-      success: () => { self.props.history.push('/') },
-      error: () => { self.props.history.push('/login') }
+      success: () => { self.props.history.push('/play') },
+      error: () => { self.props.history.push('/login') },
     };
     this.props.loginRequest(credentials, callbacks);
   }

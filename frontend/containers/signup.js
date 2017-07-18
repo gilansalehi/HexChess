@@ -5,6 +5,7 @@ import {connect} from 'react-redux';
 
 import $ from 'jquery';
 import { Link } from 'react-router-dom';
+import Notification from '../components/notification';
 import {
   signupRequest
 } from '../actions/login';
@@ -21,6 +22,7 @@ class SignupForm extends Component {
     }
 
     this.handleKeyDown = this.handleKeyDown.bind(this);
+    this.showErrorNotification = this.showErrorNotification.bind(this);
     this.updateUsername = this.updateUsername.bind(this);
     this.updatePassword = this.updatePassword.bind(this);
     this.updateConfirmPassword = this.updateConfirmPassword.bind(this);
@@ -39,9 +41,23 @@ class SignupForm extends Component {
     if ( this.state.password !== this.state.confirmPassword ) {
       alert("Make sure your passwords match!");
       return false;
+    } else if ( this.state.password.length < 6 ) {
+      alert("Password must be at least 6 characters long");
+      return false;
     }
-    this.props.history.push('/play')
-    this.props.signupRequest(credentials);
+
+    const self = this;
+    const callbacks = {
+      success: () => { self.props.history.push('/play') },
+      error: () => { self.props.history.push('/signup') },
+    };
+    this.props.signupRequest(credentials, callbacks);
+  }
+
+  showErrorNotification(text) {
+    return (
+      <Notification text={text} />
+    );
   }
 
   updateUsername(e) {
@@ -60,11 +76,12 @@ class SignupForm extends Component {
   }
 
   render() {
+    const {error} = this.props;
 
     return (
       <div className="auth-page group sixty-left">
         <h1>Sign Up</h1>
-
+        <div>{ error && error.length && this.showErrorNotification(error) }</div>
         <form onSubmit={ this.submit } className="clearfix" onKeyDown={ e => this.handleKeyDown(e) }>
 
           <label htmlFor="username">Username:</label><br></br>
@@ -108,7 +125,7 @@ class SignupForm extends Component {
 
 function mapStateToProps(state) {
   return {
-
+    error: state.errors.signup,
   };
 }
 

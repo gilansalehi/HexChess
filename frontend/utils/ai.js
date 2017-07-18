@@ -13,10 +13,17 @@ export default class AI = {
     const myPieces = pieces.filter(p => p.player === this.player);
     const enemyPieces = pieces.filter(p => p.player !== this.player && Array.isArray(p.pos));
 
+    // if enemy hero is threatened, capture it to win the game
+    const enemyHeroThreatened = myPieces.reduce((acc, p) => {
+      return this.getLegalMoves(p).map(m => m.toString()).includes(hero.pos.toString())
+    }, false);
+
     const myHeroThreatened = enemyPieces.reduce((acc, p) => {
       return this.getLegalMoves(p).map(m => m.toString()).includes(hero.pos.toString())
     }, false);
     // TODO
+
+
   }
 
   getLegalMoves(piece) {
@@ -54,4 +61,20 @@ export default class AI = {
     return legalMoves;
   }
 
+  rankPieceMoves(piece) {
+    // first build a scoreMap for captures; an object with hex positions and the value of the pieces there
+    // then build a defended hexes map for the legal moves of enemy pieces, hexes map to the lowest value of piece that can move there.?
+    // then score the move:
+    // if isCapture
+    // score += value of captured piece
+    // hero worth a million
+    // node worth 1, 4, a million depending on number of captured nodes.
+    // else
+    // makes a threat:
+    // score += half the value of threatened pieces of
+    // piece deployment += value of the piece
+    // node deployment += 2
+    // piece move += value of the capture
+    // value of legalMoves.length?
+  }
 }

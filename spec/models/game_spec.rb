@@ -83,11 +83,11 @@ describe Game do
     it 'cannot overwrite winner once a winner is declared' do
       expect(game.winner).to be(nil)
 
-      game.winner = player_1
-      expect(game.winner.id).to be(player_1.id)
+      game.winner = 'P1'
+      expect(game.winner).to eq('P1')
 
-      game.winner = player_2 #does nothing now
-      expect(game.winner.id).to be(player_1.id)
+      game.winner = 'P2' #does nothing now
+      expect(game.winner).to eq('P1')
     end
   end
 end

@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'factory_girl'
 
 describe User do
   describe "username" do
@@ -34,16 +35,46 @@ describe User do
 
       expect(a.valid?).to be(true)
     end
+
+    it "recognizes the password" do
+      a = User.create({ name: 'aladdin', password: 'open_sesame' })
+
+      a.save
+      # password is an attr reader while the model is stored in memory, but not saved to db
+      expect(a.password).to eq('open_sesame')
+      expect(User.first.password).to be(nil)
+      expect(a.is_password?('open_sesame')).to be(true)
+      expect(a.is_password?('password')).to be(false)
+    end
   end
 
   describe "session_token" do
-    it "is created on save or update" do
-      a = User.create({ name: 'claire', password: 'claireclaire' })
-      expect(a.valid?).to be(true)
+    let(:claire) { build(:user) }
+    let(:ariel) { build(:user) }
 
-      a.save!
-      expect(a.session_token).not_to be(nil)
-      expect(a.session_token).to be_a(String)
+    it "is created on save or update" do
+      expect(claire.valid?).to be(true)
+
+      claire.save!
+      expect(claire.session_token).not_to be(nil)
+      expect(claire.session_token).to be_a(String)
+    end
+
+    it "is unique" do
+      expect(ariel.session_token).not_to be(nil)
+
+      claire.session_token = 'copy'
+      ariel.session_token = 'copy'
+
+      claire.save
+      expect { ariel.save! }.to raise_error(ActiveRecord::RecordInvalid)
+    end
+
+    it "resets to a new value" do
+      x = ariel.session_token
+      ariel.reset_session_token!
+
+      expect(ariel.session_token).not_to eq(x)
     end
   end
 end

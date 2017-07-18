@@ -15,14 +15,6 @@ class Game < ApplicationRecord
     self.p2_id = user.id
   end
 
-  def players
-    users.where(['player = true'])
-  end
-
-  def observers
-    users.where(['player = false'])
-  end
-
   def creator=(user)
     # Raise "You cannot change that" if self.creator
     # self.creator_id = user.id

@@ -59,15 +59,14 @@ export const fetchCurrentUser = (callback) => {
   });
 }
 
-
-export const signupRequest = (credentials) => {
+export const signupRequest = (credentials, callbacks) => {
   return (dispatch) => {
     dispatch({ type: 'SIGNUP_REQUEST_PENDING' });
-    return signup(credentials, dispatch);
+    return signup(credentials, dispatch, callbacks);
   }
 }
 
-const signup = (credentials, dispatch) => {
+const signup = (credentials, dispatch, callbacks) => {
   $.ajax({
     url: '/users',
     beforeSend: function(xhr) {xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))},
@@ -76,9 +75,11 @@ const signup = (credentials, dispatch) => {
     data: credentials,
     success: function (currentUser) {
       dispatch({ type: 'SIGNUP_SUCCESS', payload: currentUser });
+      callbacks && callbacks.success();
     },
     error: function (msg) {
       dispatch({ type: 'SIGNUP_ERROR', payload: msg });
+      callbacks && callbacks.error();
     }
   });
 }
