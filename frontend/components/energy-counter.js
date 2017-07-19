@@ -18,7 +18,7 @@ export default class EnergyCounter extends Component {
         <div>
           <span style={ remaining }>{ energy }</span>
           <span style={ total }>{ showTotal }</span>
-          <div style={{ fontSize: '16px' }}>Energy</div>
+          <div style={{ fontSize: '16px', fontFamily: 'Consolas' }}>ENERGY</div>
         </div>
       </div>
     )

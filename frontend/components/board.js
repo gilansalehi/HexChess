@@ -112,12 +112,12 @@ export default class Board extends Component {
         { cols }
         </div>
         <div className='energy-info overlay'>
-          <Hex pos={[11,11,11]} size={hexSize * 1.5}>
+          <Hex pos={[11,11,11]} size={hexSize * 1.33}>
             { energyCounter }
           </Hex>
         </div>
         <div className='reserve-info overlay'>
-          <Hex pos={[11,11,11]} size={hexSize * 1.5}
+          <Hex pos={[11,11,11]} size={hexSize * 1.33}
             handleClick={ this.context.toggleReserve }>
             { reserveButton }
           </Hex>

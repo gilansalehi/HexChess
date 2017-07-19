@@ -16,7 +16,7 @@ export default class ReserveButton extends Component {
       <div className="energy-counter" style={ container }>
         <div>
           <span className="hover-bold" style={ icon }>{ text('hex') }</span>
-          <div style={{ fontSize: '15px' }}>Deploy</div>
+          <div style={{ fontSize: '15px', fontFamily: 'Consolas' }}>DEPLOY</div>
         </div>
       </div>
     )
