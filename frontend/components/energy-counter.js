@@ -4,41 +4,48 @@ import { Util } from '../utils/utils.js';
 export default class EnergyCounter extends Component {
   constructor(props) {
     super(props)
-    this.styles = styles();
+
+    this.styles = styles(props.size);
   }
 
   render() {
     const { text } = Util;
-    const { energy, nodeCount } = this.props;
+    const { energy, nodeCount, size } = this.props;
     const { container, remaining, total } = this.styles;
     const showTotal = energy === nodeCount ? text('energy') : '/' + nodeCount;
     return (
       <div className="energy-counter" style={ container }>
-        <span style={ remaining }>{ energy }</span>
-        <span style={ total }>{ showTotal }</span>
-        <div style={{ fontSize: '16px' }}>Energy</div>
+        <div>
+          <span style={ remaining }>{ energy }</span>
+          <span style={ total }>{ showTotal }</span>
+          <div style={{ fontSize: '16px' }}>Energy</div>
+        </div>
       </div>
     )
   }
 }
 
-function styles() {
+function styles(size) {
   const container = {
-    fontSize: '18px',
-    color: '#fa0',
-    margin: '10px 0',
-    textShadow: '0 0 2px #fff',
-
+    fontSize: `${.2 * size}px`,
+    color: `#fa0`,
+    background: `#222`,
+    height: `100%`,
+    textShadow: `0 0 2px #fff`,
+    textAlign: `center`,
+    display: `flex`,
+    alignItems: `center`,
+    justifyContent: `center`,
   };
   const remaining =  {
-    fontSize: '60px',
-    fontWeight: 'bold',
-    marginLeft: '10px',
-    fontFamily: 'Philosopher, sans-serif',
+    fontSize: `${.6 * size}px`,
+    fontWeight: `bold`,
+    marginLeft: `10px`,
+    fontFamily: `Philosopher, sans-serif`,
   };
   const total = {
-    fontSize: '18px',
-    width: '20px',
+    fontSize: `${.2 * size}px`,
+    width: `${.2 * size}px`,
   };
 
   return { container, remaining, total };

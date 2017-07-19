@@ -28,25 +28,26 @@ export default class Board extends Component {
     return this.props.getHeroPos(player);
   }
 
-  drawEnergyCounter() {
+  drawEnergyCounter(size) {
     const { player, nodeCount } = this.props;
     return (
       <EnergyCounter
+        size={size}
         energy={ nodeCount - player.energy }
         nodeCount={ nodeCount }
       />
     );
   }
 
-  drawReserveButton() {
-    return ( <ReserveButton /> );
+  drawReserveButton(size) {
+    return ( <ReserveButton size={size} /> );
   }
 
   resetEnergy() {
     this.context.resetEnergy();
   }
 
-  drawBoard() {
+  drawBoard(hexSize) {
     const { pieces, selection, legalMoves, player } = this.props;
 
     const xnums = [-4, -3, -2, -1, 0, 1, 2, 3, 4];
@@ -74,49 +75,53 @@ export default class Board extends Component {
           })[0];
           const selected = selection && selection.pos !== 'reserve' && selection.pos.join(',') === key;
           const showLegalPip = lmarr && lmarr.indexOf(key) !== -1;
-
-          var results;
-          if ( key === '-4,-2,6' ) {
-            results = <Hex key={ key }
-              pos={pos} col={ x + 5 }
-              contents={{ type: 'button', text: energyCount }}
-              handleClick={ this.context.toggleReserve }
-            />
-        } else if ( key === '4,-6,2' ) {
-            results = <Hex key={ key }
-              pos={ pos } col={ x + 5 }
-              contents={{ type: 'button', text: reserveButton }}
-              handleClick={ this.context.toggleReserve }
-            />
-          } else {
-            results = <Hex key={ key }
+          return (
+            <Hex key={ key }
+              size={hexSize}
               pos={pos} col={ x + 5 }
               contents={ contents }
               selected={ selected }
               showLegalPip={ showLegalPip }
             />
-          }
-
-          return results;
+          );
         }
       })
       const colClass = (x + 5) % 2 === 0 ? 'even-column' : 'odd-column';
+      const colStyle = {
+        width: (hexSize * .86) + 'px',
+        marginTop: (colClass === 'even-column' ? `${hexSize/2}px` : 0),
+      };
       return (
-        <div key={ x + 5 } className={ colClass }>
+        <div key={ x + 5 } className={ colClass } style={ colStyle }>
           { hexes }
         </div>
       );
-      //<Column key={ x + 5} colClass={ colClass } hexes={ hexes } />
     })
     return columns;
   }
 
   render() {
-    const cols = this.drawBoard();
+    const hexSize = window.innerHeight / 9;
+    const cols = this.drawBoard(hexSize);
+    const energyCounter = this.drawEnergyCounter(hexSize);
+    const reserveButton = this.drawReserveButton(hexSize);
 
     return(
       <div className="board">
+        <div>
         { cols }
+        </div>
+        <div className='energy-info overlay'>
+          <Hex pos={[11,11,11]} size={hexSize * 1.5}>
+            { energyCounter }
+          </Hex>
+        </div>
+        <div className='reserve-info overlay'>
+          <Hex pos={[11,11,11]} size={hexSize * 1.5}
+            handleClick={ this.context.toggleReserve }>
+            { reserveButton }
+          </Hex>
+        </div>
       </div>
     );
   }

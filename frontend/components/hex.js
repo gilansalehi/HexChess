@@ -86,7 +86,7 @@ export default class Hex extends Component {
   render() {
     const placeholder = "#";
     const { highlight, hover, selected } = this.state;
-    const { contents, showLegalPip } = this.props;
+    const { contents, showLegalPip, size } = this.props;
     const onBoard = this.onBoard;
     const triangleClass = hover ? "sslideIn" : (selected ? "selected" : "hidden");
 
@@ -111,30 +111,39 @@ export default class Hex extends Component {
       </span>
     }
     const key = contents ? contents.type + contents.player : this.pos.toString();
+    const style = styles(size);
 
     return (
-      <div className="hex" id={ this.pos.toString() } key={key}>
-        <div className="slant1">
-          <div className="slant1">
-            <div className="hex-inner" style={{ background: this.color }}>
-              <div className="hex-contents">
-                { myStuff }
+      <div className="hex" id={ this.pos.toString() } key={key} style={ style['hex'] }>
+        <div className="slant1" style={ style['slant'] }>
+          <div className="slant1" style={ style['slant'] }>
+            <div className="hex-inner" style={Object.assign({}, style['scale'], { background: this.color })}>
+              <div className="hex-contents" style={ style['scale'] }>
+                { this.props.children || myStuff }
               </div>
               <div className="hitbox one" onClick={ () => { this.handleClick() } }
+                style={ style['hitbox'] }
                 onMouseEnter={ this.hoverOn }
                 onMouseLeave={ this.hoverOff }>
                 <div className={ onBoard && showLegalPip ? 'legalPip' : 'hidden' } />
-                <div className={ "selector-triangles " + (triangleClass) }></div>
+                <div className={ "selector-triangles " + (triangleClass) }
+                  style={ style['triangle'] }>
+                </div>
               </div>
               <div className="hitbox two" onClick={ () => { this.handleClick() } }
+                style={ style['hitbox'] }
                 onMouseEnter={ this.hoverOn }
                 onMouseLeave={ this.hoverOff }>
-                <div className={ "selector-triangles " + (triangleClass) }></div>
-              </div>
+                <div className={ "selector-triangles " + (triangleClass) }
+                  style={ style['triangle'] }>
+                </div>              </div>
               <div className="hitbox three" onClick={ () => { this.handleClick() } }
+                style={ style['hitbox'] }
                 onMouseEnter={ this.hoverOn }
                 onMouseLeave={ this.hoverOff }>
-                <div className={ "selector-triangles " + (triangleClass) }></div>
+                <div className={ "selector-triangles " + (triangleClass) }
+                  style={ style['triangle'] }>
+                </div>
               </div>
             </div>
           </div>
@@ -147,3 +156,35 @@ export default class Hex extends Component {
 Hex.contextTypes = {
   handleClick: React.PropTypes.func,
 };
+
+const styles = (size) => {
+  const hex = {
+    marginLeft: `${-.29 * size}px`,
+    marginLight: `${-.29 * size}px`,
+    width: `${1.732 * size}px`,
+    height: `${size}px`,
+  };
+  const slant = {
+    width: `${1.732 * size}px`,
+    height: `${size}px`,
+  };
+  const hitbox = {
+    height: `${size}px`,
+    width: `${.57 * size}px`,
+    left: `${.57 * size}px`,
+  };
+  const scale = {
+    width: `${1.732 * size}px`,
+    height: `${size}px`,
+  };
+  const triangle = {
+    borderTop: `${.1*size}px solid yellow`,
+    borderBottom: `${.1*size}px solid yellow`,
+    borderLeft: `${.06*size}px solid transparent`,
+    borderRight: `${.06*size}px solid transparent`,
+    height: `${.81*size}px`,
+    width: `100%`,
+    opacity: `1`,
+  };
+  return { hex, slant, hitbox, triangle, scale };
+;}

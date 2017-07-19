@@ -333,6 +333,25 @@ form input {
   margin: 0 55px;
 }
 
+.energy-info {
+  bottom: 0;
+  left: 0;
+  width: 15%;
+  z-index: 100;
+}
+
+.reserve-info {
+  bottom: 0;
+  right: 0;
+  width: 15%;
+  z-index: 100;
+}
+
+.overlay {
+  position: absolute;
+  pointer-events: none;
+}
+
 .odd-column {
   display: block;
   float: left;
@@ -354,6 +373,7 @@ form input {
   position: relative;
   width: 173.2px;
   height: 100px;
+  pointer-events: none;
   overflow: hidden;
 }
 .slant1 {

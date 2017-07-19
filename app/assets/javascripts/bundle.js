@@ -15809,7 +15809,8 @@ var Hex = function (_Component) {
           selected = _state.selected;
       var _props2 = this.props,
           contents = _props2.contents,
-          showLegalPip = _props2.showLegalPip;
+          showLegalPip = _props2.showLegalPip,
+          size = _props2.size;
 
       var onBoard = this.onBoard;
       var triangleClass = hover ? "sslideIn" : selected ? "selected" : "hidden";
@@ -15842,51 +15843,59 @@ var Hex = function (_Component) {
         );
       }
       var key = contents ? contents.type + contents.player : this.pos.toString();
+      var style = styles(size);
 
       return _react2.default.createElement(
         'div',
-        { className: 'hex', id: this.pos.toString(), key: key },
+        { className: 'hex', id: this.pos.toString(), key: key, style: style['hex'] },
         _react2.default.createElement(
           'div',
-          { className: 'slant1' },
+          { className: 'slant1', style: style['slant'] },
           _react2.default.createElement(
             'div',
-            { className: 'slant1' },
+            { className: 'slant1', style: style['slant'] },
             _react2.default.createElement(
               'div',
-              { className: 'hex-inner', style: { background: this.color } },
+              { className: 'hex-inner', style: Object.assign({}, style['scale'], { background: this.color }) },
               _react2.default.createElement(
                 'div',
-                { className: 'hex-contents' },
-                myStuff
+                { className: 'hex-contents', style: style['scale'] },
+                this.props.children || myStuff
               ),
               _react2.default.createElement(
                 'div',
                 { className: 'hitbox one', onClick: function onClick() {
                     _this2.handleClick();
                   },
+                  style: style['hitbox'],
                   onMouseEnter: this.hoverOn,
                   onMouseLeave: this.hoverOff },
                 _react2.default.createElement('div', { className: onBoard && showLegalPip ? 'legalPip' : 'hidden' }),
-                _react2.default.createElement('div', { className: "selector-triangles " + triangleClass })
+                _react2.default.createElement('div', { className: "selector-triangles " + triangleClass,
+                  style: style['triangle'] })
               ),
               _react2.default.createElement(
                 'div',
                 { className: 'hitbox two', onClick: function onClick() {
                     _this2.handleClick();
                   },
+                  style: style['hitbox'],
                   onMouseEnter: this.hoverOn,
                   onMouseLeave: this.hoverOff },
-                _react2.default.createElement('div', { className: "selector-triangles " + triangleClass })
+                _react2.default.createElement('div', { className: "selector-triangles " + triangleClass,
+                  style: style['triangle'] }),
+                '              '
               ),
               _react2.default.createElement(
                 'div',
                 { className: 'hitbox three', onClick: function onClick() {
                     _this2.handleClick();
                   },
+                  style: style['hitbox'],
                   onMouseEnter: this.hoverOn,
                   onMouseLeave: this.hoverOff },
-                _react2.default.createElement('div', { className: "selector-triangles " + triangleClass })
+                _react2.default.createElement('div', { className: "selector-triangles " + triangleClass,
+                  style: style['triangle'] })
               )
             )
           )
@@ -15903,6 +15912,39 @@ exports.default = Hex;
 
 Hex.contextTypes = {
   handleClick: _react2.default.PropTypes.func
+};
+
+var styles = function styles(size) {
+  var hex = {
+    marginLeft: -.29 * size + 'px',
+    marginLight: -.29 * size + 'px',
+    width: 1.732 * size + 'px',
+    height: size + 'px'
+  };
+  var slant = {
+    width: 1.732 * size + 'px',
+    height: size + 'px'
+  };
+  var hitbox = {
+    height: size + 'px',
+    width: .57 * size + 'px',
+    left: .57 * size + 'px'
+  };
+  var scale = {
+    width: 1.732 * size + 'px',
+    height: size + 'px'
+  };
+  var triangle = {
+    borderTop: .1 * size + 'px solid yellow',
+    borderBottom: .1 * size + 'px solid yellow',
+    borderLeft: .06 * size + 'px solid transparent',
+    borderRight: .06 * size + 'px solid transparent',
+    height: .81 * size + 'px',
+    width: '100%',
+    opacity: '1'
+  };
+  return { hex: hex, slant: slant, hitbox: hitbox, triangle: triangle, scale: scale };
+  ;
 };
 
 /***/ }),
@@ -42651,6 +42693,7 @@ var Game = function (_Component) {
         window.setTimeout(_this2.continuallyFetchGameState, 1000);
       };
       this.continuallyFetchGameState();
+      debugger;
     }
   }, {
     key: 'componentWillUnmount',
@@ -43102,20 +43145,21 @@ var Board = function (_Component) {
     }
   }, {
     key: 'drawEnergyCounter',
-    value: function drawEnergyCounter() {
+    value: function drawEnergyCounter(size) {
       var _props = this.props,
           player = _props.player,
           nodeCount = _props.nodeCount;
 
       return _react2.default.createElement(_energyCounter2.default, {
+        size: size,
         energy: nodeCount - player.energy,
         nodeCount: nodeCount
       });
     }
   }, {
     key: 'drawReserveButton',
-    value: function drawReserveButton() {
-      return _react2.default.createElement(_reserveButton2.default, null);
+    value: function drawReserveButton(size) {
+      return _react2.default.createElement(_reserveButton2.default, { size: size });
     }
   }, {
     key: 'resetEnergy',
@@ -43124,9 +43168,7 @@ var Board = function (_Component) {
     }
   }, {
     key: 'drawBoard',
-    value: function drawBoard() {
-      var _this2 = this;
-
+    value: function drawBoard(hexSize) {
       var _props2 = this.props,
           pieces = _props2.pieces,
           selection = _props2.selection,
@@ -43162,51 +43204,63 @@ var Board = function (_Component) {
             })[0];
             var selected = selection && selection.pos !== 'reserve' && selection.pos.join(',') === key;
             var showLegalPip = lmarr && lmarr.indexOf(key) !== -1;
-
-            var results;
-            if (key === '-4,-2,6') {
-              results = _react2.default.createElement(_hex2.default, { key: key,
-                pos: pos, col: x + 5,
-                contents: { type: 'button', text: energyCount },
-                handleClick: _this2.context.toggleReserve
-              });
-            } else if (key === '4,-6,2') {
-              results = _react2.default.createElement(_hex2.default, { key: key,
-                pos: pos, col: x + 5,
-                contents: { type: 'button', text: reserveButton },
-                handleClick: _this2.context.toggleReserve
-              });
-            } else {
-              results = _react2.default.createElement(_hex2.default, { key: key,
-                pos: pos, col: x + 5,
-                contents: contents,
-                selected: selected,
-                showLegalPip: showLegalPip
-              });
-            }
-
-            return results;
+            return _react2.default.createElement(_hex2.default, { key: key,
+              size: hexSize,
+              pos: pos, col: x + 5,
+              contents: contents,
+              selected: selected,
+              showLegalPip: showLegalPip
+            });
           }
         });
         var colClass = (x + 5) % 2 === 0 ? 'even-column' : 'odd-column';
+        var colStyle = {
+          width: hexSize * .86 + 'px',
+          marginTop: colClass === 'even-column' ? hexSize / 2 + 'px' : 0
+        };
         return _react2.default.createElement(
           'div',
-          { key: x + 5, className: colClass },
+          { key: x + 5, className: colClass, style: colStyle },
           hexes
         );
-        //<Column key={ x + 5} colClass={ colClass } hexes={ hexes } />
       });
       return columns;
     }
   }, {
     key: 'render',
     value: function render() {
-      var cols = this.drawBoard();
+      var hexSize = window.innerHeight / 9;
+      var cols = this.drawBoard(hexSize);
+      var energyCounter = this.drawEnergyCounter(hexSize);
+      var reserveButton = this.drawReserveButton(hexSize);
 
       return _react2.default.createElement(
         'div',
         { className: 'board' },
-        cols
+        _react2.default.createElement(
+          'div',
+          null,
+          cols
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'energy-info overlay' },
+          _react2.default.createElement(
+            _hex2.default,
+            { pos: [11, 11, 11], size: hexSize * 1.5 },
+            energyCounter
+          )
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'reserve-info overlay' },
+          _react2.default.createElement(
+            _hex2.default,
+            { pos: [11, 11, 11], size: hexSize * 1.5,
+              handleClick: this.context.toggleReserve },
+            reserveButton
+          )
+        )
       );
     }
   }]);
@@ -43394,7 +43448,7 @@ var EnergyCounter = function (_Component) {
 
     var _this = _possibleConstructorReturn(this, (EnergyCounter.__proto__ || Object.getPrototypeOf(EnergyCounter)).call(this, props));
 
-    _this.styles = styles();
+    _this.styles = styles(props.size);
     return _this;
   }
 
@@ -43404,7 +43458,8 @@ var EnergyCounter = function (_Component) {
       var text = _utils.Util.text;
       var _props = this.props,
           energy = _props.energy,
-          nodeCount = _props.nodeCount;
+          nodeCount = _props.nodeCount,
+          size = _props.size;
       var _styles = this.styles,
           container = _styles.container,
           remaining = _styles.remaining,
@@ -43415,19 +43470,23 @@ var EnergyCounter = function (_Component) {
         'div',
         { className: 'energy-counter', style: container },
         _react2.default.createElement(
-          'span',
-          { style: remaining },
-          energy
-        ),
-        _react2.default.createElement(
-          'span',
-          { style: total },
-          showTotal
-        ),
-        _react2.default.createElement(
           'div',
-          { style: { fontSize: '16px' } },
-          'Energy'
+          null,
+          _react2.default.createElement(
+            'span',
+            { style: remaining },
+            energy
+          ),
+          _react2.default.createElement(
+            'span',
+            { style: total },
+            showTotal
+          ),
+          _react2.default.createElement(
+            'div',
+            { style: { fontSize: '16px' } },
+            'Energy'
+          )
         )
       );
     }
@@ -43439,23 +43498,27 @@ var EnergyCounter = function (_Component) {
 exports.default = EnergyCounter;
 
 
-function styles() {
+function styles(size) {
   var container = {
-    fontSize: '18px',
+    fontSize: .2 * size + 'px',
     color: '#fa0',
-    margin: '10px 0',
-    textShadow: '0 0 2px #fff'
-
+    background: 'red',
+    height: '100%',
+    textShadow: '0 0 2px #fff',
+    textAlign: 'center',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
   };
   var remaining = {
-    fontSize: '60px',
+    fontSize: .6 * size + 'px',
     fontWeight: 'bold',
     marginLeft: '10px',
     fontFamily: 'Philosopher, sans-serif'
   };
   var total = {
-    fontSize: '18px',
-    width: '20px'
+    fontSize: .2 * size + 'px',
+    width: .2 * size + 'px'
   };
 
   return { container: container, remaining: remaining, total: total };
@@ -43496,7 +43559,7 @@ var ReserveButton = function (_Component) {
 
     var _this = _possibleConstructorReturn(this, (ReserveButton.__proto__ || Object.getPrototypeOf(ReserveButton)).call(this, props));
 
-    _this.styles = styles();
+    _this.styles = styles(props.size);
     return _this;
   }
 
@@ -43513,14 +43576,18 @@ var ReserveButton = function (_Component) {
         'div',
         { className: 'energy-counter', style: container },
         _react2.default.createElement(
-          'span',
-          { className: 'hover-bold', style: icon },
-          text('hex')
-        ),
-        _react2.default.createElement(
           'div',
-          { style: { fontSize: '15px' } },
-          'Deploy'
+          null,
+          _react2.default.createElement(
+            'span',
+            { className: 'hover-bold', style: icon },
+            text('hex')
+          ),
+          _react2.default.createElement(
+            'div',
+            { style: { fontSize: '15px' } },
+            'Deploy'
+          )
         )
       );
     }
@@ -43532,16 +43599,21 @@ var ReserveButton = function (_Component) {
 exports.default = ReserveButton;
 
 
-function styles() {
+function styles(size) {
   var container = {
-    fontSize: '18px',
+    fontSize: .2 * size + 'px',
     color: 'turquoise',
-    margin: '10px 0',
-    textShadow: '0 0 2px #fff'
-
+    background: 'green',
+    height: '100%',
+    textShadow: '0 0 2px #fff',
+    textAlign: 'center',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
   };
+
   var icon = {
-    fontSize: '60px',
+    fontSize: .6 * size + 'px',
     fontFamily: 'Philosopher, sans-serif'
   };
 

@@ -5,7 +5,7 @@ export default class ReserveButton extends Component {
   constructor(props) {
     super(props)
 
-    this.styles = styles();
+    this.styles = styles(props.size);
   }
 
   render() {
@@ -14,24 +14,31 @@ export default class ReserveButton extends Component {
 
     return (
       <div className="energy-counter" style={ container }>
-        <span className="hover-bold" style={ icon }>{ text('hex') }</span>
-        <div style={{ fontSize: '15px' }}>Deploy</div>
+        <div>
+          <span className="hover-bold" style={ icon }>{ text('hex') }</span>
+          <div style={{ fontSize: '15px' }}>Deploy</div>
+        </div>
       </div>
     )
   }
 }
 
-function styles() {
+function styles(size) {
   const container = {
-    fontSize: '18px',
-    color: 'turquoise',
-    margin: '10px 0',
-    textShadow: '0 0 2px #fff',
-
+    fontSize: `${.2 * size}px`,
+    color: `turquoise`,
+    background: `#222`,
+    height: `100%`,
+    textShadow: `0 0 2px #fff`,
+    textAlign: `center`,
+    display: `flex`,
+    alignItems: `center`,
+    justifyContent: `center`,
   };
+
   const icon =  {
-    fontSize: '60px',
-    fontFamily: 'Philosopher, sans-serif',
+    fontSize: `${.6 * size}px`,
+    fontFamily: `Philosopher, sans-serif`,
   };
 
   return { container, icon };

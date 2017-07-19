@@ -59,7 +59,6 @@ class Game extends Component {
       window.setTimeout(this.continuallyFetchGameState, 1000);
     }
     this.continuallyFetchGameState();
-
   }
 
   componentWillUnmount() {
