@@ -8,7 +8,7 @@ describe GamesController do
     let (:harry) { create(:user) }
     let (:headers) { {'ACCEPT' => 'application/json'} }
 
-    it '' do
+    it 'is able to create games' do
       post :create, params: { game: { creator_id: sally.id } }, format: 'application/json'
 
       expect(response.status).to eq(200)

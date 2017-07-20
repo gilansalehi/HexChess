@@ -141,11 +141,11 @@ class Game extends Component {
       const pieceIsReady = selection.contents.ready;
 
       if ( !moveIsLegal ) {
-        this.props.updateInfo({ text: "Illegal move!" })
+        this.props.updateInfo({ text: 'Illegal move!' })
       } else if ( !isMyTurn ) {
-        this.props.updateInfo({ text: "Not your turn yet!" })
+        this.props.updateInfo({ text: 'Not your turn yet!' })
       } else if ( !pieceIsReady ) {
-        this.props.updateInfo({ text: "That piece has already acted this turn." })
+        this.props.updateInfo({ text: 'That piece has already acted this turn.' })
       }
       if ( hex.pos === selection.pos ) {
         // nothing happens?

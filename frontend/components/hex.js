@@ -136,7 +136,8 @@ export default class Hex extends Component {
                 onMouseLeave={ this.hoverOff }>
                 <div className={ "selector-triangles " + (triangleClass) }
                   style={ style['triangle'] }>
-                </div>              </div>
+                </div>
+              </div>
               <div className="hitbox three" onClick={ () => { this.handleClick() } }
                 style={ style['hitbox'] }
                 onMouseEnter={ this.hoverOn }
@@ -157,7 +158,7 @@ Hex.contextTypes = {
   handleClick: React.PropTypes.func,
 };
 
-const styles = (size) => {
+const styles = (size = 100) => {
   const hex = {
     marginLeft: `${-.29 * size}px`,
     marginLight: `${-.29 * size}px`,
@@ -178,11 +179,7 @@ const styles = (size) => {
     height: `${size}px`,
   };
   const triangle = {
-    borderTop: `${.1*size}px solid yellow`,
-    borderBottom: `${.1*size}px solid yellow`,
-    borderLeft: `${.06*size}px solid transparent`,
-    borderRight: `${.06*size}px solid transparent`,
-    height: `${.81*size}px`,
+    height: `${size}px`,
     width: `100%`,
     opacity: `1`,
   };
