@@ -43243,21 +43243,25 @@ var Board = function (_Component) {
         ),
         _react2.default.createElement(
           'div',
-          { className: 'energy-info overlay' },
+          { className: 'dashboard overlay' },
           _react2.default.createElement(
-            _hex2.default,
-            { pos: [11, 11, 11], size: hexSize * 1.33 },
-            energyCounter
-          )
-        ),
-        _react2.default.createElement(
-          'div',
-          { className: 'reserve-info overlay' },
+            'div',
+            { className: 'energy-info' },
+            _react2.default.createElement(
+              _hex2.default,
+              { pos: [11, 11, 11], size: hexSize * 1.33 },
+              energyCounter
+            )
+          ),
           _react2.default.createElement(
-            _hex2.default,
-            { pos: [11, 11, 11], size: hexSize * 1.33,
-              handleClick: this.context.toggleReserve },
-            reserveButton
+            'div',
+            { className: 'reserve-info' },
+            _react2.default.createElement(
+              _hex2.default,
+              { pos: [11, 11, 11], size: hexSize * 1.33,
+                handleClick: this.context.toggleReserve },
+              reserveButton
+            )
           )
         )
       );

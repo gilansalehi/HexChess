@@ -314,7 +314,7 @@ form input {
 
 .game-info {
   display: block;
-  background-color: #999;
+  background-color: #777;
   font-weight: bold;
   padding: 5px;
   margin: 10px 0;
@@ -330,28 +330,25 @@ form input {
   display: block;
   float: left;
   position: relative;
-  margin: 0 30px 0 55px;
+  margin: 0 0 0 55px;
+  padding-right: 3.25%;
 }
 
 .energy-info {
-  bottom: 0;
-  left: 0;
-  width: 15%;
-  z-index: 100;
+  display: block;
+  float: left;
 }
 
 .reserve-info {
-  bottom: 0;
-  right: 0;
-  width: 15%;
-  z-index: 100;
-  margin-right: 3.5%;
-
+  display: block;
+  float: right;
 }
 
 .overlay {
   position: absolute;
   pointer-events: none;
+  bottom: 0;
+  width: 100%;
 }
 
 .odd-column {
