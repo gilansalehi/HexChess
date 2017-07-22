@@ -90,7 +90,7 @@ function styles(size, background =  '#222') {
 
   const text = {
     display: 'block',
-    maxWidth: `${size}px`,
+    maxWidth: `${.8 * size}px`,
   };
 
   return { container, header, text };
