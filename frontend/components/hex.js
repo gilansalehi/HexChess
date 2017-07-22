@@ -61,8 +61,7 @@ export default class Hex extends Component {
   handleClick(proxy, evt, context) {
     const hex = this;
     // pass forward all necessary click details here...
-    this.props.handleClick && this.props.handleClick();
-    this.context.handleClick(hex.data());
+    this.props.handleClick ? this.props.handleClick() : this.context.handleClick(hex.data());
   }
 
   hoverOn() {
@@ -86,9 +85,9 @@ export default class Hex extends Component {
   render() {
     const placeholder = "#";
     const { highlight, hover, selected } = this.state;
-    const { contents, showLegalPip, size } = this.props;
+    const { contents, showLegalPip, size, noGlow } = this.props;
     const onBoard = this.onBoard;
-    const triangleClass = hover ? "sslideIn" : (selected ? "selected" : "hidden");
+    const triangleClass = hover && !noGlow ? "sslideIn" : (selected ? "selected" : "hidden");
 
     var myStuff = [];
     if ( contents ) {
@@ -171,8 +170,8 @@ const styles = (size = 100) => {
   };
   const hitbox = {
     height: `${size}px`,
-    width: `${.57 * size}px`,
-    left: `${.57 * size}px`,
+    width: `${.5773 * size}px`,
+    left: `${.5773 * size}px`,
   };
   const scale = {
     width: `${1.732 * size}px`,

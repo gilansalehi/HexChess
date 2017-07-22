@@ -1471,10 +1471,10 @@ var _prodInvariant = __webpack_require__(4),
     _assign = __webpack_require__(5);
 
 var CallbackQueue = __webpack_require__(83);
-var PooledClass = __webpack_require__(20);
+var PooledClass = __webpack_require__(21);
 var ReactFeatureFlags = __webpack_require__(84);
 var ReactReconciler = __webpack_require__(26);
-var Transaction = __webpack_require__(38);
+var Transaction = __webpack_require__(39);
 
 var invariant = __webpack_require__(1);
 
@@ -1726,7 +1726,7 @@ module.exports = ReactUpdates;
 
 var _assign = __webpack_require__(5);
 
-var PooledClass = __webpack_require__(20);
+var PooledClass = __webpack_require__(21);
 
 var emptyFunction = __webpack_require__(11);
 var warning = __webpack_require__(3);
@@ -2199,6 +2199,326 @@ module.exports = DOMProperty;
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+var Util = exports.Util = {
+  moveFuncs: {
+    // CARDINAL DIRECTIONS
+    north: function north(_ref) {
+      var _ref2 = _slicedToArray(_ref, 3),
+          x = _ref2[0],
+          y = _ref2[1],
+          z = _ref2[2];
+
+      return [x, y + 1, z - 1];
+    },
+    south: function south(_ref3) {
+      var _ref4 = _slicedToArray(_ref3, 3),
+          x = _ref4[0],
+          y = _ref4[1],
+          z = _ref4[2];
+
+      return [x, y - 1, z + 1];
+    },
+    northWest: function northWest(_ref5) {
+      var _ref6 = _slicedToArray(_ref5, 3),
+          x = _ref6[0],
+          y = _ref6[1],
+          z = _ref6[2];
+
+      return [x - 1, y + 1, z];
+    },
+    northEast: function northEast(_ref7) {
+      var _ref8 = _slicedToArray(_ref7, 3),
+          x = _ref8[0],
+          y = _ref8[1],
+          z = _ref8[2];
+
+      return [x + 1, y, z - 1];
+    },
+    southWest: function southWest(_ref9) {
+      var _ref10 = _slicedToArray(_ref9, 3),
+          x = _ref10[0],
+          y = _ref10[1],
+          z = _ref10[2];
+
+      return [x - 1, y, z + 1];
+    },
+    southEast: function southEast(_ref11) {
+      var _ref12 = _slicedToArray(_ref11, 3),
+          x = _ref12[0],
+          y = _ref12[1],
+          z = _ref12[2];
+
+      return [x + 1, y - 1, z];
+    },
+
+    // RELATIVE DIRECTIONS
+    forward: function forward(piece) {
+      var player = piece.player,
+          pos = piece.pos;
+
+      return player === 'P1' ? this.north(pos) : this.south(pos);
+    },
+    forwardLeft: function forwardLeft(piece) {
+      var player = piece.player,
+          pos = piece.pos;
+
+      return player === 'P1' ? this.northWest(pos) : this.southEast(pos);
+    },
+    forwardRight: function forwardRight(piece) {
+      var player = piece.player,
+          pos = piece.pos;
+
+      return player === 'P1' ? this.northEast(pos) : this.southWest(pos);
+    },
+    back: function back(piece) {
+      var player = piece.player,
+          pos = piece.pos;
+
+      return player === 'P1' ? this.south(pos) : this.north(pos);
+    },
+    backLeft: function backLeft(piece) {
+      var player = piece.player,
+          pos = piece.pos;
+
+      return player === 'P1' ? this.southWest(pos) : this.northEast(pos);
+    },
+    backRight: function backRight(piece) {
+      var player = piece.player,
+          pos = piece.pos;
+
+      return player === 'P1' ? this.southEast(pos) : this.northWest(pos);
+    },
+    none: function none() {
+      return [];
+    },
+
+    getStrings: function getStrings(pieces) {
+      return pieces.map(function (p) {
+        return p.pos.toString();
+      });
+    },
+
+    adjacent: function adjacent(piece, allPieces) {
+      var pos = piece.pos;
+
+      var _pos = _slicedToArray(pos, 3),
+          x = _pos[0],
+          y = _pos[1],
+          z = _pos[2];
+
+      return [[x - 1, y + 1, z], [x, y + 1, z - 1], [x - 1, y, z + 1], [x + 1, y, z - 1], [x, y - 1, z + 1], [x + 1, y - 1, z]];
+    },
+
+    inBounds: function inBounds(pos) {
+      if (!Array.isArray(pos)) {
+        return false;
+      }
+
+      var _pos2 = _slicedToArray(pos, 3),
+          x = _pos2[0],
+          y = _pos2[1],
+          z = _pos2[2];
+
+      return x * x < 20 && y * y < 20 && z * z < 20;
+    },
+    isCollision: function isCollision(pos, array) {
+      return array.indexOf(pos.toString()) > -1;
+    },
+    keepGoing: function keepGoing(currentPos, nextPos, allHexStrings, enemyHexStrings, includeCaptures) {
+      if (enemyHexStrings.indexOf(currentPos.toString()) !== -1) {
+        return false;
+      } // just made a capture
+      if (!this.inBounds(nextPos)) {
+        return false;
+      }
+      if (allHexStrings.indexOf(nextPos.toString()) < 0) {
+        return true; // nothing in the way, keep going.
+      } else if (enemyHexStrings.indexOf(nextPos.toString()) < 0) {
+        return false; // something in the way, not an enemy, stop to prevent self-captures.
+      } else {
+        return includeCaptures; // keep going if we allow captures, otherwise stop;
+      }
+    },
+
+    // RAYS
+    ray: function ray(dir, piece, allPieces, includeCaptures) {
+      var player = piece.player,
+          pos = piece.pos;
+
+      var enemies = allPieces.filter(function (p) {
+        return p.player !== player;
+      });
+      var allHexStrings = this.getStrings(allPieces);
+      var enemyHexStrings = this.getStrings(enemies);
+
+      var moves = [];
+      var currentPos = pos;
+      var nextPos = this[dir]({ player: player, pos: currentPos });
+      while (this.keepGoing(currentPos, nextPos, allHexStrings, enemyHexStrings, includeCaptures)) {
+        moves.push(nextPos);
+        currentPos = nextPos;
+        nextPos = this[dir]({ pos: currentPos, player: player });
+      }
+      return moves;
+    },
+
+    castRaysFromDirs: function castRaysFromDirs(piece, allPieces, dirs) {
+      var _this = this;
+
+      var includeCaptures = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
+
+      var moves = [];
+      dirs.forEach(function (dir) {
+        moves.push.apply(moves, _toConsumableArray(_this.ray(dir, piece, allPieces, includeCaptures)));
+      });
+      return moves;
+    },
+
+
+    // PIECE MOVE LOGIC
+    pawn: function pawn(piece, allPieces) {
+      var pos = piece.pos,
+          player = piece.player;
+
+      var allies = allPieces.filter(function (p) {
+        return p.player === player;
+      });
+      var enemies = allPieces.filter(function (p) {
+        return p.player !== player;
+      });
+      var allHexStrings = this.getStrings(allPieces);
+      var enemyHexStrings = this.getStrings(enemies);
+      var moves = [];
+
+      var forward = this.forward(piece);
+      var captureLeft = this.forwardLeft(piece);
+      var captureRight = this.forwardRight(piece);
+      if (allHexStrings.indexOf(forward.toString()) < 0) {
+        moves.push(forward);
+      }
+      if (enemyHexStrings.indexOf(captureLeft.toString()) >= 0) {
+        moves.push(captureLeft);
+      }
+      if (enemyHexStrings.indexOf(captureRight.toString()) >= 0) {
+        moves.push(captureRight);
+      }
+      return moves;
+    },
+
+    bishop: function bishop(piece, allPieces) {
+      var _this2 = this;
+
+      var pos = piece.pos,
+          player = piece.player;
+
+      var allies = allPieces.filter(function (p) {
+        return p.player === player;
+      });
+      var enemies = allPieces.filter(function (p) {
+        return p.player !== player;
+      });
+      var allHexStrings = this.getStrings(allPieces);
+      var enemyHexStrings = this.getStrings(enemies);
+      var moves = [];
+      var dirs = ['forwardLeft', 'forwardRight', 'backLeft', 'backRight'];
+      dirs.forEach(function (dir) {
+        moves.push.apply(moves, _toConsumableArray(_this2.ray(dir, piece, allPieces, true)));
+      });
+      return moves;
+    },
+
+    rook: function rook(piece, allPieces) {
+      var _this3 = this;
+
+      var pos = piece.pos,
+          player = piece.player;
+
+      var allies = allPieces.filter(function (p) {
+        return p.player === player;
+      });
+      var enemies = allPieces.filter(function (p) {
+        return p.player !== player;
+      });
+      var allHexStrings = this.getStrings(allPieces);
+      var enemyHexStrings = this.getStrings(enemies);
+      var moves = [];
+      var dirs = ['forward', 'backLeft', 'backRight'];
+      dirs.forEach(function (dir) {
+        moves.push.apply(moves, _toConsumableArray(_this3.ray(dir, piece, allPieces, true)));
+      });
+      return moves;
+    },
+
+    queen: function queen(piece, allPieces) {
+      var dirs = ['forward', 'forwardLeft', 'forwardRight', 'back', 'backLeft', 'backRight'];
+      return this.castRaysFromDirs(piece, allPieces, dirs);
+    }
+  },
+
+  getHeroPos: function getHeroPos(p) {
+    return false;
+  }, // TODO
+
+  getStrings: function getStrings(pieces) {
+    return pieces.map(function (p) {
+      return p.pos.toString();
+    });
+  },
+
+  inBounds: function inBounds(pos) {
+    if (!Array.isArray(pos)) {
+      return false;
+    }
+
+    var _pos3 = _slicedToArray(pos, 3),
+        x = _pos3[0],
+        y = _pos3[1],
+        z = _pos3[2];
+
+    return x * x < 20 && y * y < 20 && z * z < 20;
+  },
+  isCollision: function isCollision(pos, array) {
+    return array.indexOf(pos.toString()) > -1;
+  },
+  getNodeCount: function getNodeCount(player, allPieces) {
+    return allPieces.filter(function (p) {
+      return p.type === 'node' && p.player === player && Array.isArray(p.pos);
+    }).length;
+  },
+  text: function text(element) {
+    var elements = {
+      hex: '⎔',
+      sun: '❂',
+      energy: '⟡',
+      e2: '✨',
+      e3: '◌',
+      e4: '⁕',
+      star: '✶',
+      power: 'ᚹ',
+      gamma: 'γ',
+      infinity: '∞',
+      sheild: '⏠'
+    };
+
+    return elements[element];
+  }
+};
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
 /* WEBPACK VAR INJECTION */(function(process) {/**
  * Copyright 2014-present, Facebook, Inc.
  * All rights reserved.
@@ -2216,7 +2536,7 @@ var _assign = __webpack_require__(5);
 var ReactCurrentOwner = __webpack_require__(15);
 
 var warning = __webpack_require__(3);
-var canDefineProperty = __webpack_require__(35);
+var canDefineProperty = __webpack_require__(36);
 var hasOwnProperty = Object.prototype.hasOwnProperty;
 
 var REACT_ELEMENT_TYPE = __webpack_require__(74);
@@ -2542,7 +2862,7 @@ module.exports = ReactElement;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2660,7 +2980,7 @@ module.exports = PooledClass;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -2679,7 +2999,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2747,326 +3067,6 @@ module.exports = warning;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 23 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
-
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
-var Util = exports.Util = {
-  moveFuncs: {
-    // CARDINAL DIRECTIONS
-    north: function north(_ref) {
-      var _ref2 = _slicedToArray(_ref, 3),
-          x = _ref2[0],
-          y = _ref2[1],
-          z = _ref2[2];
-
-      return [x, y + 1, z - 1];
-    },
-    south: function south(_ref3) {
-      var _ref4 = _slicedToArray(_ref3, 3),
-          x = _ref4[0],
-          y = _ref4[1],
-          z = _ref4[2];
-
-      return [x, y - 1, z + 1];
-    },
-    northWest: function northWest(_ref5) {
-      var _ref6 = _slicedToArray(_ref5, 3),
-          x = _ref6[0],
-          y = _ref6[1],
-          z = _ref6[2];
-
-      return [x - 1, y + 1, z];
-    },
-    northEast: function northEast(_ref7) {
-      var _ref8 = _slicedToArray(_ref7, 3),
-          x = _ref8[0],
-          y = _ref8[1],
-          z = _ref8[2];
-
-      return [x + 1, y, z - 1];
-    },
-    southWest: function southWest(_ref9) {
-      var _ref10 = _slicedToArray(_ref9, 3),
-          x = _ref10[0],
-          y = _ref10[1],
-          z = _ref10[2];
-
-      return [x - 1, y, z + 1];
-    },
-    southEast: function southEast(_ref11) {
-      var _ref12 = _slicedToArray(_ref11, 3),
-          x = _ref12[0],
-          y = _ref12[1],
-          z = _ref12[2];
-
-      return [x + 1, y - 1, z];
-    },
-
-    // RELATIVE DIRECTIONS
-    forward: function forward(piece) {
-      var player = piece.player,
-          pos = piece.pos;
-
-      return player === 'P1' ? this.north(pos) : this.south(pos);
-    },
-    forwardLeft: function forwardLeft(piece) {
-      var player = piece.player,
-          pos = piece.pos;
-
-      return player === 'P1' ? this.northWest(pos) : this.southEast(pos);
-    },
-    forwardRight: function forwardRight(piece) {
-      var player = piece.player,
-          pos = piece.pos;
-
-      return player === 'P1' ? this.northEast(pos) : this.southWest(pos);
-    },
-    back: function back(piece) {
-      var player = piece.player,
-          pos = piece.pos;
-
-      return player === 'P1' ? this.south(pos) : this.north(pos);
-    },
-    backLeft: function backLeft(piece) {
-      var player = piece.player,
-          pos = piece.pos;
-
-      return player === 'P1' ? this.southWest(pos) : this.northEast(pos);
-    },
-    backRight: function backRight(piece) {
-      var player = piece.player,
-          pos = piece.pos;
-
-      return player === 'P1' ? this.southEast(pos) : this.northWest(pos);
-    },
-    none: function none() {
-      return [];
-    },
-
-    getStrings: function getStrings(pieces) {
-      return pieces.map(function (p) {
-        return p.pos.toString();
-      });
-    },
-
-    adjacent: function adjacent(piece, allPieces) {
-      var pos = piece.pos;
-
-      var _pos = _slicedToArray(pos, 3),
-          x = _pos[0],
-          y = _pos[1],
-          z = _pos[2];
-
-      return [[x - 1, y + 1, z], [x, y + 1, z - 1], [x - 1, y, z + 1], [x + 1, y, z - 1], [x, y - 1, z + 1], [x + 1, y - 1, z]];
-    },
-
-    inBounds: function inBounds(pos) {
-      if (!Array.isArray(pos)) {
-        return false;
-      }
-
-      var _pos2 = _slicedToArray(pos, 3),
-          x = _pos2[0],
-          y = _pos2[1],
-          z = _pos2[2];
-
-      return x * x < 20 && y * y < 20 && z * z < 20;
-    },
-    isCollision: function isCollision(pos, array) {
-      return array.indexOf(pos.toString()) > -1;
-    },
-    keepGoing: function keepGoing(currentPos, nextPos, allHexStrings, enemyHexStrings, includeCaptures) {
-      if (enemyHexStrings.indexOf(currentPos.toString()) !== -1) {
-        return false;
-      } // just made a capture
-      if (!this.inBounds(nextPos)) {
-        return false;
-      }
-      if (allHexStrings.indexOf(nextPos.toString()) < 0) {
-        return true; // nothing in the way, keep going.
-      } else if (enemyHexStrings.indexOf(nextPos.toString()) < 0) {
-        return false; // something in the way, not an enemy, stop to prevent self-captures.
-      } else {
-        return includeCaptures; // keep going if we allow captures, otherwise stop;
-      }
-    },
-
-    // RAYS
-    ray: function ray(dir, piece, allPieces, includeCaptures) {
-      var player = piece.player,
-          pos = piece.pos;
-
-      var enemies = allPieces.filter(function (p) {
-        return p.player !== player;
-      });
-      var allHexStrings = this.getStrings(allPieces);
-      var enemyHexStrings = this.getStrings(enemies);
-
-      var moves = [];
-      var currentPos = pos;
-      var nextPos = this[dir]({ player: player, pos: currentPos });
-      while (this.keepGoing(currentPos, nextPos, allHexStrings, enemyHexStrings, includeCaptures)) {
-        moves.push(nextPos);
-        currentPos = nextPos;
-        nextPos = this[dir]({ pos: currentPos, player: player });
-      }
-      return moves;
-    },
-
-    castRaysFromDirs: function castRaysFromDirs(piece, allPieces, dirs) {
-      var _this = this;
-
-      var includeCaptures = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
-
-      var moves = [];
-      dirs.forEach(function (dir) {
-        moves.push.apply(moves, _toConsumableArray(_this.ray(dir, piece, allPieces, includeCaptures)));
-      });
-      return moves;
-    },
-
-
-    // PIECE MOVE LOGIC
-    pawn: function pawn(piece, allPieces) {
-      var pos = piece.pos,
-          player = piece.player;
-
-      var allies = allPieces.filter(function (p) {
-        return p.player === player;
-      });
-      var enemies = allPieces.filter(function (p) {
-        return p.player !== player;
-      });
-      var allHexStrings = this.getStrings(allPieces);
-      var enemyHexStrings = this.getStrings(enemies);
-      var moves = [];
-
-      var forward = this.forward(piece);
-      var captureLeft = this.forwardLeft(piece);
-      var captureRight = this.forwardRight(piece);
-      if (allHexStrings.indexOf(forward.toString()) < 0) {
-        moves.push(forward);
-      }
-      if (enemyHexStrings.indexOf(captureLeft.toString()) >= 0) {
-        moves.push(captureLeft);
-      }
-      if (enemyHexStrings.indexOf(captureRight.toString()) >= 0) {
-        moves.push(captureRight);
-      }
-      return moves;
-    },
-
-    bishop: function bishop(piece, allPieces) {
-      var _this2 = this;
-
-      var pos = piece.pos,
-          player = piece.player;
-
-      var allies = allPieces.filter(function (p) {
-        return p.player === player;
-      });
-      var enemies = allPieces.filter(function (p) {
-        return p.player !== player;
-      });
-      var allHexStrings = this.getStrings(allPieces);
-      var enemyHexStrings = this.getStrings(enemies);
-      var moves = [];
-      var dirs = ['forwardLeft', 'forwardRight', 'backLeft', 'backRight'];
-      dirs.forEach(function (dir) {
-        moves.push.apply(moves, _toConsumableArray(_this2.ray(dir, piece, allPieces, true)));
-      });
-      return moves;
-    },
-
-    rook: function rook(piece, allPieces) {
-      var _this3 = this;
-
-      var pos = piece.pos,
-          player = piece.player;
-
-      var allies = allPieces.filter(function (p) {
-        return p.player === player;
-      });
-      var enemies = allPieces.filter(function (p) {
-        return p.player !== player;
-      });
-      var allHexStrings = this.getStrings(allPieces);
-      var enemyHexStrings = this.getStrings(enemies);
-      var moves = [];
-      var dirs = ['forward', 'backLeft', 'backRight'];
-      dirs.forEach(function (dir) {
-        moves.push.apply(moves, _toConsumableArray(_this3.ray(dir, piece, allPieces, true)));
-      });
-      return moves;
-    },
-
-    queen: function queen(piece, allPieces) {
-      var dirs = ['forward', 'forwardLeft', 'forwardRight', 'back', 'backLeft', 'backRight'];
-      return this.castRaysFromDirs(piece, allPieces, dirs);
-    }
-  },
-
-  getHeroPos: function getHeroPos(p) {
-    return false;
-  }, // TODO
-
-  getStrings: function getStrings(pieces) {
-    return pieces.map(function (p) {
-      return p.pos.toString();
-    });
-  },
-
-  inBounds: function inBounds(pos) {
-    if (!Array.isArray(pos)) {
-      return false;
-    }
-
-    var _pos3 = _slicedToArray(pos, 3),
-        x = _pos3[0],
-        y = _pos3[1],
-        z = _pos3[2];
-
-    return x * x < 20 && y * y < 20 && z * z < 20;
-  },
-  isCollision: function isCollision(pos, array) {
-    return array.indexOf(pos.toString()) > -1;
-  },
-  getNodeCount: function getNodeCount(player, allPieces) {
-    return allPieces.filter(function (p) {
-      return p.type === 'node' && p.player === player && Array.isArray(p.pos);
-    }).length;
-  },
-  text: function text(element) {
-    var elements = {
-      hex: '⎔',
-      sun: '❂',
-      energy: '⟡',
-      e2: '✨',
-      e3: '◌',
-      e4: '⁕',
-      star: '✶',
-      power: 'ᚹ',
-      gamma: 'γ',
-      infinity: '∞',
-      sheild: '⏠'
-    };
-
-    return elements[element];
-  }
-};
-
-/***/ }),
 /* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -3088,7 +3088,7 @@ var _assign = __webpack_require__(5);
 var ReactBaseClasses = __webpack_require__(72);
 var ReactChildren = __webpack_require__(126);
 var ReactDOMFactories = __webpack_require__(130);
-var ReactElement = __webpack_require__(19);
+var ReactElement = __webpack_require__(20);
 var ReactPropTypes = __webpack_require__(134);
 var ReactVersion = __webpack_require__(136);
 
@@ -3101,7 +3101,7 @@ var cloneElement = ReactElement.cloneElement;
 
 if (process.env.NODE_ENV !== 'production') {
   var lowPriorityWarning = __webpack_require__(46);
-  var canDefineProperty = __webpack_require__(35);
+  var canDefineProperty = __webpack_require__(36);
   var ReactElementValidator = __webpack_require__(76);
   var didWarnPropTypesDeprecated = false;
   createElement = ReactElementValidator.createElement;
@@ -3438,7 +3438,7 @@ module.exports = ReactReconciler;
 
 
 var DOMNamespaces = __webpack_require__(54);
-var setInnerHTML = __webpack_require__(40);
+var setInnerHTML = __webpack_require__(41);
 
 var createMicrosoftUnsafeLocalFunction = __webpack_require__(55);
 var setTextContent = __webpack_require__(88);
@@ -3702,7 +3702,7 @@ module.exports = EventPropagators;
 
 var _prodInvariant = __webpack_require__(4);
 
-var EventPluginRegistry = __webpack_require__(37);
+var EventPluginRegistry = __webpack_require__(38);
 var EventPluginUtils = __webpack_require__(48);
 var ReactErrorUtils = __webpack_require__(49);
 
@@ -14469,6 +14469,299 @@ return jQuery;
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(2);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _piece = __webpack_require__(44);
+
+var _piece2 = _interopRequireDefault(_piece);
+
+var _player = __webpack_require__(122);
+
+var _player2 = _interopRequireDefault(_player);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Hex = function (_Component) {
+  _inherits(Hex, _Component);
+
+  function Hex(props) {
+    _classCallCheck(this, Hex);
+
+    var _this = _possibleConstructorReturn(this, (Hex.__proto__ || Object.getPrototypeOf(Hex)).call(this, props));
+
+    _this.pos = props.pos;
+    _this.address = props.pos.map(function (i) {
+      return i + 5;
+    });
+    _this.color = _this.getColorFromPos(props.pos, props.col);
+    _this.onBoard = _this.color !== '#333';
+    _this.state = {
+      highlight: false, // props.highlight for showing legal moves...
+      hover: false,
+      contents: props.contents,
+      selected: props.selected
+    };
+
+    _this.data = _this.data.bind(_this);
+    _this.getColorFromPos = _this.getColorFromPos.bind(_this);
+    _this.handleClick = _this.handleClick.bind(_this);
+    _this.highlightHex = _this.highlightHex.bind(_this);
+    _this.hoverOn = _this.hoverOn.bind(_this);
+    _this.hoverOff = _this.hoverOff.bind(_this);
+    _this.unHighlightHex = _this.unHighlightHex.bind(_this);
+    return _this;
+  }
+
+  _createClass(Hex, [{
+    key: 'componentWillReceiveProps',
+    value: function componentWillReceiveProps(newProps) {
+      var oldState = this.state;
+      var newState = Object.assign({}, oldState, newProps);
+      this.setState(newState);
+    }
+  }, {
+    key: 'data',
+    value: function data() {
+      var _props = this.props,
+          pos = _props.pos,
+          contents = _props.contents;
+
+      var player = contents && contents.player;
+      return { pos: pos, contents: contents, player: player };
+    }
+  }, {
+    key: 'getColorFromPos',
+    value: function getColorFromPos(pos, col) {
+      if ((typeof pos === 'undefined' ? 'undefined' : _typeof(pos)) !== 'object') {
+        return '#333';
+      }
+
+      var _pos = _slicedToArray(pos, 3),
+          x = _pos[0],
+          y = _pos[1],
+          z = _pos[2];
+
+      var colors = ['#8ac', '#abc', '#def'];
+      var idx = (10 + y + 2 * (x + 4)) % 3;
+
+      if (y * y > 20 || z * z > 20) {
+        idx = 9;
+      }
+
+      return colors[idx] || '#333';
+    }
+  }, {
+    key: 'getAdjacentHexes',
+    value: function getAdjacentHexes(pos) {
+      var _pos2 = _slicedToArray(pos, 3),
+          x = _pos2[0],
+          y = _pos2[1],
+          z = _pos2[2];
+
+      return [[x - 1, y + 1, z], [x, y + 1, z - 1], [x - 1, y, z + 1], [x + 1, y, z - 1], [x, y - 1, z + 1], [x + 1, y - 1, z]];
+    }
+  }, {
+    key: 'handleClick',
+    value: function handleClick(proxy, evt, context) {
+      var hex = this;
+      // pass forward all necessary click details here...
+      this.props.handleClick ? this.props.handleClick() : this.context.handleClick(hex.data());
+    }
+  }, {
+    key: 'hoverOn',
+    value: function hoverOn() {
+      // emit an action that turns off other hovers?
+      this.setState({ hover: true });
+    }
+  }, {
+    key: 'hoverOff',
+    value: function hoverOff() {
+      this.setState({ hover: false });
+    }
+  }, {
+    key: 'highlightHex',
+    value: function highlightHex() {
+      var toggle = !this.state.highlight;
+      this.setState({ highlight: toggle });
+    }
+  }, {
+    key: 'unHighlightHex',
+    value: function unHighlightHex() {
+      this.setState({ highlight: false });
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _this2 = this;
+
+      var placeholder = "#";
+      var _state = this.state,
+          highlight = _state.highlight,
+          hover = _state.hover,
+          selected = _state.selected;
+      var _props2 = this.props,
+          contents = _props2.contents,
+          showLegalPip = _props2.showLegalPip,
+          size = _props2.size,
+          noGlow = _props2.noGlow;
+
+      var onBoard = this.onBoard;
+      var triangleClass = hover && !noGlow ? "sslideIn" : selected ? "selected" : "hidden";
+
+      var myStuff = [];
+      if (contents) {
+        if (contents.type === 'button') {
+          myStuff = _react2.default.createElement(
+            'span',
+            { className: 'hex-text' },
+            contents.text
+          );
+        } else {
+          //it's a piece
+          myStuff = _react2.default.createElement(_piece2.default, { options: contents });
+        }
+      } else {
+        myStuff = _react2.default.createElement(
+          'span',
+          { style: {
+              color: '#333',
+              display: showLegalPip ? 'none' : 'flex',
+              justifyContent: 'center',
+              fontFamily: 'sans-serif',
+              fontSize: '18px',
+              marginTop: '36px',
+              opacity: '.3'
+            } },
+          this.address.join('-')
+        );
+      }
+      var key = contents ? contents.type + contents.player : this.pos.toString();
+      var style = styles(size);
+
+      return _react2.default.createElement(
+        'div',
+        { className: 'hex', id: this.pos.toString(), key: key, style: style['hex'] },
+        _react2.default.createElement(
+          'div',
+          { className: 'slant1', style: style['slant'] },
+          _react2.default.createElement(
+            'div',
+            { className: 'slant1', style: style['slant'] },
+            _react2.default.createElement(
+              'div',
+              { className: 'hex-inner', style: Object.assign({}, style['scale'], { background: this.color }) },
+              _react2.default.createElement(
+                'div',
+                { className: 'hex-contents', style: style['scale'] },
+                this.props.children || myStuff
+              ),
+              _react2.default.createElement(
+                'div',
+                { className: 'hitbox one', onClick: function onClick() {
+                    _this2.handleClick();
+                  },
+                  style: style['hitbox'],
+                  onMouseEnter: this.hoverOn,
+                  onMouseLeave: this.hoverOff },
+                _react2.default.createElement('div', { className: onBoard && showLegalPip ? 'legalPip' : 'hidden' }),
+                _react2.default.createElement('div', { className: "selector-triangles " + triangleClass,
+                  style: style['triangle'] })
+              ),
+              _react2.default.createElement(
+                'div',
+                { className: 'hitbox two', onClick: function onClick() {
+                    _this2.handleClick();
+                  },
+                  style: style['hitbox'],
+                  onMouseEnter: this.hoverOn,
+                  onMouseLeave: this.hoverOff },
+                _react2.default.createElement('div', { className: "selector-triangles " + triangleClass,
+                  style: style['triangle'] })
+              ),
+              _react2.default.createElement(
+                'div',
+                { className: 'hitbox three', onClick: function onClick() {
+                    _this2.handleClick();
+                  },
+                  style: style['hitbox'],
+                  onMouseEnter: this.hoverOn,
+                  onMouseLeave: this.hoverOff },
+                _react2.default.createElement('div', { className: "selector-triangles " + triangleClass,
+                  style: style['triangle'] })
+              )
+            )
+          )
+        )
+      );
+    }
+  }]);
+
+  return Hex;
+}(_react.Component);
+
+exports.default = Hex;
+;
+
+Hex.contextTypes = {
+  handleClick: _react2.default.PropTypes.func
+};
+
+var styles = function styles() {
+  var size = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 100;
+
+  var hex = {
+    marginLeft: -.29 * size + 'px',
+    marginLight: -.29 * size + 'px',
+    width: 1.732 * size + 'px',
+    height: size + 'px'
+  };
+  var slant = {
+    width: 1.732 * size + 'px',
+    height: size + 'px'
+  };
+  var hitbox = {
+    height: size + 'px',
+    width: .5773 * size + 'px',
+    left: .5773 * size + 'px'
+  };
+  var scale = {
+    width: 1.732 * size + 'px',
+    height: size + 'px'
+  };
+  var triangle = {
+    height: size + 'px',
+    width: '100%',
+    opacity: '1'
+  };
+  return { hex: hex, slant: slant, hitbox: hitbox, triangle: triangle, scale: scale };
+  ;
+};
+
+/***/ }),
+/* 36 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
 /* WEBPACK VAR INJECTION */(function(process) {/**
  * Copyright 2013-present, Facebook, Inc.
  * All rights reserved.
@@ -14497,7 +14790,7 @@ module.exports = canDefineProperty;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14523,7 +14816,7 @@ module.exports = emptyObject;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14782,7 +15075,7 @@ module.exports = EventPluginRegistry;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15016,7 +15309,7 @@ module.exports = TransactionImpl;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15093,7 +15386,7 @@ SyntheticUIEvent.augmentClass(SyntheticMouseEvent, MouseEventInterface);
 module.exports = SyntheticMouseEvent;
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15196,7 +15489,7 @@ if (ExecutionEnvironment.canUseDOM) {
 module.exports = setInnerHTML;
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15323,7 +15616,7 @@ function escapeTextContentForBrowser(text) {
 module.exports = escapeTextContentForBrowser;
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15341,7 +15634,7 @@ module.exports = escapeTextContentForBrowser;
 
 var _assign = __webpack_require__(5);
 
-var EventPluginRegistry = __webpack_require__(37);
+var EventPluginRegistry = __webpack_require__(38);
 var ReactEventEmitterMixin = __webpack_require__(175);
 var ViewportMetrics = __webpack_require__(87);
 
@@ -15650,299 +15943,6 @@ var ReactBrowserEventEmitter = _assign({}, ReactEventEmitterMixin, {
 });
 
 module.exports = ReactBrowserEventEmitter;
-
-/***/ }),
-/* 43 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = __webpack_require__(2);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _piece = __webpack_require__(44);
-
-var _piece2 = _interopRequireDefault(_piece);
-
-var _player = __webpack_require__(122);
-
-var _player2 = _interopRequireDefault(_player);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Hex = function (_Component) {
-  _inherits(Hex, _Component);
-
-  function Hex(props) {
-    _classCallCheck(this, Hex);
-
-    var _this = _possibleConstructorReturn(this, (Hex.__proto__ || Object.getPrototypeOf(Hex)).call(this, props));
-
-    _this.pos = props.pos;
-    _this.address = props.pos.map(function (i) {
-      return i + 5;
-    });
-    _this.color = _this.getColorFromPos(props.pos, props.col);
-    _this.onBoard = _this.color !== '#333';
-    _this.state = {
-      highlight: false, // props.highlight for showing legal moves...
-      hover: false,
-      contents: props.contents,
-      selected: props.selected
-    };
-
-    _this.data = _this.data.bind(_this);
-    _this.getColorFromPos = _this.getColorFromPos.bind(_this);
-    _this.handleClick = _this.handleClick.bind(_this);
-    _this.highlightHex = _this.highlightHex.bind(_this);
-    _this.hoverOn = _this.hoverOn.bind(_this);
-    _this.hoverOff = _this.hoverOff.bind(_this);
-    _this.unHighlightHex = _this.unHighlightHex.bind(_this);
-    return _this;
-  }
-
-  _createClass(Hex, [{
-    key: 'componentWillReceiveProps',
-    value: function componentWillReceiveProps(newProps) {
-      var oldState = this.state;
-      var newState = Object.assign({}, oldState, newProps);
-      this.setState(newState);
-    }
-  }, {
-    key: 'data',
-    value: function data() {
-      var _props = this.props,
-          pos = _props.pos,
-          contents = _props.contents;
-
-      var player = contents && contents.player;
-      return { pos: pos, contents: contents, player: player };
-    }
-  }, {
-    key: 'getColorFromPos',
-    value: function getColorFromPos(pos, col) {
-      if ((typeof pos === 'undefined' ? 'undefined' : _typeof(pos)) !== 'object') {
-        return '#333';
-      }
-
-      var _pos = _slicedToArray(pos, 3),
-          x = _pos[0],
-          y = _pos[1],
-          z = _pos[2];
-
-      var colors = ['#8ac', '#abc', '#def'];
-      var idx = (10 + y + 2 * (x + 4)) % 3;
-
-      if (y * y > 20 || z * z > 20) {
-        idx = 9;
-      }
-
-      return colors[idx] || '#333';
-    }
-  }, {
-    key: 'getAdjacentHexes',
-    value: function getAdjacentHexes(pos) {
-      var _pos2 = _slicedToArray(pos, 3),
-          x = _pos2[0],
-          y = _pos2[1],
-          z = _pos2[2];
-
-      return [[x - 1, y + 1, z], [x, y + 1, z - 1], [x - 1, y, z + 1], [x + 1, y, z - 1], [x, y - 1, z + 1], [x + 1, y - 1, z]];
-    }
-  }, {
-    key: 'handleClick',
-    value: function handleClick(proxy, evt, context) {
-      var hex = this;
-      // pass forward all necessary click details here...
-      this.props.handleClick && this.props.handleClick();
-      this.context.handleClick(hex.data());
-    }
-  }, {
-    key: 'hoverOn',
-    value: function hoverOn() {
-      // emit an action that turns off other hovers?
-      this.setState({ hover: true });
-    }
-  }, {
-    key: 'hoverOff',
-    value: function hoverOff() {
-      this.setState({ hover: false });
-    }
-  }, {
-    key: 'highlightHex',
-    value: function highlightHex() {
-      var toggle = !this.state.highlight;
-      this.setState({ highlight: toggle });
-    }
-  }, {
-    key: 'unHighlightHex',
-    value: function unHighlightHex() {
-      this.setState({ highlight: false });
-    }
-  }, {
-    key: 'render',
-    value: function render() {
-      var _this2 = this;
-
-      var placeholder = "#";
-      var _state = this.state,
-          highlight = _state.highlight,
-          hover = _state.hover,
-          selected = _state.selected;
-      var _props2 = this.props,
-          contents = _props2.contents,
-          showLegalPip = _props2.showLegalPip,
-          size = _props2.size;
-
-      var onBoard = this.onBoard;
-      var triangleClass = hover ? "sslideIn" : selected ? "selected" : "hidden";
-
-      var myStuff = [];
-      if (contents) {
-        if (contents.type === 'button') {
-          myStuff = _react2.default.createElement(
-            'span',
-            { className: 'hex-text' },
-            contents.text
-          );
-        } else {
-          //it's a piece
-          myStuff = _react2.default.createElement(_piece2.default, { options: contents });
-        }
-      } else {
-        myStuff = _react2.default.createElement(
-          'span',
-          { style: {
-              color: '#333',
-              display: showLegalPip ? 'none' : 'flex',
-              justifyContent: 'center',
-              fontFamily: 'sans-serif',
-              fontSize: '18px',
-              marginTop: '36px',
-              opacity: '.3'
-            } },
-          this.address.join('-')
-        );
-      }
-      var key = contents ? contents.type + contents.player : this.pos.toString();
-      var style = styles(size);
-
-      return _react2.default.createElement(
-        'div',
-        { className: 'hex', id: this.pos.toString(), key: key, style: style['hex'] },
-        _react2.default.createElement(
-          'div',
-          { className: 'slant1', style: style['slant'] },
-          _react2.default.createElement(
-            'div',
-            { className: 'slant1', style: style['slant'] },
-            _react2.default.createElement(
-              'div',
-              { className: 'hex-inner', style: Object.assign({}, style['scale'], { background: this.color }) },
-              _react2.default.createElement(
-                'div',
-                { className: 'hex-contents', style: style['scale'] },
-                this.props.children || myStuff
-              ),
-              _react2.default.createElement(
-                'div',
-                { className: 'hitbox one', onClick: function onClick() {
-                    _this2.handleClick();
-                  },
-                  style: style['hitbox'],
-                  onMouseEnter: this.hoverOn,
-                  onMouseLeave: this.hoverOff },
-                _react2.default.createElement('div', { className: onBoard && showLegalPip ? 'legalPip' : 'hidden' }),
-                _react2.default.createElement('div', { className: "selector-triangles " + triangleClass,
-                  style: style['triangle'] })
-              ),
-              _react2.default.createElement(
-                'div',
-                { className: 'hitbox two', onClick: function onClick() {
-                    _this2.handleClick();
-                  },
-                  style: style['hitbox'],
-                  onMouseEnter: this.hoverOn,
-                  onMouseLeave: this.hoverOff },
-                _react2.default.createElement('div', { className: "selector-triangles " + triangleClass,
-                  style: style['triangle'] })
-              ),
-              _react2.default.createElement(
-                'div',
-                { className: 'hitbox three', onClick: function onClick() {
-                    _this2.handleClick();
-                  },
-                  style: style['hitbox'],
-                  onMouseEnter: this.hoverOn,
-                  onMouseLeave: this.hoverOff },
-                _react2.default.createElement('div', { className: "selector-triangles " + triangleClass,
-                  style: style['triangle'] })
-              )
-            )
-          )
-        )
-      );
-    }
-  }]);
-
-  return Hex;
-}(_react.Component);
-
-exports.default = Hex;
-;
-
-Hex.contextTypes = {
-  handleClick: _react2.default.PropTypes.func
-};
-
-var styles = function styles() {
-  var size = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 100;
-
-  var hex = {
-    marginLeft: -.29 * size + 'px',
-    marginLight: -.29 * size + 'px',
-    width: 1.732 * size + 'px',
-    height: size + 'px'
-  };
-  var slant = {
-    width: 1.732 * size + 'px',
-    height: size + 'px'
-  };
-  var hitbox = {
-    height: size + 'px',
-    width: .57 * size + 'px',
-    left: .57 * size + 'px'
-  };
-  var scale = {
-    width: 1.732 * size + 'px',
-    height: size + 'px'
-  };
-  var triangle = {
-    height: size + 'px',
-    width: '100%',
-    opacity: '1'
-  };
-  return { hex: hex, slant: slant, hitbox: hitbox, triangle: triangle, scale: scale };
-  ;
-};
 
 /***/ }),
 /* 44 */
@@ -16719,7 +16719,7 @@ var ReactDOMComponentTree = __webpack_require__(6);
 var ReactInstrumentation = __webpack_require__(12);
 
 var createMicrosoftUnsafeLocalFunction = __webpack_require__(55);
-var setInnerHTML = __webpack_require__(40);
+var setInnerHTML = __webpack_require__(41);
 var setTextContent = __webpack_require__(88);
 
 function getNodeAfter(parentNode, node) {
@@ -18260,7 +18260,7 @@ var locationsAreEqual = exports.locationsAreEqual = function locationsAreEqual(a
 
 exports.__esModule = true;
 
-var _warning = __webpack_require__(22);
+var _warning = __webpack_require__(23);
 
 var _warning2 = _interopRequireDefault(_warning);
 
@@ -18347,7 +18347,7 @@ exports.default = createTransitionManager;
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_warning__ = __webpack_require__(22);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_warning__ = __webpack_require__(23);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_warning___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_warning__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_invariant__ = __webpack_require__(32);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_invariant___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_invariant__);
@@ -18664,8 +18664,8 @@ var _prodInvariant = __webpack_require__(25),
 
 var ReactNoopUpdateQueue = __webpack_require__(73);
 
-var canDefineProperty = __webpack_require__(35);
-var emptyObject = __webpack_require__(36);
+var canDefineProperty = __webpack_require__(36);
+var emptyObject = __webpack_require__(37);
 var invariant = __webpack_require__(1);
 var lowPriorityWarning = __webpack_require__(46);
 
@@ -18989,11 +18989,11 @@ module.exports = getIteratorFn;
 
 var ReactCurrentOwner = __webpack_require__(15);
 var ReactComponentTreeHook = __webpack_require__(9);
-var ReactElement = __webpack_require__(19);
+var ReactElement = __webpack_require__(20);
 
 var checkReactTypeSpec = __webpack_require__(131);
 
-var canDefineProperty = __webpack_require__(35);
+var canDefineProperty = __webpack_require__(36);
 var getIteratorFn = __webpack_require__(75);
 var warning = __webpack_require__(3);
 var lowPriorityWarning = __webpack_require__(46);
@@ -19955,7 +19955,7 @@ var _prodInvariant = __webpack_require__(4);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var PooledClass = __webpack_require__(20);
+var PooledClass = __webpack_require__(21);
 
 var invariant = __webpack_require__(1);
 
@@ -20317,8 +20317,8 @@ module.exports = ViewportMetrics;
 
 
 var ExecutionEnvironment = __webpack_require__(7);
-var escapeTextContentForBrowser = __webpack_require__(41);
-var setInnerHTML = __webpack_require__(40);
+var escapeTextContentForBrowser = __webpack_require__(42);
+var setInnerHTML = __webpack_require__(41);
 
 /**
  * Set the textContent property of a node, ensuring that whitespace is preserved
@@ -21772,7 +21772,7 @@ var _prodInvariant = __webpack_require__(4);
 var DOMLazyTree = __webpack_require__(27);
 var DOMProperty = __webpack_require__(18);
 var React = __webpack_require__(24);
-var ReactBrowserEventEmitter = __webpack_require__(42);
+var ReactBrowserEventEmitter = __webpack_require__(43);
 var ReactCurrentOwner = __webpack_require__(15);
 var ReactDOMComponentTree = __webpack_require__(6);
 var ReactDOMContainerInfo = __webpack_require__(216);
@@ -21785,10 +21785,10 @@ var ReactReconciler = __webpack_require__(26);
 var ReactUpdateQueue = __webpack_require__(61);
 var ReactUpdates = __webpack_require__(16);
 
-var emptyObject = __webpack_require__(36);
+var emptyObject = __webpack_require__(37);
 var instantiateReactComponent = __webpack_require__(94);
 var invariant = __webpack_require__(1);
-var setInnerHTML = __webpack_require__(40);
+var setInnerHTML = __webpack_require__(41);
 var shouldUpdateReactComponent = __webpack_require__(59);
 var warning = __webpack_require__(3);
 
@@ -23138,7 +23138,7 @@ function verifyPlainObject(value, displayName, methodName) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_warning__ = __webpack_require__(22);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_warning__ = __webpack_require__(23);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_warning___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_warning__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_react__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_react__);
@@ -24091,7 +24091,7 @@ var _reserve = __webpack_require__(123);
 
 var _reserve2 = _interopRequireDefault(_reserve);
 
-var _hex = __webpack_require__(43);
+var _hex = __webpack_require__(35);
 
 var _hex2 = _interopRequireDefault(_hex);
 
@@ -24192,7 +24192,7 @@ var _piece = __webpack_require__(44);
 
 var _piece2 = _interopRequireDefault(_piece);
 
-var _hex = __webpack_require__(43);
+var _hex = __webpack_require__(35);
 
 var _hex2 = _interopRequireDefault(_hex);
 
@@ -24200,7 +24200,7 @@ var _miniHex = __webpack_require__(309);
 
 var _miniHex2 = _interopRequireDefault(_miniHex);
 
-var _utils = __webpack_require__(23);
+var _utils = __webpack_require__(19);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -24427,7 +24427,7 @@ var _reactDom = __webpack_require__(140);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _reactRedux = __webpack_require__(21);
+var _reactRedux = __webpack_require__(22);
 
 var _reactRouter = __webpack_require__(10);
 
@@ -24486,7 +24486,7 @@ window.init = function () {
 
 
 var PooledClass = __webpack_require__(127);
-var ReactElement = __webpack_require__(19);
+var ReactElement = __webpack_require__(20);
 
 var emptyFunction = __webpack_require__(11);
 var traverseAllChildren = __webpack_require__(128);
@@ -25045,7 +25045,7 @@ module.exports = KeyEscapeUtils;
 
 
 
-var ReactElement = __webpack_require__(19);
+var ReactElement = __webpack_require__(20);
 
 /**
  * Create a factory that creates HTML tag elements.
@@ -25366,7 +25366,7 @@ module.exports = ReactPropTypesSecret;
 
 
 
-var _require = __webpack_require__(19),
+var _require = __webpack_require__(20),
     isValidElement = _require.isValidElement;
 
 var factory = __webpack_require__(77);
@@ -25481,7 +25481,7 @@ module.exports = '15.6.1';
 var _require = __webpack_require__(72),
     Component = _require.Component;
 
-var _require2 = __webpack_require__(19),
+var _require2 = __webpack_require__(20),
     isValidElement = _require2.isValidElement;
 
 var ReactNoopUpdateQueue = __webpack_require__(73);
@@ -25508,7 +25508,7 @@ module.exports = factory(Component, isValidElement, ReactNoopUpdateQueue);
 
 var _assign = __webpack_require__(5);
 
-var emptyObject = __webpack_require__(36);
+var emptyObject = __webpack_require__(37);
 var _invariant = __webpack_require__(1);
 
 if (process.env.NODE_ENV !== 'production') {
@@ -26387,7 +26387,7 @@ module.exports = factory;
 
 var _prodInvariant = __webpack_require__(25);
 
-var ReactElement = __webpack_require__(19);
+var ReactElement = __webpack_require__(20);
 
 var invariant = __webpack_require__(1);
 
@@ -27118,7 +27118,7 @@ module.exports = BeforeInputEventPlugin;
 
 var _assign = __webpack_require__(5);
 
-var PooledClass = __webpack_require__(20);
+var PooledClass = __webpack_require__(21);
 
 var getTextContentAccessor = __webpack_require__(82);
 
@@ -28358,7 +28358,7 @@ module.exports = DefaultEventPluginOrder;
 
 var EventPropagators = __webpack_require__(28);
 var ReactDOMComponentTree = __webpack_require__(6);
-var SyntheticMouseEvent = __webpack_require__(39);
+var SyntheticMouseEvent = __webpack_require__(40);
 
 var eventTypes = {
   mouseEnter: {
@@ -29159,8 +29159,8 @@ var DOMNamespaces = __webpack_require__(54);
 var DOMProperty = __webpack_require__(18);
 var DOMPropertyOperations = __webpack_require__(91);
 var EventPluginHub = __webpack_require__(29);
-var EventPluginRegistry = __webpack_require__(37);
-var ReactBrowserEventEmitter = __webpack_require__(42);
+var EventPluginRegistry = __webpack_require__(38);
+var ReactBrowserEventEmitter = __webpack_require__(43);
 var ReactDOMComponentFlags = __webpack_require__(79);
 var ReactDOMComponentTree = __webpack_require__(6);
 var ReactDOMInput = __webpack_require__(177);
@@ -29172,7 +29172,7 @@ var ReactMultiChild = __webpack_require__(180);
 var ReactServerRenderingTransaction = __webpack_require__(189);
 
 var emptyFunction = __webpack_require__(11);
-var escapeTextContentForBrowser = __webpack_require__(41);
+var escapeTextContentForBrowser = __webpack_require__(42);
 var invariant = __webpack_require__(1);
 var isEventSupported = __webpack_require__(51);
 var shallowEqual = __webpack_require__(58);
@@ -30697,7 +30697,7 @@ module.exports = memoizeStringOnly;
 
 
 
-var escapeTextContentForBrowser = __webpack_require__(41);
+var escapeTextContentForBrowser = __webpack_require__(42);
 
 /**
  * Escapes attribute value to prevent scripting attacks.
@@ -32085,7 +32085,7 @@ if (process.env.NODE_ENV !== 'production') {
   var checkReactTypeSpec = __webpack_require__(183);
 }
 
-var emptyObject = __webpack_require__(36);
+var emptyObject = __webpack_require__(37);
 var invariant = __webpack_require__(1);
 var shallowEqual = __webpack_require__(58);
 var shouldUpdateReactComponent = __webpack_require__(59);
@@ -33280,8 +33280,8 @@ module.exports = flattenChildren;
 
 var _assign = __webpack_require__(5);
 
-var PooledClass = __webpack_require__(20);
-var Transaction = __webpack_require__(38);
+var PooledClass = __webpack_require__(21);
+var Transaction = __webpack_require__(39);
 var ReactInstrumentation = __webpack_require__(12);
 var ReactServerUpdateQueue = __webpack_require__(190);
 
@@ -33733,7 +33733,7 @@ var DOMChildrenOperations = __webpack_require__(53);
 var DOMLazyTree = __webpack_require__(27);
 var ReactDOMComponentTree = __webpack_require__(6);
 
-var escapeTextContentForBrowser = __webpack_require__(41);
+var escapeTextContentForBrowser = __webpack_require__(42);
 var invariant = __webpack_require__(1);
 var validateDOMNesting = __webpack_require__(62);
 
@@ -33897,7 +33897,7 @@ module.exports = ReactDOMTextComponent;
 var _assign = __webpack_require__(5);
 
 var ReactUpdates = __webpack_require__(16);
-var Transaction = __webpack_require__(38);
+var Transaction = __webpack_require__(39);
 
 var emptyFunction = __webpack_require__(11);
 
@@ -33971,7 +33971,7 @@ var _assign = __webpack_require__(5);
 
 var EventListener = __webpack_require__(99);
 var ExecutionEnvironment = __webpack_require__(7);
-var PooledClass = __webpack_require__(20);
+var PooledClass = __webpack_require__(21);
 var ReactDOMComponentTree = __webpack_require__(6);
 var ReactUpdates = __webpack_require__(16);
 
@@ -34176,7 +34176,7 @@ var EventPluginHub = __webpack_require__(29);
 var EventPluginUtils = __webpack_require__(48);
 var ReactComponentEnvironment = __webpack_require__(57);
 var ReactEmptyComponent = __webpack_require__(96);
-var ReactBrowserEventEmitter = __webpack_require__(42);
+var ReactBrowserEventEmitter = __webpack_require__(43);
 var ReactHostComponent = __webpack_require__(97);
 var ReactUpdates = __webpack_require__(16);
 
@@ -34213,11 +34213,11 @@ module.exports = ReactInjection;
 var _assign = __webpack_require__(5);
 
 var CallbackQueue = __webpack_require__(83);
-var PooledClass = __webpack_require__(20);
-var ReactBrowserEventEmitter = __webpack_require__(42);
+var PooledClass = __webpack_require__(21);
+var ReactBrowserEventEmitter = __webpack_require__(43);
 var ReactInputSelection = __webpack_require__(100);
 var ReactInstrumentation = __webpack_require__(12);
-var Transaction = __webpack_require__(38);
+var Transaction = __webpack_require__(39);
 var ReactUpdateQueue = __webpack_require__(61);
 
 /**
@@ -35306,7 +35306,7 @@ var SyntheticClipboardEvent = __webpack_require__(208);
 var SyntheticEvent = __webpack_require__(17);
 var SyntheticFocusEvent = __webpack_require__(209);
 var SyntheticKeyboardEvent = __webpack_require__(210);
-var SyntheticMouseEvent = __webpack_require__(39);
+var SyntheticMouseEvent = __webpack_require__(40);
 var SyntheticDragEvent = __webpack_require__(212);
 var SyntheticTouchEvent = __webpack_require__(213);
 var SyntheticTransitionEvent = __webpack_require__(214);
@@ -35861,7 +35861,7 @@ module.exports = getEventKey;
 
 
 
-var SyntheticMouseEvent = __webpack_require__(39);
+var SyntheticMouseEvent = __webpack_require__(40);
 
 /**
  * @interface DragEvent
@@ -35996,7 +35996,7 @@ module.exports = SyntheticTransitionEvent;
 
 
 
-var SyntheticMouseEvent = __webpack_require__(39);
+var SyntheticMouseEvent = __webpack_require__(40);
 
 /**
  * @interface WheelEvent
@@ -36326,7 +36326,7 @@ module.exports = ReactMount.renderSubtreeIntoContainer;
 
 
 var DOMProperty = __webpack_require__(18);
-var EventPluginRegistry = __webpack_require__(37);
+var EventPluginRegistry = __webpack_require__(38);
 var ReactComponentTreeHook = __webpack_require__(9);
 
 var warning = __webpack_require__(3);
@@ -37870,7 +37870,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _warning = __webpack_require__(22);
+var _warning = __webpack_require__(23);
 
 var _warning2 = _interopRequireDefault(_warning);
 
@@ -38953,7 +38953,7 @@ StaticRouter.childContextTypes = {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types__ = __webpack_require__(8);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_prop_types__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_warning__ = __webpack_require__(22);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_warning__ = __webpack_require__(23);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_warning___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_warning__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__matchPath__ = __webpack_require__(70);
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -40733,7 +40733,7 @@ var _react2 = _interopRequireDefault(_react);
 
 var _redux = __webpack_require__(13);
 
-var _reactRedux = __webpack_require__(21);
+var _reactRedux = __webpack_require__(22);
 
 var _reactRouterDom = __webpack_require__(14);
 
@@ -40773,7 +40773,7 @@ var _rules = __webpack_require__(121);
 
 var _rules2 = _interopRequireDefault(_rules);
 
-var _index = __webpack_require__(323);
+var _index = __webpack_require__(324);
 
 var _login3 = __webpack_require__(71);
 
@@ -41001,7 +41001,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _warning = __webpack_require__(22);
+var _warning = __webpack_require__(23);
 
 var _warning2 = _interopRequireDefault(_warning);
 
@@ -41371,7 +41371,7 @@ exports.__esModule = true;
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _warning = __webpack_require__(22);
+var _warning = __webpack_require__(23);
 
 var _warning2 = _interopRequireDefault(_warning);
 
@@ -41867,7 +41867,7 @@ var _react2 = _interopRequireDefault(_react);
 
 var _redux = __webpack_require__(13);
 
-var _reactRedux = __webpack_require__(21);
+var _reactRedux = __webpack_require__(22);
 
 var _reactRouterDom = __webpack_require__(14);
 
@@ -42606,7 +42606,7 @@ var _react2 = _interopRequireDefault(_react);
 
 var _redux = __webpack_require__(13);
 
-var _reactRedux = __webpack_require__(21);
+var _reactRedux = __webpack_require__(22);
 
 var _board = __webpack_require__(308);
 
@@ -42632,7 +42632,7 @@ var _bannerMessage = __webpack_require__(314);
 
 var _bannerMessage2 = _interopRequireDefault(_bannerMessage);
 
-var _utils = __webpack_require__(23);
+var _utils = __webpack_require__(19);
 
 var _gameActions = __webpack_require__(315);
 
@@ -42664,6 +42664,7 @@ var Game = function (_Component) {
 
     _this.gameId = _this.props.match.params.id;
 
+    _this.allLegalMoves = _this.allLegalMoves.bind(_this);
     _this.checkForWin = _this.checkForWin.bind(_this);
     _this.getLegalMoves = _this.getLegalMoves.bind(_this);
     _this.getNodeCount = _this.getNodeCount.bind(_this);
@@ -42716,6 +42717,7 @@ var Game = function (_Component) {
 
         this.props.postGameStateData(id, gameState);
       }
+      // if it became my turn, ensure I have legal moves
     }
   }, {
     key: 'checkForWin',
@@ -42884,7 +42886,9 @@ var Game = function (_Component) {
       }));
       var occupiedHexStrings = getStrings(pieces);
 
-      if (piece.pos === 'reserve') {
+      if (piece.pos === 'prison') {
+        return []; // no legal moves for captured pieces
+      } else if (piece.pos === 'reserve') {
         if (this.enoughEnergy(piece)) {
           // this.payEnergyCost
           var hero = pieces.filter(function (p) {
@@ -42907,6 +42911,20 @@ var Game = function (_Component) {
       }
 
       return legalMoves;
+    }
+  }, {
+    key: 'allLegalMoves',
+    value: function allLegalMoves(player) {
+      var _this3 = this;
+
+      var pieces = this.props.pieces;
+
+      var myPieces = pieces.filter(function (p) {
+        return p.player === player;
+      });
+      return myPieces.reduce(function (acc, p) {
+        return acc.concat(_this3.getLegalMoves(p));
+      }, []);
     }
   }, {
     key: 'buildInfoPanel',
@@ -42936,7 +42954,7 @@ var Game = function (_Component) {
   }, {
     key: 'render',
     value: function render() {
-      var _this3 = this;
+      var _this4 = this;
 
       var _props8 = this.props,
           player = _props8.player,
@@ -42972,7 +42990,7 @@ var Game = function (_Component) {
               },
               color: '#FA0'
             }, { name: 'Res', handleClick: function handleClick() {
-                _this3.props.toggleReserve();
+                _this4.props.toggleReserve();
               } }],
             currentPlayer: currentPlayer,
             player: player,
@@ -43077,7 +43095,7 @@ var _react = __webpack_require__(2);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _hex = __webpack_require__(43);
+var _hex = __webpack_require__(35);
 
 var _hex2 = _interopRequireDefault(_hex);
 
@@ -43093,7 +43111,7 @@ var _reserveButton = __webpack_require__(311);
 
 var _reserveButton2 = _interopRequireDefault(_reserveButton);
 
-var _utils = __webpack_require__(23);
+var _utils = __webpack_require__(19);
 
 var _utils2 = _interopRequireDefault(_utils);
 
@@ -43430,7 +43448,7 @@ var _react = __webpack_require__(2);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _utils = __webpack_require__(23);
+var _utils = __webpack_require__(19);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -43541,7 +43559,7 @@ var _react = __webpack_require__(2);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _utils = __webpack_require__(23);
+var _utils = __webpack_require__(19);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -43641,7 +43659,7 @@ var _piece = __webpack_require__(44);
 
 var _piece2 = _interopRequireDefault(_piece);
 
-var _hex = __webpack_require__(43);
+var _hex = __webpack_require__(35);
 
 var _hex2 = _interopRequireDefault(_hex);
 
@@ -43746,7 +43764,7 @@ var _react = __webpack_require__(2);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _utils = __webpack_require__(23);
+var _utils = __webpack_require__(19);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -43912,7 +43930,7 @@ var _react = __webpack_require__(2);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _utils = __webpack_require__(23);
+var _utils = __webpack_require__(19);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -44328,7 +44346,7 @@ var _react2 = _interopRequireDefault(_react);
 
 var _redux = __webpack_require__(13);
 
-var _reactRedux = __webpack_require__(21);
+var _reactRedux = __webpack_require__(22);
 
 var _notification = __webpack_require__(124);
 
@@ -44529,7 +44547,7 @@ var _react2 = _interopRequireDefault(_react);
 
 var _redux = __webpack_require__(13);
 
-var _reactRedux = __webpack_require__(21);
+var _reactRedux = __webpack_require__(22);
 
 var _jquery = __webpack_require__(34);
 
@@ -44756,7 +44774,7 @@ var _react2 = _interopRequireDefault(_react);
 
 var _redux = __webpack_require__(13);
 
-var _reactRedux = __webpack_require__(21);
+var _reactRedux = __webpack_require__(22);
 
 var _reactRouterDom = __webpack_require__(14);
 
@@ -44852,6 +44870,14 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRouterDom = __webpack_require__(14);
 
+var _hex = __webpack_require__(35);
+
+var _hex2 = _interopRequireDefault(_hex);
+
+var _innerHex = __webpack_require__(323);
+
+var _innerHex2 = _interopRequireDefault(_innerHex);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -44863,69 +44889,151 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var Home = function (_Component) {
   _inherits(Home, _Component);
 
-  function Home() {
+  function Home(props) {
     _classCallCheck(this, Home);
 
-    return _possibleConstructorReturn(this, (Home.__proto__ || Object.getPrototypeOf(Home)).apply(this, arguments));
+    var _this = _possibleConstructorReturn(this, (Home.__proto__ || Object.getPrototypeOf(Home)).call(this, props));
+
+    _this.linkTo = _this.linkTo.bind(_this);
+    return _this;
   }
 
   _createClass(Home, [{
+    key: 'linkTo',
+    value: function linkTo(destination) {
+      this.props.history.push(destination);
+    }
+  }, {
     key: 'render',
     value: function render() {
+      var _this2 = this;
+
+      var hexSize = window.innerHeight / 3;
+      var oddColumn = {
+        width: hexSize * .86 + 10 + 'px'
+      };
+      var evenColumn = {
+        width: hexSize * .86 + 10 + 'px',
+        marginTop: hexSize / 2 + 5 + 'px'
+      };
+      var marginAdder = {
+        height: hexSize + 'px',
+        width: hexSize + 'px',
+        padding: '5px'
+      };
       return _react2.default.createElement(
         'div',
         { className: 'sixty-left center-pane', style: { fontFamily: 'Cambria Math' } },
         _react2.default.createElement(
-          'h1',
-          { className: 'header' },
-          'Hex Chess'
-        ),
-        _react2.default.createElement(
-          'p',
-          { className: 'sub-header' },
-          'Hello, and welcome to Hex Chess!'
-        ),
-        _react2.default.createElement(
-          'h3',
-          null,
-          'What is Hex Chess?'
-        ),
-        _react2.default.createElement(
-          'p',
-          null,
-          'Hex Chess was designed, developed, and coded by Gilan Salehi as a fast-paced strategy game that blended the appeal of board games like Chess and Arimaa with the flavor and style of card games like Magic and Hearthstone.  Hex-Chess is a pure strategy game, meaning it contains no random elements: your skill and your skill alone will determine who wins a game of Hex Chess.'
-        ),
-        _react2.default.createElement(
-          'h3',
-          null,
-          'How do I play?'
-        ),
-        _react2.default.createElement(
-          'p',
-          null,
-          'The ',
+          'div',
+          { className: 'odd-column', style: oddColumn },
           _react2.default.createElement(
-            _reactRouterDom.Link,
-            { to: '/rules', style: { textDecoration: 'underline' } },
-            'rules'
+            'div',
+            { style: marginAdder },
+            _react2.default.createElement(
+              _hex2.default,
+              { noGlow: true, pos: ['home'], size: hexSize, handleClick: function handleClick() {
+                  return _this2.linkTo('/');
+                } },
+              _react2.default.createElement(
+                _innerHex2.default,
+                { size: hexSize, background: 'palevioletred', header: 'Hex Chess' },
+                _react2.default.createElement(
+                  'span',
+                  null,
+                  'Hello, and welcome to Hex Chess!'
+                )
+              )
+            )
           ),
-          ' are very simple, but the gameplay is incredibly deep and complex. Create a free ',
           _react2.default.createElement(
-            _reactRouterDom.Link,
-            { to: '/signup', style: { textDecoration: 'underline' } },
-            'account'
+            'div',
+            { style: marginAdder },
+            _react2.default.createElement(
+              _hex2.default,
+              { noGlow: true, pos: ['home'], size: hexSize, handleClick: function handleClick() {
+                  return _this2.linkTo('/rules');
+                } },
+              _react2.default.createElement(
+                _innerHex2.default,
+                { size: hexSize, background: '#3689ab' },
+                _react2.default.createElement(
+                  'h3',
+                  null,
+                  'What is Hex Chess?'
+                ),
+                _react2.default.createElement(
+                  'span',
+                  null,
+                  'Hex Chess is a fast-paced strategy game that blends the appeal of Chess with the flavor and style of Hearthstone. Hex-Chess is a pure strategy game, meaning there is no randomness: your skill and your skill alone will determine who wins the game.'
+                )
+              )
+            )
+          )
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'even-column', style: evenColumn },
+          _react2.default.createElement(
+            'div',
+            { style: marginAdder },
+            _react2.default.createElement(
+              _hex2.default,
+              { noGlow: true, pos: ['home'], size: hexSize, handleClick: function handleClick() {
+                  return _this2.linkTo('/rules');
+                } },
+              _react2.default.createElement(
+                _innerHex2.default,
+                { size: hexSize, background: 'lightseagreen' },
+                _react2.default.createElement(
+                  'h3',
+                  null,
+                  'How do I play?'
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  'The ',
+                  _react2.default.createElement(
+                    _reactRouterDom.Link,
+                    { to: '/rules', style: { textDecoration: 'underline' } },
+                    'rules'
+                  ),
+                  ' are very simple, but the gameplay is incredibly deep and complex. Create a free ',
+                  _react2.default.createElement(
+                    _reactRouterDom.Link,
+                    { to: '/signup', style: { textDecoration: 'underline' } },
+                    'account'
+                  ),
+                  ', and challenge your friends to a game today!'
+                )
+              )
+            )
           ),
-          ', and challenge your friends to a game today!'
-        ),
-        _react2.default.createElement(
-          'h3',
-          null,
-          'What next?'
-        ),
-        _react2.default.createElement(
-          'p',
-          null,
-          'Hex-Chess.com is still under development, but there are plenty of features coming down the pipeline. Support for websockets, draggable/droppable pieces, and improved piece images are all on the list. Stay tuned for updates!  Also, feel free to email gilansalehi@gmail.com with questions, suggestions, or feature requests.'
+          _react2.default.createElement(
+            'div',
+            { style: marginAdder },
+            _react2.default.createElement(
+              _hex2.default,
+              { noGlow: true, pos: ['home'], size: hexSize, handleClick: function handleClick() {
+                  return _this2.linkTo('/');
+                } },
+              _react2.default.createElement(
+                _innerHex2.default,
+                { size: hexSize, background: '#fc4' },
+                _react2.default.createElement(
+                  'h3',
+                  null,
+                  'What Next?'
+                ),
+                _react2.default.createElement(
+                  'p',
+                  null,
+                  'Hex-Chess.com is still under development, but there are plenty of features coming down the pipeline. Full websocket support, draggable/droppable pieces, and improved piece images are all on the list. Stay tuned for updates!'
+                )
+              )
+            )
+          )
         )
       );
     }
@@ -44938,6 +45046,173 @@ exports.default = Home;
 
 /***/ }),
 /* 323 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(2);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _utils = __webpack_require__(19);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var InnerHex = function (_Component) {
+  _inherits(InnerHex, _Component);
+
+  function InnerHex(props) {
+    _classCallCheck(this, InnerHex);
+
+    var _this = _possibleConstructorReturn(this, (InnerHex.__proto__ || Object.getPrototypeOf(InnerHex)).call(this, props));
+
+    var size = props.size,
+        background = props.background;
+
+    _this.styles = styles(size, background);
+    return _this;
+  }
+
+  _createClass(InnerHex, [{
+    key: 'mapTextToHexShape',
+    value: function mapTextToHexShape() {
+      var _props = this.props,
+          text = _props.text,
+          size = _props.size;
+      // 1. Calculate the number of lines
+
+      var maxLines = Math.floor(size / 20); // 20 px per line
+      var maxWidth = size; // longest line at center of hex
+      var minWidth = size / 1.732; // shortest line, top or bottom of hex;
+      var longestLineLetterBudget = Math.floor(size / 8.7); // 8.7 is approx letter width
+      var shortestLineLetterBudget = Math.floor(minWidth / 8.7);
+      // lines alternate with 3 fewer then 2 fewer letters than the line before
+      // determine starting line by starting at center and counting back...
+      var linesAboveMiddle = function () {
+        var mid = text.length / 2; // start in the middle
+        mid -= longestLineLetterBudget / 2; // knock off the half of center line
+        var lines = 0;
+        while (mid > 0) {
+          mid -= longestLineLetterBudget - 2.5 * lines;
+          lines++;
+        }
+        return lines;
+      }();
+      if (linesAboveMiddle < 1) {
+        return _react2.default.createElement(
+          'span',
+          null,
+          text
+        );
+      } // no need to add breakpoints
+
+      var firstLineLetterBudget = Math.floor(longestLineLetterBudget - 2.5 * linesAboveMiddle);
+      var words = text.split(' ');
+      var results = [];
+      var currentBuffer = [];
+      var currentLineLetterBudget = firstLineLetterBudget;
+      var linesBuffered = 0;
+      words.forEach(function (word) {
+        var currentString = currentBuffer.join(' ');
+        var nextWordWillFit = currentString.length + word.length + 1 < currentLineLetterBudget;
+        if (!nextWordWillFit) {
+          results.push(_react2.default.createElement(
+            'div',
+            null,
+            currentString
+          ));
+          currentBuffer = [];
+          linesBuffered += 1;
+          currentLineLetterBudget = Math.max(currentLineLetterBudget + 2.5 * (linesBuffered <= linesAboveMiddle ? 1 : -1), shortestLineLetterBudget);
+        }
+        currentBuffer.push(word);
+      });
+      results.push(_react2.default.createElement(
+        'div',
+        null,
+        currentBuffer.join(' ')
+      ));
+      return results;
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _props2 = this.props,
+          header = _props2.header,
+          text = _props2.text;
+
+      return _react2.default.createElement(
+        'div',
+        { className: 'inner-hex', style: this.styles.container },
+        _react2.default.createElement(
+          'div',
+          null,
+          _react2.default.createElement(
+            'span',
+            { style: this.styles.header },
+            header
+          ),
+          _react2.default.createElement(
+            'span',
+            { style: this.styles.text },
+            _react2.default.createElement(
+              'div',
+              { className: 'hex-shaped-text' },
+              this.props.children || this.mapTextToHexShape(text)
+            )
+          )
+        )
+      );
+    }
+  }]);
+
+  return InnerHex;
+}(_react.Component);
+
+exports.default = InnerHex;
+
+
+function styles(size) {
+  var background = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '#222';
+
+  var container = {
+    color: 'white',
+    background: background,
+    height: '100%',
+    textAlign: 'center',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
+  };
+
+  var header = {
+    display: 'block',
+    fontSize: size / 6 + 'px'
+  };
+
+  var text = {
+    display: 'block',
+    maxWidth: size + 'px'
+  };
+
+  return { container: container, header: header, text: text };
+};
+
+/***/ }),
+/* 324 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

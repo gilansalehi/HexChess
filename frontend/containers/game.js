@@ -38,6 +38,7 @@ class Game extends Component {
 
     this.gameId = this.props.match.params.id;
 
+    this.allLegalMoves = this.allLegalMoves.bind(this);
     this.checkForWin = this.checkForWin.bind(this);
     this.getLegalMoves = this.getLegalMoves.bind(this);
     this.getNodeCount = this.getNodeCount.bind(this);
@@ -80,6 +81,7 @@ class Game extends Component {
 
       this.props.postGameStateData(id, gameState);
     }
+    // if it became my turn, ensure I have legal moves
   }
 
   checkForWin(destination) {
@@ -196,7 +198,9 @@ class Game extends Component {
     );
     const occupiedHexStrings = getStrings(pieces);
 
-    if ( piece.pos === 'reserve' ) {
+    if ( piece.pos === 'prison' ) {
+      return []; // no legal moves for captured pieces
+    } else if ( piece.pos === 'reserve' ) {
       if ( this.enoughEnergy(piece) ) { // this.payEnergyCost
         const hero = pieces.filter(p => {
           return p.type === 'hero' && p.player === piece.player;
@@ -218,6 +222,12 @@ class Game extends Component {
     }
 
     return legalMoves;
+  }
+
+  allLegalMoves(player) {
+    const { pieces } = this.props;
+    const myPieces = pieces.filter(p => p.player === player);
+    return myPieces.reduce((acc, p) => acc.concat(this.getLegalMoves(p)), []);
   }
 
   buildInfoPanel() {
