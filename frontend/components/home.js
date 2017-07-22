@@ -58,7 +58,7 @@ export default class Home extends Component {
         </div>
         <div className='even-column' style={evenColumn}>
           <div style={marginAdder}>
-            <Hex noGlow={true} pos={['home']} size={hexSize} handleClick={ () => { return false;} }>
+            <Hex noGlow={true} pos={['home']} size={hexSize} handleClick={ () => this.linkTo('/rules') }>
               <InnerHex size={hexSize} background={'lightseagreen'}>
                 <h3>How do I play?</h3>
                 <p>
@@ -79,7 +79,7 @@ export default class Home extends Component {
                   features coming down the pipeline.
                   Full websocket support, draggable
                   pieces, and improved art
-                  are all on the list. <br />
+                  are all on the list.
                   Stay tuned for updates!
                 </p>
               </InnerHex>
