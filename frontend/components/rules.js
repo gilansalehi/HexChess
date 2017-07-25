@@ -33,7 +33,7 @@ export default class Rules extends Component {
           in any combination you like (move two pieces, deploy two pieces, move then deploy, etc.).
           <br />
           <br />
-          Note: Player 1 only gets one action on their first turn to negate the advantage of moving first
+          Note: Player 1 only gets one action on their first turn to negate the advantage of moving first.
         </div>
 
         <h3 className=''>Movement:</h3>
