@@ -23910,7 +23910,7 @@ var Rules = function (_Component) {
         ),
         _react2.default.createElement(
           'h3',
-          null,
+          { className: '' },
           'How to Win:'
         ),
         _react2.default.createElement(
@@ -23919,63 +23919,102 @@ var Rules = function (_Component) {
           'Capture the enemy ',
           _react2.default.createElement(
             'strong',
-            null,
-            'hero'
+            { className: 'text-yellow' },
+            'Hero'
           ),
           ' or capture three enemy ',
           _react2.default.createElement(
             'strong',
-            null,
+            { className: 'text-yellow' },
             'power nodes'
           )
         ),
         _react2.default.createElement(
           'h3',
-          null,
+          { className: '' },
           'Game Zones:'
         ),
         _react2.default.createElement(
           'div',
           null,
-          'Each player begins the game with their hero piece on the board and the rest of their pieces in their ',
+          'Each player begins the game with their ',
           _react2.default.createElement(
             'strong',
-            null,
+            { className: 'text-yellow' },
+            'Hero'
+          ),
+          ' piece on the board and the rest of their pieces in their ',
+          _react2.default.createElement(
+            'strong',
+            { className: 'text-yellow' },
             'Reserve'
           ),
-          '.  Captured pieces are removed from the board.  The Command Panel on the left side of the screen shows you whose turn it is, how many actions your have left, and how much energy you have left to use this turn.'
+          '. Captured pieces are removed from the board and sent to ',
+          _react2.default.createElement(
+            'strong',
+            { className: 'text-yellow' },
+            'prison'
+          ),
+          '. The ',
+          _react2.default.createElement(
+            'strong',
+            { className: 'text-yellow' },
+            'Command Panel'
+          ),
+          ' on the left side of the screen shows whose turn it is, how many actions you have left, and how much ',
+          _react2.default.createElement(
+            'strong',
+            { className: 'text-yellow' },
+            'energy'
+          ),
+          ' you have left to use this turn.'
         ),
         _react2.default.createElement(
           'h3',
-          null,
+          { className: '' },
           'How to Play:'
         ),
         _react2.default.createElement(
           'div',
           null,
-          'Each turn, you get TWO actions.  For each action, you can either ',
+          'Each turn, you get ',
           _react2.default.createElement(
             'strong',
-            null,
-            'DEPLOY'
+            { className: 'text-yellow' },
+            'two'
           ),
-          ' a piece from your Reserve, or you can ',
+          ' actions.  For each action, you can either ',
           _react2.default.createElement(
             'strong',
-            null,
-            'MOVE'
+            { className: 'text-yellow' },
+            'deploy'
           ),
-          ' a piece on the board. You may not move the same piece twice in a turn, or move a piece you just deployed, but otherwise you may do these actions in any combination you like (move two pieces, deploy two pieces, move then deploy, etc.). (note: Player 1 only gets one action on their first turn to negate the advantage of moving first)'
+          ' a piece from your ',
+          _react2.default.createElement(
+            'strong',
+            { className: 'text-yellow' },
+            'Reserve'
+          ),
+          ', or you can ',
+          _react2.default.createElement(
+            'strong',
+            { className: 'text-yellow' },
+            'move'
+          ),
+          ' a piece on the board. You may not move the same piece twice in a turn or move a piece you just deployed, but otherwise you may do these actions in any combination you like (move two pieces, deploy two pieces, move then deploy, etc.).',
+          _react2.default.createElement('br', null),
+          _react2.default.createElement('br', null),
+          'Note: Player 1 only gets one action on their first turn to negate the advantage of moving first'
         ),
         _react2.default.createElement(
           'h3',
-          null,
+          { className: '' },
           'Movement:'
         ),
         _react2.default.createElement(
           'div',
           null,
-          'Each type of piece moves in a unique way, except power nodes, which cannot move.  Unless otherwise noted, a piece can capture any enemy piece by moving to its hex.',
+          'Each type of piece moves in a unique way, except power nodes, which cannot move. Unless otherwise noted, a piece can capture any enemy piece by moving to its hex.',
           _react2.default.createElement(
             'ul',
             { style: { listStyle: 'disc', margin: '10px' } },
@@ -23984,7 +24023,7 @@ var Rules = function (_Component) {
               { style: { listStyle: 'disc', margin: '5px' } },
               _react2.default.createElement(
                 'strong',
-                null,
+                { className: 'text-yellow' },
                 'Heroes'
               ),
               ' can move one hex in any direction.'
@@ -23994,7 +24033,7 @@ var Rules = function (_Component) {
               { style: { listStyle: 'disc', margin: '5px' } },
               _react2.default.createElement(
                 'strong',
-                null,
+                { className: 'text-yellow' },
                 'Queens'
               ),
               ' may move any number of hexes in a straight line in any direction.'
@@ -24004,7 +24043,7 @@ var Rules = function (_Component) {
               { style: { listStyle: 'disc', margin: '5px' } },
               _react2.default.createElement(
                 'strong',
-                null,
+                { className: 'text-yellow' },
                 'Rooks'
               ),
               ' can move any number of hexes straight forward, back-left, or back-right (like an inverted Y shape)'
@@ -24014,7 +24053,7 @@ var Rules = function (_Component) {
               { style: { listStyle: 'disc', margin: '5px' } },
               _react2.default.createElement(
                 'strong',
-                null,
+                { className: 'text-yellow' },
                 'Bishops'
               ),
               ' can move any number of hexes in a straight line diagonally (like an X shape)'
@@ -24024,7 +24063,7 @@ var Rules = function (_Component) {
               { style: { listStyle: 'disc', margin: '5px' } },
               _react2.default.createElement(
                 'strong',
-                null,
+                { className: 'text-yellow' },
                 'Pawns'
               ),
               ' may move (but not capture!) one hex forward, and may capture (but not move!) one hex diagonally forward.'
@@ -24034,7 +24073,7 @@ var Rules = function (_Component) {
               { style: { listStyle: 'disc', margin: '5px' } },
               _react2.default.createElement(
                 'strong',
-                null,
+                { className: 'text-yellow' },
                 'Power Nodes'
               ),
               ' may not move.'
@@ -24043,13 +24082,104 @@ var Rules = function (_Component) {
         ),
         _react2.default.createElement(
           'h3',
-          null,
+          { className: '' },
           'Deployment:'
         ),
         _react2.default.createElement(
           'div',
           null,
-          'You can see what pieces are in your Reserve by clicking the \'Res\' button on your Command Panel.  In order to deploy a piece, you must have enough ENERGY to deploy it (you get 1 energy for each Power Node you have on the board; your energy refreshes at the start of each turn).  You may deploy pieces to any hex adjacent to your hero.  The Reserve panel displays the energy cost of each piece in orange, as well as how many copies of that piece are still left in your Reserve in blue.  More powerful pieces cost more energy to deploy, so you will need to deploy Power Nodes in order to get your strongest pieces on the board!'
+          'You can see what pieces are in your ',
+          _react2.default.createElement(
+            'strong',
+            { className: 'text-yellow' },
+            'Reserve'
+          ),
+          ' by clicking the \'Res\' button on your ',
+          _react2.default.createElement(
+            'strong',
+            { className: 'text-yellow' },
+            'Command Panel'
+          ),
+          '.  In order to deploy a piece, you must have enough ',
+          _react2.default.createElement(
+            'strong',
+            { className: 'text-yellow' },
+            'energy'
+          ),
+          ' to deploy it (you get 1 energy for each Power Node you have on the board; your energy refreshes at the start of each turn).  You may deploy pieces to any hex adjacent to your ',
+          _react2.default.createElement(
+            'strong',
+            { className: 'text-yellow' },
+            'Hero'
+          ),
+          '.  The Reserve panel displays the energy cost of each piece in orange, as well as how many copies of that piece are still left in your Reserve in yellow.  More powerful pieces cost more energy to deploy, so you will need to deploy Power Nodes in order to get your strongest pieces on the board!'
+        ),
+        _react2.default.createElement('br', null),
+        _react2.default.createElement(
+          'h3',
+          { className: '' },
+          'Strategy:'
+        ),
+        _react2.default.createElement(
+          'ul',
+          { style: { listStyle: 'disc', margin: '10px' } },
+          _react2.default.createElement(
+            'li',
+            { style: { listStyle: 'disc', margin: '5px' } },
+            'Because you start without any power nodes, you  will need to deploy them in your early turns.  Be careful to place them where your opponent will not easily be able to capture them (an enemy bishop that reaches your back rank can be a menace!).  You can also deploy pawns for no energy, which can be useful for defending your ',
+            _react2.default.createElement(
+              'strong',
+              { className: 'text-yellow' },
+              'Hero'
+            ),
+            ' and claiming space on the board.'
+          ),
+          _react2.default.createElement(
+            'li',
+            { style: { listStyle: 'disc', margin: '5px' } },
+            'Be on the lookout for the safety of your ',
+            _react2.default.createElement(
+              'strong',
+              { className: 'text-yellow' },
+              'Hero'
+            ),
+            ' once your opponent starts deploying rooks and bishops!  Deploying a pawn to block the line of an enemy attack is a good way to defend your ',
+            _react2.default.createElement(
+              'strong',
+              { className: 'text-yellow' },
+              'Hero'
+            ),
+            '.  Catch your opponent by surprise by using your ',
+            _react2.default.createElement(
+              'strong',
+              { className: 'text-yellow' },
+              'Hero'
+            ),
+            ' to capture a piece they thought was defended, then deploying a pawn to block the line of the defender to your ',
+            _react2.default.createElement(
+              'strong',
+              { className: 'text-yellow' },
+              'Hero'
+            ),
+            '.'
+          ),
+          _react2.default.createElement(
+            'li',
+            { style: { listStyle: 'disc', margin: '5px' } },
+            'The hexes around your ',
+            _react2.default.createElement(
+              'strong',
+              { className: 'text-yellow' },
+              'Hero'
+            ),
+            ' can get crowded quickly, and if they are all occupied you cannot deploy new pieces to the board.  Be sure to leave a bolt-hole for your ',
+            _react2.default.createElement(
+              'strong',
+              { className: 'text-yellow' },
+              'Hero'
+            ),
+            ' to escape from sticky situations.  Push into the center of the board to create space for your units and pressure your opponent.'
+          )
         ),
         _react2.default.createElement('br', null),
         _react2.default.createElement(
@@ -44933,7 +45063,7 @@ var Home = function (_Component) {
             _react2.default.createElement(
               _hex2.default,
               { noGlow: true, pos: ['home'], size: hexSize, handleClick: function handleClick() {
-                  return _this2.linkTo('/');
+                  return _this2.linkTo('/login');
                 } },
               _react2.default.createElement(
                 _innerHex2.default,
@@ -45016,7 +45146,7 @@ var Home = function (_Component) {
             _react2.default.createElement(
               _hex2.default,
               { noGlow: true, pos: ['home'], size: hexSize, handleClick: function handleClick() {
-                  return _this2.linkTo('/');
+                  return _this2.linkTo('/play');
                 } },
               _react2.default.createElement(
                 _innerHex2.default,

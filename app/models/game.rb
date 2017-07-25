@@ -55,6 +55,6 @@ class Game < ApplicationRecord
   end
 
   def updateable
-    status != 'abandoned'
+    status != 'abandoned' && status != 'finished'
   end
 end

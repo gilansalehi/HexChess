@@ -692,3 +692,29 @@ img {
   border-right: none;
   border-bottom: 1px solid white;
 }
+
+.text-red {
+  color: palevioletred;
+}
+.text-blue {
+  color: #3689ab;
+}
+.text-green {
+  color: lightseagreen;
+}
+.text-yellow {
+  color: #fc4;
+}
+
+.bg-red {
+  color: palevioletred;
+}
+.bg-blue {
+  color: #3689ab;
+}
+.bg-green {
+  color: lightseagreen;
+}
+.bg-yellow {
+  color: #fc4;
+}

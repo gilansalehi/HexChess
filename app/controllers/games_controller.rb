@@ -54,6 +54,7 @@ class GamesController < ApplicationController
       render :show
     else
       flash :errors
+      render :show, status: 422
     end
   end
 

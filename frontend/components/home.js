@@ -34,7 +34,7 @@ export default class Home extends Component {
       <div className='sixty-left center-pane' style={{fontFamily:'Cambria Math'}}>
         <div className='odd-column' style={oddColumn}>
           <div style={marginAdder}>
-            <Hex noGlow={true} pos={['home']} size={hexSize} handleClick={ () => this.linkTo('/') }>
+            <Hex noGlow={true} pos={['home']} size={hexSize} handleClick={ () => this.linkTo('/login') }>
               <InnerHex size={hexSize} background={'palevioletred'} header={'Hex Chess'}>
                 <span>Hello, and welcome to Hex Chess!</span>
               </InnerHex>
@@ -70,7 +70,7 @@ export default class Home extends Component {
             </Hex>
           </div>
           <div style={marginAdder}>
-            <Hex noGlow={true} pos={['home']} size={hexSize} handleClick={ () => this.linkTo('/') }>
+            <Hex noGlow={true} pos={['home']} size={hexSize} handleClick={ () => this.linkTo('/play') }>
               <InnerHex size={hexSize} background={'#fc4'}>
                 <h3>What Next?</h3>
                 <p>
