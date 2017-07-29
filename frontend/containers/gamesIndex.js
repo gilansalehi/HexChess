@@ -16,6 +16,7 @@ import {
   updateReceived,
   createAction,
   cancelSeek,
+  playComputer,
 } from '../actions/gameIndex';
 
 class GamesIndex extends Component {
@@ -29,6 +30,7 @@ class GamesIndex extends Component {
     this.applyFilter = this.applyFilter.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.newGame = this.newGame.bind(this);
+    this.playComputer = this.playComputer.bind(this);
     this.setFilter = this.setFilter.bind(this);
     this.setupActionCable = this.setupActionCable.bind(this);
     this.setupPollGamesIndex = this.setupPollGamesIndex.bind(this);
@@ -87,6 +89,12 @@ class GamesIndex extends Component {
     user ? postNewGame(user) : alert('Please log in');
   }
 
+  playComputer() {
+    debugger;
+    this.props.playComputer();
+    // this.props.history.push('/games/ai');
+  }
+
   handleClick(id) {
     const {user, games, joinGame, observeGame} = this.props;
     const game = games.filter(g => g.id === id)[0];
@@ -141,6 +149,7 @@ class GamesIndex extends Component {
                    refresh={ fetchAllGames }
                    handleClick={ this.handleClick }
                    user={ user }
+                   playComputer={ this.playComputer }
                    cancelSeek={ cancelSeek }
         />
       </div>
@@ -164,6 +173,7 @@ function mapDispatchToProps(dispatch) {
     updateReceived: updateReceived,
     createAction: createAction,
     cancelSeek: cancelSeek,
+    playComputer: playComputer,
     // actionName: action imported from ./actions
   }, dispatch);
 }

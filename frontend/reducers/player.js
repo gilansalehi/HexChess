@@ -14,6 +14,9 @@ function playerReducer(state = defaultPlayer, action) {
     case 'OBSERVE_GAME_SUCCESS':
       return 'observer';
       break;
+    case 'PLAY_COMPUTER':
+      return 'P1';
+      break;
   }
   return state;
 }

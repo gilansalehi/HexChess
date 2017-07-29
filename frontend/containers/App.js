@@ -88,6 +88,7 @@ class App extends Component {
             <Route path={'/rules'} component={Rules} />
             <Route path={'/login'} component={LoginForm} />
             <Route path={'/signup'} component={SignupForm} />
+            <Route path={'/games/ai'} component={Game} />
             <Route path={'/games/:id'} component={Game} />
             <Route path={'/profile'} component={Profile} />
           </div>

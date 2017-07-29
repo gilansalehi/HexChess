@@ -108,6 +108,12 @@ export const cancelSeek = (gameId) => {
   }
 }
 
+export const playComputer = () => {
+  return (dispatch) => {
+    dispatch({ type: 'PLAY_COMPUTER' });
+  }
+}
+
 export const updateReceived = (data) => {
   return {
     type: 'UPDATE_RECEIVED',

@@ -13,6 +13,9 @@ export default function (state = initialState, action) {
       const { actions, currentPlayer } = JSON.parse(position);
       return player === 'P1' ? actions : 0;
       break;
+    case 'PLAY_COMPUTER':
+      return 1;
+      break;
   }
   return state;
 }

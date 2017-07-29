@@ -52,6 +52,9 @@ const thisPlayer = (state = defaultPlayer, action) => {
     case 'OBSERVE_GAME_SUCCESS':
       return 'observer'
       break;
+    case 'PLAY_COMPUTER':
+      return 'P1';
+      break;
   }
   return state;
 }
@@ -63,6 +66,9 @@ const gameId = (state = null, action) => {
       break;
     case 'OBSERVE_GAME_SUCCESS':
       return action.payload.id;
+      break;
+    case 'PLAY_COMPUTER':
+      return 'ai';
       break;
   }
   return state;

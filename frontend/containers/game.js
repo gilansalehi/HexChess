@@ -9,6 +9,7 @@ import InfoPanel from '../components/info.js';
 import { info } from '../utils/info';
 import BannerMessage from '../components/banner-message';
 import { Util } from '../utils/utils';
+import AI from '../utils/ai';
 import {
   setSelection,
   clearSelection,
@@ -38,10 +39,18 @@ class Game extends Component {
 
     this.gameId = this.props.match.params.id;
 
+    if ( this.gameId === 'ai' ) {
+      this.ai = new AI({
+        player: 'P2',
+        pieces: props.pieces,
+      });
+    }
+
     this.allLegalMoves = this.allLegalMoves.bind(this);
     this.checkForWin = this.checkForWin.bind(this);
     this.getLegalMoves = this.getLegalMoves.bind(this);
     this.getNodeCount = this.getNodeCount.bind(this);
+    this.handleAI = this.handleAI.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.hideReserve = this.hideReserve.bind(this);
     this.isLegalMove = this.isLegalMove.bind(this);
@@ -51,15 +60,21 @@ class Game extends Component {
   }
 
   componentDidMount() {
-    this.props.fetchGameStateData(this.gameId);
+    // check path to ensure this is a PvP game
+    if ( this.gameId === 'ai' || this.props.game.id === 'ai' ) {
+      // playing vs computer
+      this.continuallyFetchGameState = false;
+    } else {
+      this.props.fetchGameStateData(this.gameId);
 
-    this.continuallyFetchGameState = () => {
-      if ( this.props.currentPlayer !== this.props.player.player && !this.props.game.winner ) {
-        this.fetchGameState(this.gameId);
+      this.continuallyFetchGameState = () => {
+        if ( this.props.currentPlayer !== this.props.player.player && !this.props.game.winner ) {
+          this.fetchGameState(this.gameId);
+        }
+        window.setTimeout(this.continuallyFetchGameState, 1000);
       }
-      window.setTimeout(this.continuallyFetchGameState, 1000);
+      this.continuallyFetchGameState();
     }
-    this.continuallyFetchGameState();
   }
 
   componentWillUnmount() {
@@ -72,16 +87,22 @@ class Game extends Component {
     const { currentPlayer, player } = this.props;
     const id = this.gameId;
 
-    if ( nextPosition !== lastPosition && currentPlayer === player.player ) {
-      const gameState = {
-        pieces: nextProps.pieces,
-        actions: nextProps.player.actions,
-        currentPlayer: nextProps.currentPlayer
-      };
+    if ( this.gameId === 'ai' || this.props.game.id === 'ai' ) {
+      // just play locally.  binding of 'this' is weird...
+      console.log('ai game');
+    } else {
+      if ( nextPosition !== lastPosition && currentPlayer === player.player ) {
+        const gameState = {
+          pieces: nextProps.pieces,
+          actions: nextProps.player.actions,
+          currentPlayer: nextProps.currentPlayer
+        };
 
-      this.props.postGameStateData(id, gameState);
+        this.props.postGameStateData(id, gameState);
+      }
+      // if it became my turn, ensure I have legal moves
     }
-    // if it became my turn, ensure I have legal moves
+
   }
 
   checkForWin(destination) {
@@ -108,6 +129,7 @@ class Game extends Component {
   }
 
   fetchGameState() {
+    debugger;
     const { game, fetchGameStateData } = this.props;
     if ( !game.winner ) { fetchGameStateData(this.gameId); }
   }
@@ -123,6 +145,14 @@ class Game extends Component {
       resetEnergy() { self.props.resetEnergy(); },
       player: this.props.player,
     }
+  }
+
+  handleAI() {
+    // play first ai move:
+    debugger;
+    this.ai.calculateMove();
+    // then play second ai move:
+    window.setTimeout(this.ai.calculateMove, 3000);
   }
 
   handleClick(hex) {
@@ -168,6 +198,8 @@ class Game extends Component {
           this.props.readyAllPieces();
           this.props.resetActions();
           this.props.resetEnergy();
+          if ( this.gameId === 'ai' || this.props.game.id === 'ai' ) { this.handleAI() }
+          // if playing against an AI, let the ai make its moves here and the pass the turn back.
         }
       }
       this.props.clearSelection();

@@ -7,6 +7,19 @@ export default class GamesList extends Component {
     super(props)
   }
 
+  aiGame(user) {
+    return {
+      creator: 'AI level 1',
+      status: 'seeking',
+      challenger: 'you!',
+      winner: null,
+      id: 'ai',
+      created_at: new Date(),
+      p1_id: user ? user.id : null,
+      p2_id: 'AI',
+    }
+  }
+
   mapGamesToList(games) {
     const { user, handleClick, cancelSeek } = this.props;
     return games.map((g, i) => {
@@ -20,7 +33,7 @@ export default class GamesList extends Component {
   }
 
   render() {
-    const { games, newGame, refresh } = this.props;
+    const { games, newGame, refresh, playComputer, user } = this.props;
     const gamesList = games.length ? this.mapGamesToList(games) : <span className='td-empty'>No one is playing at the moment</span>;
 
     return (
@@ -31,6 +44,9 @@ export default class GamesList extends Component {
             <span className='td'>Opponent</span>
             <span className='td'>Status</span>
             <span className='td'>Age</span>
+          </li>
+          <li key='playComputer' className='tr consolas' style={{ backgroundColor: '#666'}}>
+            <GameLink game={ this.aiGame(user) } handleClick={ playComputer } />
           </li>
           { gamesList }
         </ul>

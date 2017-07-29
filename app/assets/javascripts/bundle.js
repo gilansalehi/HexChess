@@ -558,7 +558,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 
 var _prodInvariant = __webpack_require__(4);
 
-var DOMProperty = __webpack_require__(18);
+var DOMProperty = __webpack_require__(19);
 var ReactDOMComponentFlags = __webpack_require__(79);
 
 var invariant = __webpack_require__(1);
@@ -1984,221 +1984,6 @@ function getPooledWarningPropertyDefinition(propName, getVal) {
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
-/* WEBPACK VAR INJECTION */(function(process) {/**
- * Copyright 2013-present, Facebook, Inc.
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- *
- */
-
-
-
-var _prodInvariant = __webpack_require__(4);
-
-var invariant = __webpack_require__(1);
-
-function checkMask(value, bitmask) {
-  return (value & bitmask) === bitmask;
-}
-
-var DOMPropertyInjection = {
-  /**
-   * Mapping from normalized, camelcased property names to a configuration that
-   * specifies how the associated DOM property should be accessed or rendered.
-   */
-  MUST_USE_PROPERTY: 0x1,
-  HAS_BOOLEAN_VALUE: 0x4,
-  HAS_NUMERIC_VALUE: 0x8,
-  HAS_POSITIVE_NUMERIC_VALUE: 0x10 | 0x8,
-  HAS_OVERLOADED_BOOLEAN_VALUE: 0x20,
-
-  /**
-   * Inject some specialized knowledge about the DOM. This takes a config object
-   * with the following properties:
-   *
-   * isCustomAttribute: function that given an attribute name will return true
-   * if it can be inserted into the DOM verbatim. Useful for data-* or aria-*
-   * attributes where it's impossible to enumerate all of the possible
-   * attribute names,
-   *
-   * Properties: object mapping DOM property name to one of the
-   * DOMPropertyInjection constants or null. If your attribute isn't in here,
-   * it won't get written to the DOM.
-   *
-   * DOMAttributeNames: object mapping React attribute name to the DOM
-   * attribute name. Attribute names not specified use the **lowercase**
-   * normalized name.
-   *
-   * DOMAttributeNamespaces: object mapping React attribute name to the DOM
-   * attribute namespace URL. (Attribute names not specified use no namespace.)
-   *
-   * DOMPropertyNames: similar to DOMAttributeNames but for DOM properties.
-   * Property names not specified use the normalized name.
-   *
-   * DOMMutationMethods: Properties that require special mutation methods. If
-   * `value` is undefined, the mutation method should unset the property.
-   *
-   * @param {object} domPropertyConfig the config as described above.
-   */
-  injectDOMPropertyConfig: function (domPropertyConfig) {
-    var Injection = DOMPropertyInjection;
-    var Properties = domPropertyConfig.Properties || {};
-    var DOMAttributeNamespaces = domPropertyConfig.DOMAttributeNamespaces || {};
-    var DOMAttributeNames = domPropertyConfig.DOMAttributeNames || {};
-    var DOMPropertyNames = domPropertyConfig.DOMPropertyNames || {};
-    var DOMMutationMethods = domPropertyConfig.DOMMutationMethods || {};
-
-    if (domPropertyConfig.isCustomAttribute) {
-      DOMProperty._isCustomAttributeFunctions.push(domPropertyConfig.isCustomAttribute);
-    }
-
-    for (var propName in Properties) {
-      !!DOMProperty.properties.hasOwnProperty(propName) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'injectDOMPropertyConfig(...): You\'re trying to inject DOM property \'%s\' which has already been injected. You may be accidentally injecting the same DOM property config twice, or you may be injecting two configs that have conflicting property names.', propName) : _prodInvariant('48', propName) : void 0;
-
-      var lowerCased = propName.toLowerCase();
-      var propConfig = Properties[propName];
-
-      var propertyInfo = {
-        attributeName: lowerCased,
-        attributeNamespace: null,
-        propertyName: propName,
-        mutationMethod: null,
-
-        mustUseProperty: checkMask(propConfig, Injection.MUST_USE_PROPERTY),
-        hasBooleanValue: checkMask(propConfig, Injection.HAS_BOOLEAN_VALUE),
-        hasNumericValue: checkMask(propConfig, Injection.HAS_NUMERIC_VALUE),
-        hasPositiveNumericValue: checkMask(propConfig, Injection.HAS_POSITIVE_NUMERIC_VALUE),
-        hasOverloadedBooleanValue: checkMask(propConfig, Injection.HAS_OVERLOADED_BOOLEAN_VALUE)
-      };
-      !(propertyInfo.hasBooleanValue + propertyInfo.hasNumericValue + propertyInfo.hasOverloadedBooleanValue <= 1) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'DOMProperty: Value can be one of boolean, overloaded boolean, or numeric value, but not a combination: %s', propName) : _prodInvariant('50', propName) : void 0;
-
-      if (process.env.NODE_ENV !== 'production') {
-        DOMProperty.getPossibleStandardName[lowerCased] = propName;
-      }
-
-      if (DOMAttributeNames.hasOwnProperty(propName)) {
-        var attributeName = DOMAttributeNames[propName];
-        propertyInfo.attributeName = attributeName;
-        if (process.env.NODE_ENV !== 'production') {
-          DOMProperty.getPossibleStandardName[attributeName] = propName;
-        }
-      }
-
-      if (DOMAttributeNamespaces.hasOwnProperty(propName)) {
-        propertyInfo.attributeNamespace = DOMAttributeNamespaces[propName];
-      }
-
-      if (DOMPropertyNames.hasOwnProperty(propName)) {
-        propertyInfo.propertyName = DOMPropertyNames[propName];
-      }
-
-      if (DOMMutationMethods.hasOwnProperty(propName)) {
-        propertyInfo.mutationMethod = DOMMutationMethods[propName];
-      }
-
-      DOMProperty.properties[propName] = propertyInfo;
-    }
-  }
-};
-
-/* eslint-disable max-len */
-var ATTRIBUTE_NAME_START_CHAR = ':A-Z_a-z\\u00C0-\\u00D6\\u00D8-\\u00F6\\u00F8-\\u02FF\\u0370-\\u037D\\u037F-\\u1FFF\\u200C-\\u200D\\u2070-\\u218F\\u2C00-\\u2FEF\\u3001-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFFD';
-/* eslint-enable max-len */
-
-/**
- * DOMProperty exports lookup objects that can be used like functions:
- *
- *   > DOMProperty.isValid['id']
- *   true
- *   > DOMProperty.isValid['foobar']
- *   undefined
- *
- * Although this may be confusing, it performs better in general.
- *
- * @see http://jsperf.com/key-exists
- * @see http://jsperf.com/key-missing
- */
-var DOMProperty = {
-  ID_ATTRIBUTE_NAME: 'data-reactid',
-  ROOT_ATTRIBUTE_NAME: 'data-reactroot',
-
-  ATTRIBUTE_NAME_START_CHAR: ATTRIBUTE_NAME_START_CHAR,
-  ATTRIBUTE_NAME_CHAR: ATTRIBUTE_NAME_START_CHAR + '\\-.0-9\\u00B7\\u0300-\\u036F\\u203F-\\u2040',
-
-  /**
-   * Map from property "standard name" to an object with info about how to set
-   * the property in the DOM. Each object contains:
-   *
-   * attributeName:
-   *   Used when rendering markup or with `*Attribute()`.
-   * attributeNamespace
-   * propertyName:
-   *   Used on DOM node instances. (This includes properties that mutate due to
-   *   external factors.)
-   * mutationMethod:
-   *   If non-null, used instead of the property or `setAttribute()` after
-   *   initial render.
-   * mustUseProperty:
-   *   Whether the property must be accessed and mutated as an object property.
-   * hasBooleanValue:
-   *   Whether the property should be removed when set to a falsey value.
-   * hasNumericValue:
-   *   Whether the property must be numeric or parse as a numeric and should be
-   *   removed when set to a falsey value.
-   * hasPositiveNumericValue:
-   *   Whether the property must be positive numeric or parse as a positive
-   *   numeric and should be removed when set to a falsey value.
-   * hasOverloadedBooleanValue:
-   *   Whether the property can be used as a flag as well as with a value.
-   *   Removed when strictly equal to false; present without a value when
-   *   strictly equal to true; present with a value otherwise.
-   */
-  properties: {},
-
-  /**
-   * Mapping from lowercase property names to the properly cased version, used
-   * to warn in the case of missing properties. Available only in __DEV__.
-   *
-   * autofocus is predefined, because adding it to the property whitelist
-   * causes unintended side effects.
-   *
-   * @type {Object}
-   */
-  getPossibleStandardName: process.env.NODE_ENV !== 'production' ? { autofocus: 'autoFocus' } : null,
-
-  /**
-   * All of the isCustomAttribute() functions that have been injected.
-   */
-  _isCustomAttributeFunctions: [],
-
-  /**
-   * Checks whether a property name is a custom attribute.
-   * @method
-   */
-  isCustomAttribute: function (attributeName) {
-    for (var i = 0; i < DOMProperty._isCustomAttributeFunctions.length; i++) {
-      var isCustomAttributeFn = DOMProperty._isCustomAttributeFunctions[i];
-      if (isCustomAttributeFn(attributeName)) {
-        return true;
-      }
-    }
-    return false;
-  },
-
-  injection: DOMPropertyInjection
-};
-
-module.exports = DOMProperty;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
-
-/***/ }),
-/* 19 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
 
 
 Object.defineProperty(exports, "__esModule", {
@@ -2513,6 +2298,221 @@ var Util = exports.Util = {
     return elements[element];
   }
 };
+
+/***/ }),
+/* 19 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {/**
+ * Copyright 2013-present, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ */
+
+
+
+var _prodInvariant = __webpack_require__(4);
+
+var invariant = __webpack_require__(1);
+
+function checkMask(value, bitmask) {
+  return (value & bitmask) === bitmask;
+}
+
+var DOMPropertyInjection = {
+  /**
+   * Mapping from normalized, camelcased property names to a configuration that
+   * specifies how the associated DOM property should be accessed or rendered.
+   */
+  MUST_USE_PROPERTY: 0x1,
+  HAS_BOOLEAN_VALUE: 0x4,
+  HAS_NUMERIC_VALUE: 0x8,
+  HAS_POSITIVE_NUMERIC_VALUE: 0x10 | 0x8,
+  HAS_OVERLOADED_BOOLEAN_VALUE: 0x20,
+
+  /**
+   * Inject some specialized knowledge about the DOM. This takes a config object
+   * with the following properties:
+   *
+   * isCustomAttribute: function that given an attribute name will return true
+   * if it can be inserted into the DOM verbatim. Useful for data-* or aria-*
+   * attributes where it's impossible to enumerate all of the possible
+   * attribute names,
+   *
+   * Properties: object mapping DOM property name to one of the
+   * DOMPropertyInjection constants or null. If your attribute isn't in here,
+   * it won't get written to the DOM.
+   *
+   * DOMAttributeNames: object mapping React attribute name to the DOM
+   * attribute name. Attribute names not specified use the **lowercase**
+   * normalized name.
+   *
+   * DOMAttributeNamespaces: object mapping React attribute name to the DOM
+   * attribute namespace URL. (Attribute names not specified use no namespace.)
+   *
+   * DOMPropertyNames: similar to DOMAttributeNames but for DOM properties.
+   * Property names not specified use the normalized name.
+   *
+   * DOMMutationMethods: Properties that require special mutation methods. If
+   * `value` is undefined, the mutation method should unset the property.
+   *
+   * @param {object} domPropertyConfig the config as described above.
+   */
+  injectDOMPropertyConfig: function (domPropertyConfig) {
+    var Injection = DOMPropertyInjection;
+    var Properties = domPropertyConfig.Properties || {};
+    var DOMAttributeNamespaces = domPropertyConfig.DOMAttributeNamespaces || {};
+    var DOMAttributeNames = domPropertyConfig.DOMAttributeNames || {};
+    var DOMPropertyNames = domPropertyConfig.DOMPropertyNames || {};
+    var DOMMutationMethods = domPropertyConfig.DOMMutationMethods || {};
+
+    if (domPropertyConfig.isCustomAttribute) {
+      DOMProperty._isCustomAttributeFunctions.push(domPropertyConfig.isCustomAttribute);
+    }
+
+    for (var propName in Properties) {
+      !!DOMProperty.properties.hasOwnProperty(propName) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'injectDOMPropertyConfig(...): You\'re trying to inject DOM property \'%s\' which has already been injected. You may be accidentally injecting the same DOM property config twice, or you may be injecting two configs that have conflicting property names.', propName) : _prodInvariant('48', propName) : void 0;
+
+      var lowerCased = propName.toLowerCase();
+      var propConfig = Properties[propName];
+
+      var propertyInfo = {
+        attributeName: lowerCased,
+        attributeNamespace: null,
+        propertyName: propName,
+        mutationMethod: null,
+
+        mustUseProperty: checkMask(propConfig, Injection.MUST_USE_PROPERTY),
+        hasBooleanValue: checkMask(propConfig, Injection.HAS_BOOLEAN_VALUE),
+        hasNumericValue: checkMask(propConfig, Injection.HAS_NUMERIC_VALUE),
+        hasPositiveNumericValue: checkMask(propConfig, Injection.HAS_POSITIVE_NUMERIC_VALUE),
+        hasOverloadedBooleanValue: checkMask(propConfig, Injection.HAS_OVERLOADED_BOOLEAN_VALUE)
+      };
+      !(propertyInfo.hasBooleanValue + propertyInfo.hasNumericValue + propertyInfo.hasOverloadedBooleanValue <= 1) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'DOMProperty: Value can be one of boolean, overloaded boolean, or numeric value, but not a combination: %s', propName) : _prodInvariant('50', propName) : void 0;
+
+      if (process.env.NODE_ENV !== 'production') {
+        DOMProperty.getPossibleStandardName[lowerCased] = propName;
+      }
+
+      if (DOMAttributeNames.hasOwnProperty(propName)) {
+        var attributeName = DOMAttributeNames[propName];
+        propertyInfo.attributeName = attributeName;
+        if (process.env.NODE_ENV !== 'production') {
+          DOMProperty.getPossibleStandardName[attributeName] = propName;
+        }
+      }
+
+      if (DOMAttributeNamespaces.hasOwnProperty(propName)) {
+        propertyInfo.attributeNamespace = DOMAttributeNamespaces[propName];
+      }
+
+      if (DOMPropertyNames.hasOwnProperty(propName)) {
+        propertyInfo.propertyName = DOMPropertyNames[propName];
+      }
+
+      if (DOMMutationMethods.hasOwnProperty(propName)) {
+        propertyInfo.mutationMethod = DOMMutationMethods[propName];
+      }
+
+      DOMProperty.properties[propName] = propertyInfo;
+    }
+  }
+};
+
+/* eslint-disable max-len */
+var ATTRIBUTE_NAME_START_CHAR = ':A-Z_a-z\\u00C0-\\u00D6\\u00D8-\\u00F6\\u00F8-\\u02FF\\u0370-\\u037D\\u037F-\\u1FFF\\u200C-\\u200D\\u2070-\\u218F\\u2C00-\\u2FEF\\u3001-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFFD';
+/* eslint-enable max-len */
+
+/**
+ * DOMProperty exports lookup objects that can be used like functions:
+ *
+ *   > DOMProperty.isValid['id']
+ *   true
+ *   > DOMProperty.isValid['foobar']
+ *   undefined
+ *
+ * Although this may be confusing, it performs better in general.
+ *
+ * @see http://jsperf.com/key-exists
+ * @see http://jsperf.com/key-missing
+ */
+var DOMProperty = {
+  ID_ATTRIBUTE_NAME: 'data-reactid',
+  ROOT_ATTRIBUTE_NAME: 'data-reactroot',
+
+  ATTRIBUTE_NAME_START_CHAR: ATTRIBUTE_NAME_START_CHAR,
+  ATTRIBUTE_NAME_CHAR: ATTRIBUTE_NAME_START_CHAR + '\\-.0-9\\u00B7\\u0300-\\u036F\\u203F-\\u2040',
+
+  /**
+   * Map from property "standard name" to an object with info about how to set
+   * the property in the DOM. Each object contains:
+   *
+   * attributeName:
+   *   Used when rendering markup or with `*Attribute()`.
+   * attributeNamespace
+   * propertyName:
+   *   Used on DOM node instances. (This includes properties that mutate due to
+   *   external factors.)
+   * mutationMethod:
+   *   If non-null, used instead of the property or `setAttribute()` after
+   *   initial render.
+   * mustUseProperty:
+   *   Whether the property must be accessed and mutated as an object property.
+   * hasBooleanValue:
+   *   Whether the property should be removed when set to a falsey value.
+   * hasNumericValue:
+   *   Whether the property must be numeric or parse as a numeric and should be
+   *   removed when set to a falsey value.
+   * hasPositiveNumericValue:
+   *   Whether the property must be positive numeric or parse as a positive
+   *   numeric and should be removed when set to a falsey value.
+   * hasOverloadedBooleanValue:
+   *   Whether the property can be used as a flag as well as with a value.
+   *   Removed when strictly equal to false; present without a value when
+   *   strictly equal to true; present with a value otherwise.
+   */
+  properties: {},
+
+  /**
+   * Mapping from lowercase property names to the properly cased version, used
+   * to warn in the case of missing properties. Available only in __DEV__.
+   *
+   * autofocus is predefined, because adding it to the property whitelist
+   * causes unintended side effects.
+   *
+   * @type {Object}
+   */
+  getPossibleStandardName: process.env.NODE_ENV !== 'production' ? { autofocus: 'autoFocus' } : null,
+
+  /**
+   * All of the isCustomAttribute() functions that have been injected.
+   */
+  _isCustomAttributeFunctions: [],
+
+  /**
+   * Checks whether a property name is a custom attribute.
+   * @method
+   */
+  isCustomAttribute: function (attributeName) {
+    for (var i = 0; i < DOMProperty._isCustomAttributeFunctions.length; i++) {
+      var isCustomAttributeFn = DOMProperty._isCustomAttributeFunctions[i];
+      if (isCustomAttributeFn(attributeName)) {
+        return true;
+      }
+    }
+    return false;
+  },
+
+  injection: DOMPropertyInjection
+};
+
+module.exports = DOMProperty;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0)))
 
 /***/ }),
 /* 20 */
@@ -20564,7 +20564,7 @@ module.exports = CSSProperty;
 
 
 
-var DOMProperty = __webpack_require__(18);
+var DOMProperty = __webpack_require__(19);
 var ReactDOMComponentTree = __webpack_require__(6);
 var ReactInstrumentation = __webpack_require__(12);
 
@@ -21770,7 +21770,7 @@ module.exports = getActiveElement;
 var _prodInvariant = __webpack_require__(4);
 
 var DOMLazyTree = __webpack_require__(27);
-var DOMProperty = __webpack_require__(18);
+var DOMProperty = __webpack_require__(19);
 var React = __webpack_require__(24);
 var ReactBrowserEventEmitter = __webpack_require__(43);
 var ReactCurrentOwner = __webpack_require__(15);
@@ -23927,7 +23927,8 @@ var Rules = function (_Component) {
             'strong',
             { className: 'text-yellow' },
             'power nodes'
-          )
+          ),
+          '.'
         ),
         _react2.default.createElement(
           'h3',
@@ -23949,13 +23950,7 @@ var Rules = function (_Component) {
             { className: 'text-yellow' },
             'Reserve'
           ),
-          '. Captured pieces are removed from the board and sent to ',
-          _react2.default.createElement(
-            'strong',
-            { className: 'text-yellow' },
-            'prison'
-          ),
-          '. The ',
+          '. Captured pieces are removed from the board and sent to prison. The ',
           _react2.default.createElement(
             'strong',
             { className: 'text-yellow' },
@@ -24004,7 +23999,7 @@ var Rules = function (_Component) {
           ' a piece on the board. You may not move the same piece twice in a turn or move a piece you just deployed, but otherwise you may do these actions in any combination you like (move two pieces, deploy two pieces, move then deploy, etc.).',
           _react2.default.createElement('br', null),
           _react2.default.createElement('br', null),
-          'Note: Player 1 only gets one action on their first turn to negate the advantage of moving first'
+          'Note: Player 1 only gets one action on their first turn to negate the advantage of moving first.'
         ),
         _react2.default.createElement(
           'h3',
@@ -24112,7 +24107,7 @@ var Rules = function (_Component) {
             { className: 'text-yellow' },
             'Hero'
           ),
-          '.  The Reserve panel displays the energy cost of each piece in orange, as well as how many copies of that piece are still left in your Reserve in yellow.  More powerful pieces cost more energy to deploy, so you will need to deploy Power Nodes in order to get your strongest pieces on the board!'
+          '.  The Reserve panel displays the energy cost of each piece in orange, as well as how many copies of that piece are still left in your Reserve in yellow.  More powerful pieces cost more energy to deploy, so you will need to deploy power nodes in order to get your strongest pieces on the board!'
         ),
         _react2.default.createElement('br', null),
         _react2.default.createElement(
@@ -24330,7 +24325,7 @@ var _miniHex = __webpack_require__(309);
 
 var _miniHex2 = _interopRequireDefault(_miniHex);
 
-var _utils = __webpack_require__(19);
+var _utils = __webpack_require__(18);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -28589,7 +28584,7 @@ module.exports = EnterLeaveEventPlugin;
 
 
 
-var DOMProperty = __webpack_require__(18);
+var DOMProperty = __webpack_require__(19);
 
 var MUST_USE_PROPERTY = DOMProperty.injection.MUST_USE_PROPERTY;
 var HAS_BOOLEAN_VALUE = DOMProperty.injection.HAS_BOOLEAN_VALUE;
@@ -29286,7 +29281,7 @@ var AutoFocusUtils = __webpack_require__(166);
 var CSSPropertyOperations = __webpack_require__(167);
 var DOMLazyTree = __webpack_require__(27);
 var DOMNamespaces = __webpack_require__(54);
-var DOMProperty = __webpack_require__(18);
+var DOMProperty = __webpack_require__(19);
 var DOMPropertyOperations = __webpack_require__(91);
 var EventPluginHub = __webpack_require__(29);
 var EventPluginRegistry = __webpack_require__(38);
@@ -34301,7 +34296,7 @@ module.exports = getUnboundedScrollPosition;
 
 
 
-var DOMProperty = __webpack_require__(18);
+var DOMProperty = __webpack_require__(19);
 var EventPluginHub = __webpack_require__(29);
 var EventPluginUtils = __webpack_require__(48);
 var ReactComponentEnvironment = __webpack_require__(57);
@@ -36455,7 +36450,7 @@ module.exports = ReactMount.renderSubtreeIntoContainer;
 
 
 
-var DOMProperty = __webpack_require__(18);
+var DOMProperty = __webpack_require__(19);
 var EventPluginRegistry = __webpack_require__(38);
 var ReactComponentTreeHook = __webpack_require__(9);
 
@@ -36622,7 +36617,7 @@ module.exports = ReactDOMNullInputValuePropHook;
 
 
 
-var DOMProperty = __webpack_require__(18);
+var DOMProperty = __webpack_require__(19);
 var ReactComponentTreeHook = __webpack_require__(9);
 
 var warning = __webpack_require__(3);
@@ -40316,6 +40311,9 @@ var thisPlayer = function thisPlayer() {
     case 'OBSERVE_GAME_SUCCESS':
       return 'observer';
       break;
+    case 'PLAY_COMPUTER':
+      return 'P1';
+      break;
   }
   return state;
 };
@@ -40330,6 +40328,9 @@ var gameId = function gameId() {
       break;
     case 'OBSERVE_GAME_SUCCESS':
       return action.payload.id;
+      break;
+    case 'PLAY_COMPUTER':
+      return 'ai';
       break;
   }
   return state;
@@ -40601,6 +40602,9 @@ function playerReducer() {
     case 'OBSERVE_GAME_SUCCESS':
       return 'observer';
       break;
+    case 'PLAY_COMPUTER':
+      return 'P1';
+      break;
   }
   return state;
 }
@@ -40756,6 +40760,9 @@ exports.default = function () {
 
       return player === 'P1' ? actions : 0;
       break;
+    case 'PLAY_COMPUTER':
+      return 1;
+      break;
   }
   return state;
 };
@@ -40875,7 +40882,7 @@ var _game = __webpack_require__(307);
 
 var _game2 = _interopRequireDefault(_game);
 
-var _appNav = __webpack_require__(318);
+var _appNav = __webpack_require__(319);
 
 var _appNav2 = _interopRequireDefault(_appNav);
 
@@ -40883,19 +40890,19 @@ var _navButton = __webpack_require__(45);
 
 var _navButton2 = _interopRequireDefault(_navButton);
 
-var _login = __webpack_require__(319);
+var _login = __webpack_require__(320);
 
 var _login2 = _interopRequireDefault(_login);
 
-var _signup = __webpack_require__(320);
+var _signup = __webpack_require__(321);
 
 var _signup2 = _interopRequireDefault(_signup);
 
-var _user = __webpack_require__(321);
+var _user = __webpack_require__(322);
 
 var _user2 = _interopRequireDefault(_user);
 
-var _home = __webpack_require__(322);
+var _home = __webpack_require__(323);
 
 var _home2 = _interopRequireDefault(_home);
 
@@ -40903,7 +40910,7 @@ var _rules = __webpack_require__(121);
 
 var _rules2 = _interopRequireDefault(_rules);
 
-var _index = __webpack_require__(324);
+var _index = __webpack_require__(325);
 
 var _login3 = __webpack_require__(71);
 
@@ -41026,6 +41033,7 @@ var App = function (_Component) {
               _react2.default.createElement(_reactRouterDom.Route, { path: '/rules', component: _rules2.default }),
               _react2.default.createElement(_reactRouterDom.Route, { path: '/login', component: _login2.default }),
               _react2.default.createElement(_reactRouterDom.Route, { path: '/signup', component: _signup2.default }),
+              _react2.default.createElement(_reactRouterDom.Route, { path: '/games/ai', component: _game2.default }),
               _react2.default.createElement(_reactRouterDom.Route, { path: '/games/:id', component: _game2.default }),
               _react2.default.createElement(_reactRouterDom.Route, { path: '/profile', component: _user2.default })
             )
@@ -42036,6 +42044,7 @@ var GamesIndex = function (_Component) {
     _this.applyFilter = _this.applyFilter.bind(_this);
     _this.handleClick = _this.handleClick.bind(_this);
     _this.newGame = _this.newGame.bind(_this);
+    _this.playComputer = _this.playComputer.bind(_this);
     _this.setFilter = _this.setFilter.bind(_this);
     _this.setupActionCable = _this.setupActionCable.bind(_this);
     _this.setupPollGamesIndex = _this.setupPollGamesIndex.bind(_this);
@@ -42117,6 +42126,13 @@ var GamesIndex = function (_Component) {
           user = _props.user;
 
       user ? postNewGame(user) : alert('Please log in');
+    }
+  }, {
+    key: 'playComputer',
+    value: function playComputer() {
+      debugger;
+      this.props.playComputer();
+      // this.props.history.push('/games/ai');
     }
   }, {
     key: 'handleClick',
@@ -42222,6 +42238,7 @@ var GamesIndex = function (_Component) {
           refresh: fetchAllGames,
           handleClick: this.handleClick,
           user: user,
+          playComputer: this.playComputer,
           cancelSeek: cancelSeek
         })
       );
@@ -42246,7 +42263,8 @@ function mapDispatchToProps(dispatch) {
     observeGame: _gameIndex.observeGame,
     updateReceived: _gameIndex.updateReceived,
     createAction: _gameIndex.createAction,
-    cancelSeek: _gameIndex.cancelSeek
+    cancelSeek: _gameIndex.cancelSeek,
+    playComputer: _gameIndex.playComputer
     // actionName: action imported from ./actions
   }, dispatch);
 }
@@ -42294,6 +42312,20 @@ var GamesList = function (_Component) {
   }
 
   _createClass(GamesList, [{
+    key: 'aiGame',
+    value: function aiGame(user) {
+      return {
+        creator: 'AI level 1',
+        status: 'seeking',
+        challenger: 'you!',
+        winner: null,
+        id: 'ai',
+        created_at: new Date(),
+        p1_id: user ? user.id : null,
+        p2_id: 'AI'
+      };
+    }
+  }, {
     key: 'mapGamesToList',
     value: function mapGamesToList(games) {
       var _props = this.props,
@@ -42316,7 +42348,9 @@ var GamesList = function (_Component) {
       var _props2 = this.props,
           games = _props2.games,
           newGame = _props2.newGame,
-          refresh = _props2.refresh;
+          refresh = _props2.refresh,
+          playComputer = _props2.playComputer,
+          user = _props2.user;
 
       var gamesList = games.length ? this.mapGamesToList(games) : _react2.default.createElement(
         'span',
@@ -42353,6 +42387,11 @@ var GamesList = function (_Component) {
               { className: 'td' },
               'Age'
             )
+          ),
+          _react2.default.createElement(
+            'li',
+            { key: 'playComputer', className: 'tr consolas', style: { backgroundColor: '#666' } },
+            _react2.default.createElement(_gameLink2.default, { game: this.aiGame(user), handleClick: playComputer })
           ),
           gamesList
         ),
@@ -42581,7 +42620,7 @@ var fetchGamesError = function fetchGamesError() {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.createAction = exports.updateReceived = exports.cancelSeek = exports.observeGame = exports.joinGame = exports.postNewGame = undefined;
+exports.createAction = exports.updateReceived = exports.playComputer = exports.cancelSeek = exports.observeGame = exports.joinGame = exports.postNewGame = undefined;
 
 var _jquery = __webpack_require__(34);
 
@@ -42705,6 +42744,12 @@ var cancelSeek = exports.cancelSeek = function cancelSeek(gameId) {
   };
 };
 
+var playComputer = exports.playComputer = function playComputer() {
+  return function (dispatch) {
+    dispatch({ type: 'PLAY_COMPUTER' });
+  };
+};
+
 var updateReceived = exports.updateReceived = function updateReceived(data) {
   return {
     type: 'UPDATE_RECEIVED',
@@ -42762,13 +42807,17 @@ var _bannerMessage = __webpack_require__(314);
 
 var _bannerMessage2 = _interopRequireDefault(_bannerMessage);
 
-var _utils = __webpack_require__(19);
+var _utils = __webpack_require__(18);
 
-var _gameActions = __webpack_require__(315);
+var _ai = __webpack_require__(315);
 
-var _postGameState = __webpack_require__(316);
+var _ai2 = _interopRequireDefault(_ai);
 
-var _fetchGameState = __webpack_require__(317);
+var _gameActions = __webpack_require__(316);
+
+var _postGameState = __webpack_require__(317);
+
+var _fetchGameState = __webpack_require__(318);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -42794,10 +42843,18 @@ var Game = function (_Component) {
 
     _this.gameId = _this.props.match.params.id;
 
+    if (_this.gameId === 'ai') {
+      _this.ai = new _ai2.default({
+        player: 'P2',
+        pieces: props.pieces
+      });
+    }
+
     _this.allLegalMoves = _this.allLegalMoves.bind(_this);
     _this.checkForWin = _this.checkForWin.bind(_this);
     _this.getLegalMoves = _this.getLegalMoves.bind(_this);
     _this.getNodeCount = _this.getNodeCount.bind(_this);
+    _this.handleAI = _this.handleAI.bind(_this);
     _this.handleClick = _this.handleClick.bind(_this);
     _this.hideReserve = _this.hideReserve.bind(_this);
     _this.isLegalMove = _this.isLegalMove.bind(_this);
@@ -42812,15 +42869,21 @@ var Game = function (_Component) {
     value: function componentDidMount() {
       var _this2 = this;
 
-      this.props.fetchGameStateData(this.gameId);
+      // check path to ensure this is a PvP game
+      if (this.gameId === 'ai' || this.props.game.id === 'ai') {
+        // playing vs computer
+        this.continuallyFetchGameState = false;
+      } else {
+        this.props.fetchGameStateData(this.gameId);
 
-      this.continuallyFetchGameState = function () {
-        if (_this2.props.currentPlayer !== _this2.props.player.player && !_this2.props.game.winner) {
-          _this2.fetchGameState(_this2.gameId);
-        }
-        window.setTimeout(_this2.continuallyFetchGameState, 1000);
-      };
-      this.continuallyFetchGameState();
+        this.continuallyFetchGameState = function () {
+          if (_this2.props.currentPlayer !== _this2.props.player.player && !_this2.props.game.winner) {
+            _this2.fetchGameState(_this2.gameId);
+          }
+          window.setTimeout(_this2.continuallyFetchGameState, 1000);
+        };
+        this.continuallyFetchGameState();
+      }
     }
   }, {
     key: 'componentWillUnmount',
@@ -42838,16 +42901,21 @@ var Game = function (_Component) {
 
       var id = this.gameId;
 
-      if (nextPosition !== lastPosition && currentPlayer === player.player) {
-        var gameState = {
-          pieces: nextProps.pieces,
-          actions: nextProps.player.actions,
-          currentPlayer: nextProps.currentPlayer
-        };
+      if (this.gameId === 'ai' || this.props.game.id === 'ai') {
+        // just play locally.  binding of 'this' is weird...
+        console.log('ai game');
+      } else {
+        if (nextPosition !== lastPosition && currentPlayer === player.player) {
+          var gameState = {
+            pieces: nextProps.pieces,
+            actions: nextProps.player.actions,
+            currentPlayer: nextProps.currentPlayer
+          };
 
-        this.props.postGameStateData(id, gameState);
+          this.props.postGameStateData(id, gameState);
+        }
+        // if it became my turn, ensure I have legal moves
       }
-      // if it became my turn, ensure I have legal moves
     }
   }, {
     key: 'checkForWin',
@@ -42882,6 +42950,7 @@ var Game = function (_Component) {
   }, {
     key: 'fetchGameState',
     value: function fetchGameState() {
+      debugger;
       var _props3 = this.props,
           game = _props3.game,
           fetchGameStateData = _props3.fetchGameStateData;
@@ -42914,6 +42983,15 @@ var Game = function (_Component) {
 
         player: this.props.player
       };
+    }
+  }, {
+    key: 'handleAI',
+    value: function handleAI() {
+      // play first ai move:
+      debugger;
+      this.ai.calculateMove();
+      // then play second ai move:
+      window.setTimeout(this.ai.calculateMove, 3000);
     }
   }, {
     key: 'handleClick',
@@ -42967,6 +43045,10 @@ var Game = function (_Component) {
             this.props.readyAllPieces();
             this.props.resetActions();
             this.props.resetEnergy();
+            if (this.gameId === 'ai' || this.props.game.id === 'ai') {
+              this.handleAI();
+            }
+            // if playing against an AI, let the ai make its moves here and the pass the turn back.
           }
         }
         this.props.clearSelection();
@@ -43241,7 +43323,7 @@ var _reserveButton = __webpack_require__(311);
 
 var _reserveButton2 = _interopRequireDefault(_reserveButton);
 
-var _utils = __webpack_require__(19);
+var _utils = __webpack_require__(18);
 
 var _utils2 = _interopRequireDefault(_utils);
 
@@ -43578,7 +43660,7 @@ var _react = __webpack_require__(2);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _utils = __webpack_require__(19);
+var _utils = __webpack_require__(18);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -43689,7 +43771,7 @@ var _react = __webpack_require__(2);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _utils = __webpack_require__(19);
+var _utils = __webpack_require__(18);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -43894,7 +43976,7 @@ var _react = __webpack_require__(2);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _utils = __webpack_require__(19);
+var _utils = __webpack_require__(18);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -44060,7 +44142,7 @@ var _react = __webpack_require__(2);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _utils = __webpack_require__(19);
+var _utils = __webpack_require__(18);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -44153,6 +44235,217 @@ exports.default = BannerMessage;
 
 /***/ }),
 /* 315 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _utils = __webpack_require__(18);
+
+var _utils2 = _interopRequireDefault(_utils);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var AI = function () {
+  function AI(options) {
+    _classCallCheck(this, AI);
+
+    this.player = options.player; // should be 'P2'
+    this.pieces = options.pieces;
+
+    this.analyzeBoard = this.analyzeBoard.bind(this);
+    this.calculateMove = this.calculateMove.bind(this);
+    this.getLegalMoves = this.getLegalMoves.bind(this);
+    this.randomMove = this.randomMove.bind(this);
+  }
+
+  _createClass(AI, [{
+    key: 'analyzeBoard',
+    value: function analyzeBoard(pieces) {
+      var _this = this;
+
+      // analyze the board and return a bunch of useful objects
+      var myHero = pieces.filter(function (p) {
+        return p.type === 'hero' && p.player === _this.player;
+      });
+      var myPieces = pieces.filter(function (p) {
+        return p.player === _this.player;
+      });
+      var myPositionStrings = myPieces.map(function (p) {
+        return p.pos.join('');
+      });
+
+      var myLegalMoves = myPieces.reduce(function (acc, p) {
+        var legalMoves = _this.getLegalMoves(p);
+        acc[p.pos.join('')] = acc[p.pos.join('')] || [];
+        return legalMoves.length ? acc[key].concat(legalMoves) : acc;
+      }, {});
+
+      var enemyHero = pieces.filter(function (p) {
+        return p.type === 'hero' && p.player !== _this.player;
+      });
+      var enemyPieces = pieces.filter(function (p) {
+        return p.player !== _this.player && Array.isArray(p.pos);
+      });
+      var threatenedHexes = enemyPieces.reduce(function (acc, p) {
+        var hexStrings = _this.getLegalMoves(p).map(function (m) {
+          return m.join('');
+        });
+        return acc.concat(hexStrings);
+      }, []);
+
+      // if enemy hero is threatened, capture it to win the game
+      var enemyHeroThreatened = myPieces.reduce(function (acc, p) {
+        return _this.getLegalMoves(p).map(function (m) {
+          return m.join('');
+        }).includes(enemyHero.pos.join(''));
+      }, false);
+      var myHeroThreatened = threatenedHexes.includes(myHero.pos.join(''));
+
+      var myNodeCount = _utils2.default.getNodeCount(this.player, pieces); // on board
+      var capturedEnemyNodes = pieces.filter(function (p) {
+        return p.type === 'node' && p.pos === 'prison';
+      }).length;
+
+      return {
+        myHero: myHero,
+        myPieces: myPieces,
+        myLegalMoves: myLegalMoves,
+        myHeroThreatened: myHeroThreatened,
+        enemyHero: enemyHero,
+        enemyPieces: enemyPieces,
+        enemyHeroThreatened: enemyHeroThreatened,
+        threatenedHexes: threatenedHexes,
+        myNodeCount: myNodeCount,
+        capturedEnemyNodes: capturedEnemyNodes
+      };
+    }
+  }, {
+    key: 'calculateMove',
+    value: function calculateMove() {
+      // 1. If I can win the game, do that.
+
+      // 2. If I'm about to lose, try to stop it (or pick a random move)
+
+      // 3. If I can capture a valuable piece, do that
+
+      // 4. If I'm about to lose a valuable piece, save it
+
+      // 5. Otherwise, develop my board.
+
+      // 6. Otherwise, play a random legal move
+      return this.randomMove();
+    }
+  }, {
+    key: 'getLegalMoves',
+    value: function getLegalMoves(piece) {
+      // calculates a piece's legal moves from its type
+      if (piece.pos === 'prison') {
+        return [];
+      }
+
+      var legalMoves = [];
+      var player = this.player,
+          pieces = this.pieces;
+
+      var thisPlayer = piece.player;
+      var moveFuncs = _utils2.default.moveFuncs,
+          getHeroPos = _utils2.default.getHeroPos,
+          getStrings = _utils2.default.getStrings,
+          inBounds = _utils2.default.inBounds;
+
+      var noSelfCaptures = getStrings(pieces.filter(function (p) {
+        return p.player === thisPlayer;
+      }));
+      var occupiedHexStrings = getStrings(pieces);
+
+      if (piece.pos === 'reserve') {
+        if (this.enoughEnergy(piece)) {
+          // this.payEnergyCost
+          var hero = pieces.filter(function (p) {
+            return p.type === 'hero' && p.player === piece.player;
+          })[0];
+          var hexes = moveFuncs['adjacent'](hero);
+          var movesArr = hexes.filter(function (hex) {
+            return inBounds(hex) && occupiedHexStrings.indexOf(hex.toString()) < 0;
+          });
+          legalMoves.push.apply(legalMoves, _toConsumableArray(movesArr));
+        }
+      } else {
+        piece.moveDirs.forEach(function (dir) {
+          var hexes = moveFuncs[dir](piece, pieces);
+          var movesArr = hexes.filter(function (hex) {
+            return inBounds(hex) && noSelfCaptures.indexOf(hex.toString()) < 0;
+          });
+          legalMoves.push.apply(legalMoves, _toConsumableArray(movesArr));
+        });
+      }
+
+      return legalMoves;
+    }
+  }, {
+    key: 'rankPieceMoves',
+    value: function rankPieceMoves(piece) {
+      // first build a scoreMap for captures; an object with hex positions and the value of the pieces there
+      // then build a defended hexes map for the legal moves of enemy pieces, hexes map to the lowest value of piece that can move there.?
+      // then score the move:
+      // if isCapture
+      // score += value of captured piece
+      // hero worth a million
+      // node worth 1, 4, a million depending on number of captured nodes.
+      // else
+      // makes a threat:
+      // score += half the value of threatened pieces of
+      // piece deployment += value of the piece
+      // node deployment += 2
+      // piece move += value of the capture
+      // value of legalMoves.length?
+    }
+  }, {
+    key: 'rateMove',
+    value: function rateMove(piece, position, destination) {
+      var rating = 0;
+    }
+  }, {
+    key: 'randomMove',
+    value: function randomMove() {
+      var _analyzeBoard = this.analyzeBoard(this.pieces),
+          myPieces = _analyzeBoard.myPieces,
+          myLegalMoves = _analyzeBoard.myLegalMoves;
+
+      var myLegalPieces = myPieces.filter(function (p) {
+        return myLegalMoves[p.pos.join('')].length > 0;
+      });
+      var selectedPiece = myLegalPieces[Math.floor(Math.random() * myLegalPieces.length)];
+      var startPos = selectedPiece.pos;
+      var endPos = myLegalMoves[startPos.join('')][0];
+
+      return {
+        player: this.player,
+        contents: selectedPiece,
+        start: startPos,
+        end: endPos
+      };
+    }
+  }]);
+
+  return AI;
+}();
+
+exports.default = AI;
+
+/***/ }),
+/* 316 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -44270,7 +44563,7 @@ var declareWinner = exports.declareWinner = function declareWinner(winner) {
 };
 
 /***/ }),
-/* 316 */
+/* 317 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -44337,7 +44630,7 @@ var postWinner = exports.postWinner = function postWinner(gameId, winner) {
 };
 
 /***/ }),
-/* 317 */
+/* 318 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -44401,7 +44694,7 @@ var fetchGameStateError = function fetchGameStateError(payload) {
 };
 
 /***/ }),
-/* 318 */
+/* 319 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -44458,7 +44751,7 @@ var Nav = function (_Component) {
 exports.default = Nav;
 
 /***/ }),
-/* 319 */
+/* 320 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -44659,7 +44952,7 @@ function mapDispatchToProps(dispatch) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(LoginForm);
 
 /***/ }),
-/* 320 */
+/* 321 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -44886,7 +45179,7 @@ function mapDispatchToProps(dispatch) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(SignupForm);
 
 /***/ }),
-/* 321 */
+/* 322 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -44982,7 +45275,7 @@ function mapDispatchToProps(dispatch) {
 exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(Profile);
 
 /***/ }),
-/* 322 */
+/* 323 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -45004,7 +45297,7 @@ var _hex = __webpack_require__(35);
 
 var _hex2 = _interopRequireDefault(_hex);
 
-var _innerHex = __webpack_require__(323);
+var _innerHex = __webpack_require__(324);
 
 var _innerHex2 = _interopRequireDefault(_innerHex);
 
@@ -45175,7 +45468,7 @@ var Home = function (_Component) {
 exports.default = Home;
 
 /***/ }),
-/* 323 */
+/* 324 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -45191,7 +45484,7 @@ var _react = __webpack_require__(2);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _utils = __webpack_require__(19);
+var _utils = __webpack_require__(18);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -45342,7 +45635,7 @@ function styles(size) {
 };
 
 /***/ }),
-/* 324 */
+/* 325 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
