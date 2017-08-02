@@ -42374,9 +42374,9 @@ var GamesList = function (_Component) {
     key: 'aiGame',
     value: function aiGame(user) {
       return {
-        creator: 'AI level 1',
+        creator: '-',
         status: 'seeking',
-        challenger: 'you!',
+        challenger: 'Level 1 AI',
         winner: null,
         id: 'ai',
         created_at: new Date(),
@@ -42449,7 +42449,7 @@ var GamesList = function (_Component) {
           ),
           _react2.default.createElement(
             'li',
-            { key: 'playComputer', className: 'tr consolas', style: { backgroundColor: '#666' } },
+            { key: 'playComputer', className: 'tr consolas', style: { backgroundColor: 'lightseagreen' } },
             _react2.default.createElement(_gameLink2.default, { game: this.aiGame(user), handleClick: playComputer })
           ),
           gamesList
@@ -44415,7 +44415,7 @@ var AI = function () {
       // if enemy hero is threatened, capture it to win the game
       var enemyHeroThreatened = Object.values(myLegalMoves).reduce(function (acc, dest) {
         return acc.concat(dest);
-      }).includes(enemyHero.pos.toString());
+      }, []).includes(enemyHero.pos.toString());
       var myHeroThreatened = threatenedHexes.includes(myHero.pos.toString());
 
       var myNodeCount = _utils.Util.getNodeCount(this.player, pieces); // on board
@@ -44459,7 +44459,7 @@ var AI = function () {
     value: function enoughEnergy(piece, position) {
       var nodeCount = position.filter(function (p) {
         return p.type === 'node' && p.player === piece.player && Array.isArray(p.pos);
-      });
+      }).length;
       return this.previousEnergyConsumed + piece.cost <= nodeCount;
     }
   }, {
@@ -44499,6 +44499,9 @@ var AI = function () {
           legalMoves.push.apply(legalMoves, _toConsumableArray(movesArr));
         } else {
           console.log('not enough energy to deploy ', piece.type);
+          if (piece.type === 'node') {
+            debugger;
+          }
         }
       } else {
         piece.moveDirs.forEach(function (dir) {
@@ -44554,6 +44557,7 @@ var AI = function () {
       if (startPos === 'reserve') {
         // track the energy cost;
         this.previousEnergyConsumed += selectedPiece.cost;
+        debugger;
       }
 
       return {

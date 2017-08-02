@@ -9,9 +9,9 @@ export default class GamesList extends Component {
 
   aiGame(user) {
     return {
-      creator: 'AI level 1',
+      creator: '-',
       status: 'seeking',
-      challenger: 'you!',
+      challenger: 'Level 1 AI',
       winner: null,
       id: 'ai',
       created_at: new Date(),
@@ -45,7 +45,7 @@ export default class GamesList extends Component {
             <span className='td'>Status</span>
             <span className='td'>Age</span>
           </li>
-          <li key='playComputer' className='tr consolas' style={{ backgroundColor: '#666'}}>
+          <li key='playComputer' className='tr consolas' style={{ backgroundColor: 'lightseagreen'}}>
             <GameLink game={ this.aiGame(user) } handleClick={ playComputer } />
           </li>
           { gamesList }

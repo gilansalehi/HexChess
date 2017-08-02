@@ -38,7 +38,7 @@ export default class AI {
     }, []);
     // if enemy hero is threatened, capture it to win the game
     const enemyHeroThreatened = Object.values(myLegalMoves)
-      .reduce((acc, dest) => acc.concat(dest))
+      .reduce((acc, dest) => acc.concat(dest), [])
       .includes(enemyHero.pos.toString());
     const myHeroThreatened = threatenedHexes.includes(myHero.pos.toString());
 
@@ -79,7 +79,7 @@ export default class AI {
   enoughEnergy(piece, position) {
     const nodeCount = position.filter(p => {
       return p.type === 'node' && p.player === piece.player && Array.isArray(p.pos)
-    });
+    }).length;
     return (this.previousEnergyConsumed + piece.cost <= nodeCount);
   }
 
@@ -104,8 +104,6 @@ export default class AI {
           return inBounds(hex) && !occupiedHexStrings.includes(hex.toString());
         });
         legalMoves.push(...movesArr);
-      } else {
-        console.log('not enough energy to deploy ', piece.type);
       }
     } else {
       piece.moveDirs.forEach((dir) => {
