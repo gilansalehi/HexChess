@@ -154,7 +154,7 @@ export const Util = {
   getHeroPos: function(p) { return false; }, // TODO
 
   getStrings: function(pieces) {
-    return pieces.map((p) => { return p.pos.toString(); });
+    return pieces.map(p => p.pos.toString());
   },
 
   inBounds(pos) {
@@ -171,6 +171,27 @@ export const Util = {
     return allPieces.filter((p) => {
       return (p.type === 'node' && p.player === player && Array.isArray(p.pos));
     }).length;
+  },
+
+  getNextPosition(move, pieces) {
+    const { player, type, start, end } = move;
+    const selectedPiece = pieces.filter(p => {
+      return (
+        p.pos.toString() === start.toString()
+        && p.type === type
+        && p.player === player
+      );
+    })[0];
+
+    return pieces.map(p => {
+      if ( p === selectedPiece ) {
+        return Object.assign({}, p, { pos: end, ready: false });
+      } else if ( p.pos.toString() === end.toString() ) {
+        return Object.assign({}, p, { pos: 'prison' });
+      } else {
+        return p;
+      }
+    });
   },
 
   text(element) {

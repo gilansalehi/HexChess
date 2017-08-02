@@ -24,6 +24,7 @@ export const movePiece = (selection, destination) => {
     type: 'MOVE_PIECE',
     payload: {
       player: selection.player,
+      type: selection.contents.type,
       contents: selection.contents,
       start: selection.pos,
       end: destination.pos,
@@ -36,10 +37,19 @@ export const deployPiece = (selection, destination) => {
     type: 'DEPLOY_PIECE',
     payload: {
       player: selection.player,
+      type: selection.contents.type,
       contents: selection.contents,
       start: selection.pos,
       end: destination.pos,
     },
+  }
+}
+
+export const computerPlays = (move) => {
+  if ( move.start === 'reserve' ) {
+    return { type: 'DEPLOY_PIECE', payload: move }
+  } else {
+    return { type: 'MOVE_PIECE', payload: move }
   }
 }
 

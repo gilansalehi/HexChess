@@ -90,9 +90,7 @@ class GamesIndex extends Component {
   }
 
   playComputer() {
-    debugger;
     this.props.playComputer();
-    // this.props.history.push('/games/ai');
   }
 
   handleClick(id) {

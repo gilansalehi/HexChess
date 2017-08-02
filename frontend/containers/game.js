@@ -26,6 +26,7 @@ import {
   passTurn,
   readyAllPieces,
   declareWinner,
+  computerPlays,
 } from '../actions/gameActions';
 import { postGameStateData, postWinner } from '../actions/postGameState';
 import { fetchGameStateData } from '../actions/fetchGameState';
@@ -48,6 +49,7 @@ class Game extends Component {
 
     this.allLegalMoves = this.allLegalMoves.bind(this);
     this.checkForWin = this.checkForWin.bind(this);
+    this.endTurn = this.endTurn.bind(this);
     this.getLegalMoves = this.getLegalMoves.bind(this);
     this.getNodeCount = this.getNodeCount.bind(this);
     this.handleAI = this.handleAI.bind(this);
@@ -102,7 +104,6 @@ class Game extends Component {
       }
       // if it became my turn, ensure I have legal moves
     }
-
   }
 
   checkForWin(destination) {
@@ -128,8 +129,14 @@ class Game extends Component {
     }
   }
 
+  endTurn() {
+    this.props.passTurn();
+    this.props.readyAllPieces();
+    this.props.resetActions();
+    this.props.resetEnergy();
+  }
+
   fetchGameState() {
-    debugger;
     const { game, fetchGameStateData } = this.props;
     if ( !game.winner ) { fetchGameStateData(this.gameId); }
   }
@@ -147,17 +154,20 @@ class Game extends Component {
     }
   }
 
-  handleAI() {
-    // play first ai move:
-    debugger;
-    this.ai.calculateMove();
-    // then play second ai move:
-    window.setTimeout(this.ai.calculateMove, 3000);
+  handleAI(position) {
+    const { pieces, computerPlays } = this.props;
+    const deploy = ['node', 'pawn', 'bishop', 'rook', 'queen'];
+    const [move1, move2] = this.ai.playTwoMoves(position);
+    console.log(move1, move2);
+    computerPlays(move1);
+    computerPlays(move2);
+    // THEN: pass turn back to player;
+    this.endTurn();
   }
 
   handleClick(hex) {
     if ( this.gameOver ) { return false; }
-    const { currentPlayer, selection, player } = this.props;
+    const { currentPlayer, selection, player, pieces } = this.props;
 
     if ( !selection ) {
       if ( hex.player === player.player ) {
@@ -168,6 +178,13 @@ class Game extends Component {
         this.props.updateInfo({ text: infotext });
       }
     } else { // selection exists
+      const move = {
+        player: player.player, // 'P1' or 'P2'
+        piece: selection.contents,
+        type: selection.contents.type,
+        start: selection.pos,
+        end: hex.pos,
+      };
       const moveIsLegal  = this.isLegalMove(hex.pos);
       const isMyTurn     = currentPlayer === player.player;
       const pieceIsReady = selection.contents.ready;
@@ -194,12 +211,12 @@ class Game extends Component {
         // THEN HANDLE TURN LOGIC:
         this.props.incrementActions();
         if ( parseInt(player.actions) >= 1 ) {
-          this.props.passTurn();
-          this.props.readyAllPieces();
-          this.props.resetActions();
-          this.props.resetEnergy();
-          if ( this.gameId === 'ai' || this.props.game.id === 'ai' ) { this.handleAI() }
-          // if playing against an AI, let the ai make its moves here and the pass the turn back.
+          this.endTurn();
+
+          if ( this.gameId === 'ai' || this.props.game.id === 'ai' ) {
+            const nextPos = Util.getNextPosition(move, pieces);
+            this.handleAI(nextPos);
+          }
         }
       }
       this.props.clearSelection();
@@ -217,6 +234,14 @@ class Game extends Component {
     if ( player.player !== piece.player ) { return false } // e.g. P2 selects P1 piece (to see info)
     const moves = this.getLegalMoves(piece).map((m) => { return m.toString() });
     return moves.indexOf(pos.toString()) !== -1;
+  }
+
+  isLegal(move) {
+    const { selection, currentPlayer } = this.props;
+    const thisPlayer = this.props.player.player;
+    const { player, piece, start, end } = move;
+    if ( !start || !end || !player ) { return false; }
+
   }
 
   getLegalMoves(piece) {
@@ -377,6 +402,7 @@ function mapDispatchToProps(dispatch) {
     toggleReserve: toggleReserve,
     declareWinner: declareWinner,
     postWinner: postWinner,
+    computerPlays: computerPlays,
   }, dispatch);
 
 }

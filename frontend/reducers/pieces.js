@@ -36,7 +36,7 @@ const initialState = flatten([
 export default function (state = initialState, action) {
   switch (action.type) {
     case 'MOVE_PIECE':
-      var { player, start, end } = action.payload;
+      var { player, type, start, end } = action.payload;
       return state.map((piece) => {
         if ( piece.pos.toString() === start.toString() ) { // piece was moved
           return Object.assign({}, piece, { pos: end, ready: false }) // update the piece's pos
@@ -48,11 +48,11 @@ export default function (state = initialState, action) {
       });
       break;
     case 'DEPLOY_PIECE':
-      var { player, start, end } = action.payload;
-      const selectedPiece = action.payload.contents; // state.find((p) => { return p.type === 'pawn' });
+      var { player, type, start, end } = action.payload;
+      const pieceToDeploy = state.filter(p => p.player === player && p.type === type)[0];
       return state.map((piece) => {
         // return piece === selectedPiece ? Object.assign({}, piece, { pos: end }); : piece;
-        if ( piece === selectedPiece ) {
+        if ( piece === pieceToDeploy ) {
           return Object.assign({}, piece, { pos: end, ready: false });
         } else {
           return piece;

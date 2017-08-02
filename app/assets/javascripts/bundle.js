@@ -2280,6 +2280,26 @@ var Util = exports.Util = {
       return p.type === 'node' && p.player === player && Array.isArray(p.pos);
     }).length;
   },
+  getNextPosition: function getNextPosition(move, pieces) {
+    var player = move.player,
+        type = move.type,
+        start = move.start,
+        end = move.end;
+
+    var selectedPiece = pieces.filter(function (p) {
+      return p.pos.toString() === start.toString() && p.type === type && p.player === player;
+    })[0];
+
+    return pieces.map(function (p) {
+      if (p === selectedPiece) {
+        return Object.assign({}, p, { pos: end, ready: false });
+      } else if (p.pos.toString() === end.toString()) {
+        return Object.assign({}, p, { pos: 'prison' });
+      } else {
+        return p;
+      }
+    });
+  },
   text: function text(element) {
     var elements = {
       hex: '⎔',
@@ -40396,6 +40416,7 @@ exports.default = function () {
     case 'MOVE_PIECE':
       var _action$payload = action.payload,
           player = _action$payload.player,
+          type = _action$payload.type,
           start = _action$payload.start,
           end = _action$payload.end;
 
@@ -40414,13 +40435,18 @@ exports.default = function () {
     case 'DEPLOY_PIECE':
       var _action$payload2 = action.payload,
           player = _action$payload2.player,
+          type = _action$payload2.type,
           start = _action$payload2.start,
           end = _action$payload2.end;
 
       var selectedPiece = action.payload.contents; // state.find((p) => { return p.type === 'pawn' });
+      debugger;
+      var pieceToDeploy = state.filter(function (p) {
+        return p.player === player && p.type === selectedPiece.type;
+      })[0];
       return state.map(function (piece) {
         // return piece === selectedPiece ? Object.assign({}, piece, { pos: end }); : piece;
-        if (piece === selectedPiece) {
+        if (piece === pieceToDeploy) {
           return Object.assign({}, piece, { pos: end, ready: false });
         } else {
           return piece;
@@ -42130,9 +42156,7 @@ var GamesIndex = function (_Component) {
   }, {
     key: 'playComputer',
     value: function playComputer() {
-      debugger;
       this.props.playComputer();
-      // this.props.history.push('/games/ai');
     }
   }, {
     key: 'handleClick',
@@ -42773,6 +42797,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _react = __webpack_require__(2);
@@ -42852,6 +42878,7 @@ var Game = function (_Component) {
 
     _this.allLegalMoves = _this.allLegalMoves.bind(_this);
     _this.checkForWin = _this.checkForWin.bind(_this);
+    _this.endTurn = _this.endTurn.bind(_this);
     _this.getLegalMoves = _this.getLegalMoves.bind(_this);
     _this.getNodeCount = _this.getNodeCount.bind(_this);
     _this.handleAI = _this.handleAI.bind(_this);
@@ -42948,9 +42975,16 @@ var Game = function (_Component) {
       }
     }
   }, {
+    key: 'endTurn',
+    value: function endTurn() {
+      this.props.passTurn();
+      this.props.readyAllPieces();
+      this.props.resetActions();
+      this.props.resetEnergy();
+    }
+  }, {
     key: 'fetchGameState',
     value: function fetchGameState() {
-      debugger;
       var _props3 = this.props,
           game = _props3.game,
           fetchGameStateData = _props3.fetchGameStateData;
@@ -42986,12 +43020,23 @@ var Game = function (_Component) {
     }
   }, {
     key: 'handleAI',
-    value: function handleAI() {
-      // play first ai move:
-      debugger;
-      this.ai.calculateMove();
-      // then play second ai move:
-      window.setTimeout(this.ai.calculateMove, 3000);
+    value: function handleAI(position) {
+      var _props4 = this.props,
+          pieces = _props4.pieces,
+          computerPlays = _props4.computerPlays;
+
+      var deploy = ['node', 'pawn', 'bishop', 'rook', 'queen'];
+
+      var _ai$playTwoMoves = this.ai.playTwoMoves(position),
+          _ai$playTwoMoves2 = _slicedToArray(_ai$playTwoMoves, 2),
+          move1 = _ai$playTwoMoves2[0],
+          move2 = _ai$playTwoMoves2[1];
+
+      console.log(move1, move2);
+      computerPlays(move1);
+      computerPlays(move2);
+      // THEN: pass turn back to player;
+      this.endTurn();
     }
   }, {
     key: 'handleClick',
@@ -42999,10 +43044,11 @@ var Game = function (_Component) {
       if (this.gameOver) {
         return false;
       }
-      var _props4 = this.props,
-          currentPlayer = _props4.currentPlayer,
-          selection = _props4.selection,
-          player = _props4.player;
+      var _props5 = this.props,
+          currentPlayer = _props5.currentPlayer,
+          selection = _props5.selection,
+          player = _props5.player,
+          pieces = _props5.pieces;
 
 
       if (!selection) {
@@ -43015,6 +43061,13 @@ var Game = function (_Component) {
         }
       } else {
         // selection exists
+        var move = {
+          player: player.player, // 'P1' or 'P2'
+          piece: selection.contents,
+          type: selection.contents.type,
+          start: selection.pos,
+          end: hex.pos
+        };
         var moveIsLegal = this.isLegalMove(hex.pos);
         var isMyTurn = currentPlayer === player.player;
         var pieceIsReady = selection.contents.ready;
@@ -43041,14 +43094,12 @@ var Game = function (_Component) {
           // THEN HANDLE TURN LOGIC:
           this.props.incrementActions();
           if (parseInt(player.actions) >= 1) {
-            this.props.passTurn();
-            this.props.readyAllPieces();
-            this.props.resetActions();
-            this.props.resetEnergy();
+            this.endTurn();
+
             if (this.gameId === 'ai' || this.props.game.id === 'ai') {
-              this.handleAI();
+              var nextPos = _utils.Util.getNextPosition(move, pieces);
+              this.handleAI(nextPos);
             }
-            // if playing against an AI, let the ai make its moves here and the pass the turn back.
           }
         }
         this.props.clearSelection();
@@ -43062,9 +43113,9 @@ var Game = function (_Component) {
   }, {
     key: 'isLegalMove',
     value: function isLegalMove(pos) {
-      var _props5 = this.props,
-          selection = _props5.selection,
-          player = _props5.player;
+      var _props6 = this.props,
+          selection = _props6.selection,
+          player = _props6.player;
 
       if (!selection) {
         return false;
@@ -43079,13 +43130,30 @@ var Game = function (_Component) {
       return moves.indexOf(pos.toString()) !== -1;
     }
   }, {
+    key: 'isLegal',
+    value: function isLegal(move) {
+      var _props7 = this.props,
+          selection = _props7.selection,
+          currentPlayer = _props7.currentPlayer;
+
+      var thisPlayer = this.props.player.player;
+      var player = move.player,
+          piece = move.piece,
+          start = move.start,
+          end = move.end;
+
+      if (!start || !end || !player) {
+        return false;
+      }
+    }
+  }, {
     key: 'getLegalMoves',
     value: function getLegalMoves(piece) {
       // calculates a piece's legal moves from its type
       var legalMoves = [];
-      var _props6 = this.props,
-          player = _props6.player,
-          pieces = _props6.pieces;
+      var _props8 = this.props,
+          player = _props8.player,
+          pieces = _props8.pieces;
 
       var thisPlayer = piece.player;
       var moveFuncs = _utils.Util.moveFuncs,
@@ -43148,9 +43216,9 @@ var Game = function (_Component) {
   }, {
     key: 'enoughEnergy',
     value: function enoughEnergy(piece) {
-      var _props7 = this.props,
-          pieces = _props7.pieces,
-          player = _props7.player;
+      var _props9 = this.props,
+          pieces = _props9.pieces,
+          player = _props9.player;
 
       var energy = this.getNodeCount(player, pieces);
       var remainingEnergy = energy - player.energy;
@@ -43168,13 +43236,13 @@ var Game = function (_Component) {
     value: function render() {
       var _this4 = this;
 
-      var _props8 = this.props,
-          player = _props8.player,
-          selection = _props8.selection,
-          pieces = _props8.pieces,
-          currentPlayer = _props8.currentPlayer,
-          game = _props8.game,
-          gameInfo = _props8.gameInfo;
+      var _props10 = this.props,
+          player = _props10.player,
+          selection = _props10.selection,
+          pieces = _props10.pieces,
+          currentPlayer = _props10.currentPlayer,
+          game = _props10.game,
+          gameInfo = _props10.gameInfo;
 
       var legalMoves = selection ? this.getLegalMoves(selection.contents) : [];
       var info = this.buildInfoPanel();
@@ -43282,7 +43350,8 @@ function mapDispatchToProps(dispatch) {
     readyAllPieces: _gameActions.readyAllPieces,
     toggleReserve: _gameActions.toggleReserve,
     declareWinner: _gameActions.declareWinner,
-    postWinner: _postGameState.postWinner
+    postWinner: _postGameState.postWinner,
+    computerPlays: _gameActions.computerPlays
   }, dispatch);
 }
 
@@ -44248,10 +44317,6 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _utils = __webpack_require__(18);
 
-var _utils2 = _interopRequireDefault(_utils);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -44261,12 +44326,14 @@ var AI = function () {
     _classCallCheck(this, AI);
 
     this.player = options.player; // should be 'P2'
-    this.pieces = options.pieces;
+    this.previousEnergyConsumed = 0;
 
     this.analyzeBoard = this.analyzeBoard.bind(this);
     this.calculateMove = this.calculateMove.bind(this);
+    this.enoughEnergy = this.enoughEnergy.bind(this);
     this.getLegalMoves = this.getLegalMoves.bind(this);
     this.randomMove = this.randomMove.bind(this);
+    this.playTwoMoves = this.playTwoMoves.bind(this);
   }
 
   _createClass(AI, [{
@@ -44277,42 +44344,46 @@ var AI = function () {
       // analyze the board and return a bunch of useful objects
       var myHero = pieces.filter(function (p) {
         return p.type === 'hero' && p.player === _this.player;
-      });
+      })[0];
       var myPieces = pieces.filter(function (p) {
-        return p.player === _this.player;
+        return p.player === _this.player && p.pos !== 'prison';
       });
       var myPositionStrings = myPieces.map(function (p) {
-        return p.pos.join('');
+        return p.pos.toString();
       });
 
       var myLegalMoves = myPieces.reduce(function (acc, p) {
-        var legalMoves = _this.getLegalMoves(p);
-        acc[p.pos.join('')] = acc[p.pos.join('')] || [];
-        return legalMoves.length ? acc[key].concat(legalMoves) : acc;
+        var legalMoves = _this.getLegalMoves(p, pieces);
+        if (!legalMoves.length) {
+          return acc;
+        }
+        if (p.pos === 'reserve') {
+          acc[p.type] = legalMoves;
+        } else {
+          acc[p.pos.toString()] = legalMoves;
+        }
+        return acc;
       }, {});
 
       var enemyHero = pieces.filter(function (p) {
         return p.type === 'hero' && p.player !== _this.player;
-      });
+      })[0];
       var enemyPieces = pieces.filter(function (p) {
         return p.player !== _this.player && Array.isArray(p.pos);
       });
       var threatenedHexes = enemyPieces.reduce(function (acc, p) {
-        var hexStrings = _this.getLegalMoves(p).map(function (m) {
-          return m.join('');
+        var hexStrings = _this.getLegalMoves(p, pieces).map(function (m) {
+          return m.toString();
         });
         return acc.concat(hexStrings);
       }, []);
-
       // if enemy hero is threatened, capture it to win the game
-      var enemyHeroThreatened = myPieces.reduce(function (acc, p) {
-        return _this.getLegalMoves(p).map(function (m) {
-          return m.join('');
-        }).includes(enemyHero.pos.join(''));
-      }, false);
-      var myHeroThreatened = threatenedHexes.includes(myHero.pos.join(''));
+      var enemyHeroThreatened = Object.values(myLegalMoves).reduce(function (acc, dest) {
+        return acc.concat(dest);
+      }).includes(enemyHero.pos.toString());
+      var myHeroThreatened = threatenedHexes.includes(myHero.pos.toString());
 
-      var myNodeCount = _utils2.default.getNodeCount(this.player, pieces); // on board
+      var myNodeCount = _utils.Util.getNodeCount(this.player, pieces); // on board
       var capturedEnemyNodes = pieces.filter(function (p) {
         return p.type === 'node' && p.pos === 'prison';
       }).length;
@@ -44327,12 +44398,14 @@ var AI = function () {
         enemyHeroThreatened: enemyHeroThreatened,
         threatenedHexes: threatenedHexes,
         myNodeCount: myNodeCount,
-        capturedEnemyNodes: capturedEnemyNodes
+        capturedEnemyNodes: capturedEnemyNodes,
+        position: pieces
       };
     }
   }, {
     key: 'calculateMove',
-    value: function calculateMove() {
+    value: function calculateMove(position) {
+      var analysis = this.analyzeBoard(position);
       // 1. If I can win the game, do that.
 
       // 2. If I'm about to lose, try to stop it (or pick a random move)
@@ -44344,46 +44417,57 @@ var AI = function () {
       // 5. Otherwise, develop my board.
 
       // 6. Otherwise, play a random legal move
-      return this.randomMove();
+      return this.randomMove(analysis);
+    }
+  }, {
+    key: 'enoughEnergy',
+    value: function enoughEnergy(piece, position) {
+      var nodeCount = position.filter(function (p) {
+        return p.type === 'node' && p.player === piece.player && Array.isArray(p.pos);
+      });
+      return this.previousEnergyConsumed + piece.cost <= nodeCount;
     }
   }, {
     key: 'getLegalMoves',
-    value: function getLegalMoves(piece) {
+    value: function getLegalMoves(piece, position) {
       // calculates a piece's legal moves from its type
-      if (piece.pos === 'prison') {
+      if (piece.pos === 'prison' || !piece.ready) {
         return [];
       }
 
       var legalMoves = [];
-      var player = this.player,
-          pieces = this.pieces;
+      var player = this.player;
 
       var thisPlayer = piece.player;
-      var moveFuncs = _utils2.default.moveFuncs,
-          getHeroPos = _utils2.default.getHeroPos,
-          getStrings = _utils2.default.getStrings,
-          inBounds = _utils2.default.inBounds;
+      var moveFuncs = _utils.Util.moveFuncs,
+          getHeroPos = _utils.Util.getHeroPos,
+          getStrings = _utils.Util.getStrings,
+          inBounds = _utils.Util.inBounds;
 
-      var noSelfCaptures = getStrings(pieces.filter(function (p) {
+      var noSelfCaptures = position.filter(function (p) {
         return p.player === thisPlayer;
-      }));
-      var occupiedHexStrings = getStrings(pieces);
+      }).map(function (p) {
+        return p.pos.toString();
+      });
+      var occupiedHexStrings = _utils.Util.getStrings(position);
 
       if (piece.pos === 'reserve') {
-        if (this.enoughEnergy(piece)) {
+        if (this.enoughEnergy(piece, position) && piece.ready) {
           // this.payEnergyCost
-          var hero = pieces.filter(function (p) {
+          var hero = position.filter(function (p) {
             return p.type === 'hero' && p.player === piece.player;
           })[0];
           var hexes = moveFuncs['adjacent'](hero);
           var movesArr = hexes.filter(function (hex) {
-            return inBounds(hex) && occupiedHexStrings.indexOf(hex.toString()) < 0;
+            return inBounds(hex) && !occupiedHexStrings.includes(hex.toString());
           });
           legalMoves.push.apply(legalMoves, _toConsumableArray(movesArr));
+        } else {
+          console.log('not enough energy to deploy ', piece.type);
         }
       } else {
         piece.moveDirs.forEach(function (dir) {
-          var hexes = moveFuncs[dir](piece, pieces);
+          var hexes = moveFuncs[dir](piece, position);
           var movesArr = hexes.filter(function (hex) {
             return inBounds(hex) && noSelfCaptures.indexOf(hex.toString()) < 0;
           });
@@ -44418,24 +44502,40 @@ var AI = function () {
     }
   }, {
     key: 'randomMove',
-    value: function randomMove() {
-      var _analyzeBoard = this.analyzeBoard(this.pieces),
-          myPieces = _analyzeBoard.myPieces,
-          myLegalMoves = _analyzeBoard.myLegalMoves;
+    value: function randomMove(analysis) {
+      // check types.
+      var myPieces = analysis.myPieces,
+          myLegalMoves = analysis.myLegalMoves;
 
-      var myLegalPieces = myPieces.filter(function (p) {
-        return myLegalMoves[p.pos.join('')].length > 0;
-      });
-      var selectedPiece = myLegalPieces[Math.floor(Math.random() * myLegalPieces.length)];
+      var randomPiece = Object.keys(myLegalMoves)[Math.floor(Math.random() * Object.keys(myLegalMoves).length)];
+      var selectedPiece = myPieces.filter(function (p) {
+        return p.type === randomPiece || p.pos.toString() === randomPiece;
+      })[0];
       var startPos = selectedPiece.pos;
-      var endPos = myLegalMoves[startPos.join('')][0];
+      var legalDestinations = myLegalMoves[randomPiece];
+      var endPos = legalDestinations[Math.floor(Math.random() * legalDestinations.length)];
+
+      if (startPos === 'reserve') {
+        // track the energy cost;
+        this.previousEnergyConsumed = selectedPiece.cost;
+      }
 
       return {
         player: this.player,
+        type: selectedPiece.type,
         contents: selectedPiece,
         start: startPos,
         end: endPos
       };
+    }
+  }, {
+    key: 'playTwoMoves',
+    value: function playTwoMoves(position) {
+      this.previousEnergyConsumed = 0;
+      var move1 = this.calculateMove(position);
+      var nextPosition = _utils.Util.getNextPosition(move1, position);
+      var move2 = this.calculateMove(nextPosition);
+      return [move1, move2];
     }
   }]);
 
@@ -44497,6 +44597,14 @@ var deployPiece = exports.deployPiece = function deployPiece(selection, destinat
       end: destination.pos
     }
   };
+};
+
+var computerPlays = exports.computerPlays = function computerPlays(move) {
+  if (move.start === 'reserve') {
+    return { type: 'DEPLOY_PIECE', payload: move };
+  } else {
+    return { type: 'MOVE_PIECE', payload: move };
+  }
 };
 
 var showReserve = exports.showReserve = function showReserve() {

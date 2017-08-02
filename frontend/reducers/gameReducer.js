@@ -2,6 +2,7 @@ import {combineReducers} from 'redux';
 import SelectionReducer from './selection';
 import PositionReducer from './pieces';
 import PlayerReducer from './player';
+import MoveHistory from './moveHistory';
 /*
  * We combine all reducers into a single object before updated data is dispatched (sent) to store
  * Your entire applications state (store) is just whatever gets returned from all your reducers
@@ -82,6 +83,7 @@ const allReducers = combineReducers({
   position: PositionReducer,
   currentPlayer: currentPlayer,
   winner: winner,
+  moveHistory: MoveHistory,
 });
 
 export default allReducers

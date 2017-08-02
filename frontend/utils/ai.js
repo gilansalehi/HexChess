@@ -1,40 +1,46 @@
-import Util from './utils';
+import {Util} from './utils';
 
 export default class AI {
   constructor(options) {
     this.player = options.player; // should be 'P2'
-    this.pieces = options.pieces;
+    this.previousEnergyConsumed = 0;
 
     this.analyzeBoard = this.analyzeBoard.bind(this);
     this.calculateMove = this.calculateMove.bind(this);
+    this.enoughEnergy = this.enoughEnergy.bind(this);
     this.getLegalMoves = this.getLegalMoves.bind(this);
     this.randomMove = this.randomMove.bind(this);
+    this.playTwoMoves = this.playTwoMoves.bind(this);
   }
 
   analyzeBoard(pieces) {
     // analyze the board and return a bunch of useful objects
-    const myHero = pieces.filter(p => p.type === 'hero' && p.player === this.player);
-    const myPieces = pieces.filter(p => p.player === this.player);
-    const myPositionStrings = myPieces.map(p => p.pos.join(''));
+    const myHero = pieces.filter(p => p.type === 'hero' && p.player === this.player)[0];
+    const myPieces = pieces.filter(p => p.player === this.player && p.pos !== 'prison');
+    const myPositionStrings = myPieces.map(p => p.pos.toString());
 
     const myLegalMoves = myPieces.reduce((acc, p) => {
-      const legalMoves = this.getLegalMoves(p);
-      acc[p.pos.join('')] = acc[p.pos.join('')] || [];
-      return legalMoves.length ? acc[key].concat(legalMoves) : acc;
+      const legalMoves = this.getLegalMoves(p, pieces);
+      if ( !legalMoves.length ) { return acc; }
+      if ( p.pos === 'reserve' ) {
+        acc[p.type] = legalMoves;
+      } else {
+        acc[p.pos.toString()] = legalMoves;
+      }
+      return acc;
     }, {});
 
-    const enemyHero = pieces.filter(p => p.type === 'hero' && p.player !== this.player);
+    const enemyHero = pieces.filter(p => p.type === 'hero' && p.player !== this.player)[0];
     const enemyPieces = pieces.filter(p => p.player !== this.player && Array.isArray(p.pos));
     const threatenedHexes = enemyPieces.reduce((acc, p) => {
-      const hexStrings = this.getLegalMoves(p).map(m => m.join(''));
+      const hexStrings = this.getLegalMoves(p, pieces).map(m => m.toString());
       return acc.concat(hexStrings);
     }, []);
-
     // if enemy hero is threatened, capture it to win the game
-    const enemyHeroThreatened = myPieces.reduce((acc, p) => {
-      return this.getLegalMoves(p).map(m => m.join('')).includes(enemyHero.pos.join(''))
-    }, false);
-    const myHeroThreatened = threatenedHexes.includes(myHero.pos.join(''));
+    const enemyHeroThreatened = Object.values(myLegalMoves)
+      .reduce((acc, dest) => acc.concat(dest))
+      .includes(enemyHero.pos.toString());
+    const myHeroThreatened = threatenedHexes.includes(myHero.pos.toString());
 
     const myNodeCount = Util.getNodeCount(this.player, pieces); // on board
     const capturedEnemyNodes = pieces.filter(p => p.type === 'node' && p.pos === 'prison').length;
@@ -50,10 +56,12 @@ export default class AI {
       threatenedHexes,
       myNodeCount,
       capturedEnemyNodes,
+      position: pieces,
     };
   }
 
-  calculateMove() {
+  calculateMove(position) {
+    const analysis = this.analyzeBoard(position);
     // 1. If I can win the game, do that.
 
     // 2. If I'm about to lose, try to stop it (or pick a random move)
@@ -65,37 +73,43 @@ export default class AI {
     // 5. Otherwise, develop my board.
 
     // 6. Otherwise, play a random legal move
-    return this.randomMove();
+    return this.randomMove(analysis);
   }
 
+  enoughEnergy(piece, position) {
+    const nodeCount = position.filter(p => {
+      return p.type === 'node' && p.player === piece.player && Array.isArray(p.pos)
+    });
+    return (this.previousEnergyConsumed + piece.cost <= nodeCount);
+  }
 
-  getLegalMoves(piece) {
+  getLegalMoves(piece, position) {
     // calculates a piece's legal moves from its type
-    if ( piece.pos === 'prison' ) { return []; }
+    if ( piece.pos === 'prison' || !piece.ready ) { return []; }
 
     let legalMoves = [];
-    const { player, pieces } = this;
+    const { player } = this;
     const thisPlayer = piece.player;
     const { moveFuncs, getHeroPos, getStrings, inBounds } = Util;
-    const noSelfCaptures = getStrings(
-      pieces.filter(p => p.player === thisPlayer)
-    );
-    const occupiedHexStrings = getStrings(pieces);
+    const noSelfCaptures = position.filter(p => p.player === thisPlayer).map(p => p.pos.toString());
+    const occupiedHexStrings = Util.getStrings(position);
 
     if ( piece.pos === 'reserve' ) {
-      if ( this.enoughEnergy(piece) ) { // this.payEnergyCost
-        const hero = pieces.filter(p => {
+      if ( this.enoughEnergy(piece, position) && piece.ready ) { // this.payEnergyCost
+        const hero = position.filter(p => {
           return p.type === 'hero' && p.player === piece.player;
         })[0];
         const hexes = moveFuncs['adjacent'](hero);
         const movesArr = hexes.filter((hex) => {
-          return inBounds(hex) && occupiedHexStrings.indexOf(hex.toString()) < 0;
+          return inBounds(hex) && !occupiedHexStrings.includes(hex.toString());
         });
         legalMoves.push(...movesArr);
+      } else {
+        console.log('not enough energy to deploy ', piece.type);
       }
     } else {
       piece.moveDirs.forEach((dir) => {
-        const hexes = moveFuncs[dir](piece, pieces);
+        const hexes = moveFuncs[dir](piece, position);
         const movesArr = hexes.filter((hex) => {
           return inBounds(hex) && noSelfCaptures.indexOf(hex.toString()) < 0;
         });
@@ -128,20 +142,39 @@ export default class AI {
 
   }
 
-  randomMove() {
-    const { myPieces, myLegalMoves } = this.analyzeBoard(this.pieces);
-    const myLegalPieces = myPieces.filter(p => myLegalMoves[p.pos.join('')].length > 0);
-    const selectedPiece = myLegalPieces[
-      Math.floor( Math.random() * myLegalPieces.length )
+  randomMove(analysis) {
+    // check types.
+    const { myPieces, myLegalMoves } = analysis;
+    const randomPiece = Object.keys(myLegalMoves)[
+      Math.floor( Math.random() * Object.keys(myLegalMoves).length )
     ];
+    const selectedPiece = myPieces.filter(p => {
+      return p.type === randomPiece || p.pos.toString() === randomPiece;
+    })[0];
     const startPos = selectedPiece.pos;
-    const endPos = myLegalMoves[startPos.join('')][0];
+    const legalDestinations = myLegalMoves[randomPiece];
+    const endPos = legalDestinations[
+      Math.floor( Math.random() * legalDestinations.length )
+    ];
+
+    if ( startPos === 'reserve' ) { // track the energy cost;
+      this.previousEnergyConsumed = selectedPiece.cost;
+    }
 
     return {
       player: this.player,
+      type: selectedPiece.type,
       contents: selectedPiece,
       start: startPos,
       end: endPos,
     }
+  }
+
+  playTwoMoves(position) {
+    this.previousEnergyConsumed = 0;
+    const move1 = this.calculateMove(position);
+    const nextPosition = Util.getNextPosition(move1, position);
+    const move2 = this.calculateMove(nextPosition);
+    return [move1, move2];
   }
 }
