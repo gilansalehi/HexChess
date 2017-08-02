@@ -145,11 +145,12 @@ export default class AI {
   randomMove(analysis) {
     // check types.
     const { myPieces, myLegalMoves } = analysis;
+    console.log(myLegalMoves);
     const randomPiece = Object.keys(myLegalMoves)[
       Math.floor( Math.random() * Object.keys(myLegalMoves).length )
     ];
     const selectedPiece = myPieces.filter(p => {
-      return p.type === randomPiece || p.pos.toString() === randomPiece;
+      return (p.type === randomPiece && p.pos === 'reserve') || p.pos.toString() === randomPiece;
     })[0];
     const startPos = selectedPiece.pos;
     const legalDestinations = myLegalMoves[randomPiece];
@@ -158,7 +159,7 @@ export default class AI {
     ];
 
     if ( startPos === 'reserve' ) { // track the energy cost;
-      this.previousEnergyConsumed = selectedPiece.cost;
+      this.previousEnergyConsumed += selectedPiece.cost;
     }
 
     return {

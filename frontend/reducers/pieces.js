@@ -49,7 +49,9 @@ export default function (state = initialState, action) {
       break;
     case 'DEPLOY_PIECE':
       var { player, type, start, end } = action.payload;
-      const pieceToDeploy = state.filter(p => p.player === player && p.type === type)[0];
+      const pieceToDeploy = state.filter(p => {
+        return p.player === player && p.type === type && p.pos === 'reserve';
+      })[0];
       return state.map((piece) => {
         // return piece === selectedPiece ? Object.assign({}, piece, { pos: end }); : piece;
         if ( piece === pieceToDeploy ) {
