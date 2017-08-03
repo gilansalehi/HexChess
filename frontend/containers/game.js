@@ -214,7 +214,7 @@ class Game extends Component {
           this.endTurn();
 
           if ( this.gameId === 'ai' || this.props.game.id === 'ai' ) {
-            const nextPos = Util.getNextPosition(move, pieces);
+            const nextPos = Util.getNextPosition(move, pieces, true);
             this.handleAI(nextPos);
           }
         }

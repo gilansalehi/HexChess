@@ -173,7 +173,7 @@ export const Util = {
     }).length;
   },
 
-  getNextPosition(move, pieces) {
+  getNextPosition(move, pieces, ready = false) {
     const { player, type, start, end } = move;
     const selectedPiece = pieces.filter(p => {
       return (
@@ -185,11 +185,11 @@ export const Util = {
 
     return pieces.map(p => {
       if ( p === selectedPiece ) {
-        return Object.assign({}, p, { pos: end, ready: false });
+        return Object.assign({}, p, { pos: end, ready });
       } else if ( p.pos.toString() === end.toString() ) {
         return Object.assign({}, p, { pos: 'prison' });
       } else {
-        return p;
+        return ready ? Object.assign({}, p, { ready }) : p;
       }
     });
   },

@@ -2281,6 +2281,7 @@ var Util = exports.Util = {
     }).length;
   },
   getNextPosition: function getNextPosition(move, pieces) {
+    var ready = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
     var player = move.player,
         type = move.type,
         start = move.start,
@@ -2292,11 +2293,11 @@ var Util = exports.Util = {
 
     return pieces.map(function (p) {
       if (p === selectedPiece) {
-        return Object.assign({}, p, { pos: end, ready: false });
+        return Object.assign({}, p, { pos: end, ready: ready });
       } else if (p.pos.toString() === end.toString()) {
         return Object.assign({}, p, { pos: 'prison' });
       } else {
-        return p;
+        return ready ? Object.assign({}, p, { ready: ready }) : p;
       }
     });
   },
@@ -43132,7 +43133,7 @@ var Game = function (_Component) {
             this.endTurn();
 
             if (this.gameId === 'ai' || this.props.game.id === 'ai') {
-              var nextPos = _utils.Util.getNextPosition(move, pieces);
+              var nextPos = _utils.Util.getNextPosition(move, pieces, true);
               this.handleAI(nextPos);
             }
           }
@@ -44348,6 +44349,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _utils = __webpack_require__(18);
@@ -44367,7 +44370,9 @@ var AI = function () {
     this.calculateMove = this.calculateMove.bind(this);
     this.enoughEnergy = this.enoughEnergy.bind(this);
     this.getLegalMoves = this.getLegalMoves.bind(this);
+    this.moveBlockCapture = this.moveBlockCapture.bind(this);
     this.randomMove = this.randomMove.bind(this);
+    this.smartRandomMove = this.smartRandomMove.bind(this);
     this.playTwoMoves = this.playTwoMoves.bind(this);
   }
 
@@ -44386,11 +44391,10 @@ var AI = function () {
       var myPositionStrings = myPieces.map(function (p) {
         return p.pos.toString();
       });
-
-      var myLegalMoves = myPieces.reduce(function (acc, piece) {
+      var allLegalMoves = pieces.reduce(function (acc, piece) {
         if (acc.map(function (m) {
-          return m.type + m.start;
-        }).includes(piece.type + piece.pos)) {
+          return m.player + m.type + m.start;
+        }).includes(piece.player + piece.type + piece.pos)) {
           return acc; // don't double count deploys
         }
         var legalMoves = _this.getLegalMoves(piece, pieces).map(function (move) {
@@ -44404,6 +44408,12 @@ var AI = function () {
         });
         return acc.concat(legalMoves);
       }, []);
+      var myLegalMoves = allLegalMoves.filter(function (m) {
+        return m.player === _this.player;
+      });
+      var enemyLegalMoves = allLegalMoves.filter(function (m) {
+        return m.player !== _this.player;
+      });
 
       var enemyHero = pieces.filter(function (p) {
         return p.type === 'hero' && p.player !== _this.player;
@@ -44411,11 +44421,8 @@ var AI = function () {
       var enemyPieces = pieces.filter(function (p) {
         return p.player !== _this.player && Array.isArray(p.pos);
       });
-      var threatenedHexes = enemyPieces.reduce(function (acc, p) {
-        var hexStrings = _this.getLegalMoves(p, pieces).map(function (m) {
-          return m.toString();
-        });
-        return acc.concat(hexStrings);
+      var threatenedHexes = enemyLegalMoves.reduce(function (acc, m) {
+        return acc.concat([m.end.toString()]);
       }, []);
       // if enemy hero is threatened, capture it to win the game
       var myHeroThreatened = threatenedHexes.includes(myHero.pos.toString());
@@ -44426,12 +44433,14 @@ var AI = function () {
       }).length;
 
       return {
+        allLegalMoves: allLegalMoves,
         myHero: myHero,
         myPieces: myPieces,
         myLegalMoves: myLegalMoves,
         myHeroThreatened: myHeroThreatened,
         enemyHero: enemyHero,
         enemyPieces: enemyPieces,
+        enemyLegalMoves: enemyLegalMoves,
         threatenedHexes: threatenedHexes,
         myNodeCount: myNodeCount,
         capturedEnemyNodes: capturedEnemyNodes,
@@ -44442,8 +44451,10 @@ var AI = function () {
     key: 'calculateMove',
     value: function calculateMove(position) {
       var analysis = this.analyzeBoard(position);
-      var myLegalMoves = analysis.myLegalMoves,
-          enemyHero = analysis.enemyHero;
+      var myHero = analysis.myHero,
+          myLegalMoves = analysis.myLegalMoves,
+          enemyHero = analysis.enemyHero,
+          myHeroThreatened = analysis.myHeroThreatened;
       // 1. If I can win the game, do that.
 
       var winningMove = myLegalMoves.filter(function (m) {
@@ -44453,7 +44464,12 @@ var AI = function () {
         return winningMove;
       }
       // 2. If I'm about to lose, try to stop it (or pick a random move)
-
+      if (myHeroThreatened) {
+        var saveTheHero = this.moveBlockCapture(analysis);
+        if (saveTheHero) {
+          return saveTheHero;
+        }
+      }
       // 3. If I can capture a valuable piece, do that
 
       // 4. If I'm about to lose a valuable piece, save it
@@ -44461,7 +44477,7 @@ var AI = function () {
       // 5. Otherwise, develop my board.
 
       // 6. Otherwise, play a random legal move
-      return this.randomMove(analysis);
+      return this.smartRandomMove(analysis);
     }
   }, {
     key: 'enoughEnergy',
@@ -44520,6 +44536,51 @@ var AI = function () {
       return legalMoves;
     }
   }, {
+    key: 'moveBlockCapture',
+    value: function moveBlockCapture(analysis) {
+      var myLegalMoves = analysis.myLegalMoves,
+          enemyLegalMoves = analysis.enemyLegalMoves,
+          myHero = analysis.myHero,
+          threatenedHexes = analysis.threatenedHexes;
+      // Strategy 1: move the hero to safety
+
+      var moveHero = myLegalMoves.filter(function (m) {
+        return m.type === 'hero' && !threatenedHexes.includes(m.end.toString());
+      });
+      // Strategy 2: block the attack
+      var attacker = enemyLegalMoves.filter(function (m) {
+        return m.end.toString() === myHero.pos.toString();
+      })[0];
+
+      var _myHero$pos = _slicedToArray(myHero.pos, 3),
+          a = _myHero$pos[0],
+          b = _myHero$pos[1],
+          c = _myHero$pos[2];
+
+      var _attacker$start = _slicedToArray(attacker.start, 3),
+          x = _attacker$start[0],
+          y = _attacker$start[1],
+          z = _attacker$start[2];
+
+      var barricade = [// coordinates of what hex on which to block the attack
+      a === x ? a : a < x ? a + 1 : a - 1, b === y ? b : b < y ? b + 1 : b - 1, c === z ? c : c < z ? c + 1 : c - 1];
+      var interposeBodyguard = myLegalMoves.filter(function (m) {
+        return m.type !== 'hero' && m.end.toString() === barricade.toString();
+      });
+      // Strategy 3: capture the attacker
+      var removeThreat = myLegalMoves.filter(function (m) {
+        return m.end.toString() === attacker.start.toString();
+      });
+      // pick a random move from among the options
+      var defensiveOptions = moveHero.concat(interposeBodyguard).concat(removeThreat);
+      return this.randomMove(defensiveOptions);
+    }
+  }, {
+    key: 'randomMove',
+    value: function randomMove(options) {
+      return options[Math.floor(Math.random() * options.length)];
+    }
+  }, {
     key: 'rankPieceMoves',
     value: function rankPieceMoves(piece) {
       // first build a scoreMap for captures; an object with hex positions and the value of the pieces there
@@ -44543,13 +44604,13 @@ var AI = function () {
       var rating = 0;
     }
   }, {
-    key: 'randomMove',
-    value: function randomMove(analysis) {
+    key: 'smartRandomMove',
+    value: function smartRandomMove(analysis) {
       // check types.
       var myPieces = analysis.myPieces,
           myLegalMoves = analysis.myLegalMoves;
 
-      var randMove = myLegalMoves[Math.floor(Math.random() * myLegalMoves.length)];
+      var randMove = this.randomMove(myLegalMoves);
       if (randMove.type === 'node') {
         var stalemateDanger = myLegalMoves.filter(function (m) {
           return m.contents === randMove.contents;
@@ -44558,13 +44619,8 @@ var AI = function () {
           var noStaleMoves = myLegalMoves.filter(function (m) {
             return m.start !== 'reserve';
           });
-          randMove = noStaleMoves[Math.floor(Math.random() * noStaleMoves.length)];
+          randMove = this.randomMove(noStaleMoves);
         }
-      }
-
-      if (randMove.start === 'reserve') {
-        // track the energy cost;
-        this.previousEnergyConsumed += randMove.contents.cost;
       }
 
       return randMove;
@@ -44574,6 +44630,11 @@ var AI = function () {
     value: function playTwoMoves(position) {
       this.previousEnergyConsumed = 0;
       var move1 = this.calculateMove(position);
+
+      if (move1.start === 'reserve') {
+        this.previousEnergyConsumed += move1.contents.cost;
+      }
+
       var nextPosition = _utils.Util.getNextPosition(move1, position);
       var move2 = this.calculateMove(nextPosition);
       return [move1, move2];
