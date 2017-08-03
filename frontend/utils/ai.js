@@ -19,16 +19,18 @@ export default class AI {
     const myPieces = pieces.filter(p => p.player === this.player && p.pos !== 'prison');
     const myPositionStrings = myPieces.map(p => p.pos.toString());
 
-    const myLegalMoves = myPieces.reduce((acc, p) => {
-      const legalMoves = this.getLegalMoves(p, pieces);
-      if ( !legalMoves.length ) { return acc; }
-      if ( p.pos === 'reserve' ) {
-        acc[p.type] = legalMoves;
-      } else {
-        acc[p.pos.toString()] = legalMoves;
-      }
-      return acc;
-    }, {});
+    const myLegalMoves = myPieces.reduce((acc, piece) => {
+      const legalMoves = this.getLegalMoves(piece, pieces).map(move => {
+        return {
+          player: piece.player,
+          type: piece.type,
+          contents: piece,
+          start: piece.pos,
+          end: move,
+        };
+      });
+      return acc.concat(legalMoves);
+    }, []);
 
     const enemyHero = pieces.filter(p => p.type === 'hero' && p.player !== this.player)[0];
     const enemyPieces = pieces.filter(p => p.player !== this.player && Array.isArray(p.pos));
@@ -37,9 +39,6 @@ export default class AI {
       return acc.concat(hexStrings);
     }, []);
     // if enemy hero is threatened, capture it to win the game
-    const enemyHeroThreatened = Object.values(myLegalMoves)
-      .reduce((acc, dest) => acc.concat(dest), [])
-      .includes(enemyHero.pos.toString());
     const myHeroThreatened = threatenedHexes.includes(myHero.pos.toString());
 
     const myNodeCount = Util.getNodeCount(this.player, pieces); // on board
@@ -52,7 +51,6 @@ export default class AI {
       myHeroThreatened,
       enemyHero,
       enemyPieces,
-      enemyHeroThreatened,
       threatenedHexes,
       myNodeCount,
       capturedEnemyNodes,
@@ -62,8 +60,10 @@ export default class AI {
 
   calculateMove(position) {
     const analysis = this.analyzeBoard(position);
+    const { myLegalMoves, enemyHero } = analysis;
     // 1. If I can win the game, do that.
-
+    const winningMove = myLegalMoves.filter(m => m.end.toString() === enemyHero.pos.toString())[0];
+    if ( winningMove ) { return winningMove }
     // 2. If I'm about to lose, try to stop it (or pick a random move)
 
     // 3. If I can capture a valuable piece, do that
@@ -143,30 +143,15 @@ export default class AI {
   randomMove(analysis) {
     // check types.
     const { myPieces, myLegalMoves } = analysis;
-    console.log(myLegalMoves);
-    const randomPiece = Object.keys(myLegalMoves)[
-      Math.floor( Math.random() * Object.keys(myLegalMoves).length )
-    ];
-    const selectedPiece = myPieces.filter(p => {
-      return (p.type === randomPiece && p.pos === 'reserve') || p.pos.toString() === randomPiece;
-    })[0];
-    const startPos = selectedPiece.pos;
-    const legalDestinations = myLegalMoves[randomPiece];
-    const endPos = legalDestinations[
-      Math.floor( Math.random() * legalDestinations.length )
+    const randMove = myLegalMoves[
+      Math.floor( Math.random() * myLegalMoves.length )
     ];
 
-    if ( startPos === 'reserve' ) { // track the energy cost;
-      this.previousEnergyConsumed += selectedPiece.cost;
+    if ( randMove.start === 'reserve' ) { // track the energy cost;
+      this.previousEnergyConsumed += randMove.contents.cost;
     }
 
-    return {
-      player: this.player,
-      type: selectedPiece.type,
-      contents: selectedPiece,
-      start: startPos,
-      end: endPos,
-    }
+    return randMove
   }
 
   playTwoMoves(position) {

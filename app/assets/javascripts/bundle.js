@@ -42964,7 +42964,7 @@ var Game = function (_Component) {
       var id = this.gameId;
 
       if (this.gameId === 'ai' || this.props.game.id === 'ai') {
-        // just play locally.  binding of 'this' is weird...
+        // just play locally.
         console.log('ai game');
       } else {
         if (nextPosition !== lastPosition && currentPlayer === player.player) {
@@ -44387,18 +44387,18 @@ var AI = function () {
         return p.pos.toString();
       });
 
-      var myLegalMoves = myPieces.reduce(function (acc, p) {
-        var legalMoves = _this.getLegalMoves(p, pieces);
-        if (!legalMoves.length) {
-          return acc;
-        }
-        if (p.pos === 'reserve') {
-          acc[p.type] = legalMoves;
-        } else {
-          acc[p.pos.toString()] = legalMoves;
-        }
-        return acc;
-      }, {});
+      var myLegalMoves = myPieces.reduce(function (acc, piece) {
+        var legalMoves = _this.getLegalMoves(piece, pieces).map(function (move) {
+          return {
+            player: piece.player,
+            type: piece.type,
+            contents: piece,
+            start: piece.pos,
+            end: move
+          };
+        });
+        return acc.concat(legalMoves);
+      }, []);
 
       var enemyHero = pieces.filter(function (p) {
         return p.type === 'hero' && p.player !== _this.player;
@@ -44413,9 +44413,6 @@ var AI = function () {
         return acc.concat(hexStrings);
       }, []);
       // if enemy hero is threatened, capture it to win the game
-      var enemyHeroThreatened = Object.values(myLegalMoves).reduce(function (acc, dest) {
-        return acc.concat(dest);
-      }, []).includes(enemyHero.pos.toString());
       var myHeroThreatened = threatenedHexes.includes(myHero.pos.toString());
 
       var myNodeCount = _utils.Util.getNodeCount(this.player, pieces); // on board
@@ -44430,7 +44427,6 @@ var AI = function () {
         myHeroThreatened: myHeroThreatened,
         enemyHero: enemyHero,
         enemyPieces: enemyPieces,
-        enemyHeroThreatened: enemyHeroThreatened,
         threatenedHexes: threatenedHexes,
         myNodeCount: myNodeCount,
         capturedEnemyNodes: capturedEnemyNodes,
@@ -44441,8 +44437,16 @@ var AI = function () {
     key: 'calculateMove',
     value: function calculateMove(position) {
       var analysis = this.analyzeBoard(position);
+      var myLegalMoves = analysis.myLegalMoves,
+          enemyHero = analysis.enemyHero;
       // 1. If I can win the game, do that.
 
+      var winningMove = myLegalMoves.filter(function (m) {
+        return m.end.toString() === enemyHero.pos.toString();
+      })[0];
+      if (winningMove) {
+        return winningMove;
+      }
       // 2. If I'm about to lose, try to stop it (or pick a random move)
 
       // 3. If I can capture a valuable piece, do that
@@ -44497,11 +44501,6 @@ var AI = function () {
             return inBounds(hex) && !occupiedHexStrings.includes(hex.toString());
           });
           legalMoves.push.apply(legalMoves, _toConsumableArray(movesArr));
-        } else {
-          console.log('not enough energy to deploy ', piece.type);
-          if (piece.type === 'node') {
-            debugger;
-          }
         }
       } else {
         piece.moveDirs.forEach(function (dir) {
@@ -44545,28 +44544,14 @@ var AI = function () {
       var myPieces = analysis.myPieces,
           myLegalMoves = analysis.myLegalMoves;
 
-      console.log(myLegalMoves);
-      var randomPiece = Object.keys(myLegalMoves)[Math.floor(Math.random() * Object.keys(myLegalMoves).length)];
-      var selectedPiece = myPieces.filter(function (p) {
-        return p.type === randomPiece && p.pos === 'reserve' || p.pos.toString() === randomPiece;
-      })[0];
-      var startPos = selectedPiece.pos;
-      var legalDestinations = myLegalMoves[randomPiece];
-      var endPos = legalDestinations[Math.floor(Math.random() * legalDestinations.length)];
+      var randMove = myLegalMoves[Math.floor(Math.random() * myLegalMoves.length)];
 
-      if (startPos === 'reserve') {
+      if (randMove.start === 'reserve') {
         // track the energy cost;
-        this.previousEnergyConsumed += selectedPiece.cost;
-        debugger;
+        this.previousEnergyConsumed += randMove.contents.cost;
       }
 
-      return {
-        player: this.player,
-        type: selectedPiece.type,
-        contents: selectedPiece,
-        start: startPos,
-        end: endPos
-      };
+      return randMove;
     }
   }, {
     key: 'playTwoMoves',

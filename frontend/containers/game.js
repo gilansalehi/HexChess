@@ -90,7 +90,7 @@ class Game extends Component {
     const id = this.gameId;
 
     if ( this.gameId === 'ai' || this.props.game.id === 'ai' ) {
-      // just play locally.  binding of 'this' is weird...
+      // just play locally.
       console.log('ai game');
     } else {
       if ( nextPosition !== lastPosition && currentPlayer === player.player ) {
