@@ -17,6 +17,9 @@ import {
 import {
   logoutRequest,
 } from '../actions/login';
+import {
+  playComputer,
+} from '../actions/gameIndex';
 
 class App extends Component {
   constructor(props) {
@@ -73,7 +76,7 @@ class App extends Component {
   }
 
   render() {
-    const { game, user } = this.props;
+    const { game, user, playComputer } = this.props;
     const nav = this.buildNav();
 
     return(
@@ -114,6 +117,7 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators({
     keydown: keydown,
     logoutRequest: logoutRequest,
+    playComputer: playComputer,
   }, dispatch);
 }
 

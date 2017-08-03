@@ -11,7 +11,7 @@ export default class GamesList extends Component {
     return {
       creator: '-',
       status: 'seeking',
-      challenger: 'Level 1 AI',
+      challenger: 'AI - lvl 1',
       winner: null,
       id: 'ai',
       created_at: new Date(),

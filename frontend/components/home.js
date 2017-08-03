@@ -55,16 +55,26 @@ export default class Home extends Component {
               </InnerHex>
             </Hex>
           </div>
-        </div>
-        <div className='even-column' style={evenColumn}>
           <div style={marginAdder}>
             <Hex noGlow={true} pos={['home']} size={hexSize} handleClick={ () => this.linkTo('/rules') }>
-              <InnerHex size={hexSize} background={'lightseagreen'}>
+              <InnerHex size={hexSize} background={'powderblue'}>
                 <h3>How do I play?</h3>
                 <p>
                   The <Link to={'/rules'} style={{textDecoration:'underline'}}>rules</Link> are
                   quite simple, but the gameplay is incredibly deep and complex.  It only takes a
                   minute to learn, give it a try!
+                </p>
+              </InnerHex>
+            </Hex>
+          </div>
+        </div>
+        <div className='even-column' style={evenColumn}>
+          <div style={marginAdder}>
+            <Hex noGlow={true} pos={['home']} size={hexSize} handleClick={ () => this.linkTo('/play') }>
+              <InnerHex size={hexSize} background={'mediumturquoise'}>
+                <h2>Play Now!</h2>
+                <p>
+                  Battle your friends or outwit the computer!
                 </p>
               </InnerHex>
             </Hex>

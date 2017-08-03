@@ -143,7 +143,9 @@ export default class AI {
       b === y ? b : b < y ? b + 1 : b - 1,
       c === z ? c : c < z ? c + 1 : c - 1,
     ];
-    const interposeBodyguard = myLegalMoves.filter(m => m.type !== 'hero' && m.end.toString() === barricade.toString());
+    const interposeBodyguard = myLegalMoves.filter(m => {
+      return m.type !== 'hero' && m.end.toString() === barricade.toString();
+    });
     // Strategy 3: capture the attacker
     const removeThreat = myLegalMoves.filter(m => m.end.toString() === attacker.start.toString());
     // pick a random move from among the options
