@@ -20,6 +20,9 @@ export default class AI {
     const myPositionStrings = myPieces.map(p => p.pos.toString());
 
     const myLegalMoves = myPieces.reduce((acc, piece) => {
+      if (acc.map(m => m.type + m.start).includes(piece.type + piece.pos) ) {
+        return acc; // don't double count deploys
+      }
       const legalMoves = this.getLegalMoves(piece, pieces).map(move => {
         return {
           player: piece.player,
@@ -143,9 +146,20 @@ export default class AI {
   randomMove(analysis) {
     // check types.
     const { myPieces, myLegalMoves } = analysis;
-    const randMove = myLegalMoves[
+    let randMove = myLegalMoves[
       Math.floor( Math.random() * myLegalMoves.length )
     ];
+    if ( randMove.type ==='node' ) {
+      const stalemateDanger = myLegalMoves.filter(m => {
+        return m.contents === randMove.contents;
+      }).length <= 1;
+      if ( stalemateDanger ) {
+        const noStaleMoves = myLegalMoves.filter(m => m.start !== 'reserve');
+        randMove = noStaleMoves[
+          Math.floor( Math.random() * noStaleMoves.length )
+        ];
+      }
+    }
 
     if ( randMove.start === 'reserve' ) { // track the energy cost;
       this.previousEnergyConsumed += randMove.contents.cost;
