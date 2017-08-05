@@ -1,5 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import { Util } from '../utils/utils.js';
+import Hex from './hex';
+import Piece from './piece';
+import VsBox from './vsBox';
 
 export default class InfoPanel extends Component {
   constructor(props) {
@@ -8,6 +11,7 @@ export default class InfoPanel extends Component {
     this.styles = styles();
     this.buildImage = this.buildImage.bind(this);
     this.buildText = this.buildText.bind(this);
+    this.getInfo = this.getInfo.bind(this);
   }
 
   buildImage() {
@@ -19,36 +23,70 @@ export default class InfoPanel extends Component {
   }
 
   buildText(text) {
-    if (!text) { return false }
-    return text.map((blob, i) => {
+    if (!text.length) { return (<div>Move Log</div>); }
+    return text.map((t, i) => {
+      const action = t.start.toString() === 'reserve' ? 'deployed' : 'moved';
+      const color = t.player === 'P1' ? 'skyblue' : 'palevioletred';
       return (
-        <p key={i}>{blob.text}</p>
+        <p key={i} style={{color}}>{`${t.player} ${action} a ${t.type} to ${t.end.map(x=>x+5)}`}</p>
       );
     });
   }
 
+  getInfo(selection) {
+    if ( !selection ) { return 'Selection Info: (Nothing Selected)'; }
+    const infoBlock = {
+      hero:    'Heroes can move and capture one hex in any direction, and deploy pieces to any vacant adjacent hex.',
+      pawn:    'Pawns can move one hex straight forward, and capture one hex diagonally forward.',
+      bishop:  'Bishops may move and capture in an X shape.',
+      rook:    'Rooks may move and capture in an inverted Y shape.',
+      queen:   'Queens may move and capture in a straight line in any direction.',
+      blueGem: 'Nodes cannot move.  Nodes provide energy needed to deploy your pieces.',
+      node:    'Nodes cannot move.  Nodes provide energy needed to deploy your pieces.',
+    };
+    return <div style={{textAlign:'left'}}>{ infoBlock[selection.contents.type] }</div>;
+  }
+
   render() {
     const { info, currentPlayer, remainingEnergy, remainingActions, game, gameInfo } = this.props;
-    const { image, text, container, flexPositioner } = this.styles;
-    const displayText = this.buildText(info);
-    const userStatus = game.player.player === 'observer' ? 'observing' :
-                       game.player.player === 'P1' ? 'playing Blue' : 'playing Red';
+    const { image, text, container, flexPositioner, vsBox } = this.styles;
+    const displayText = this.buildText(game.moveHistory);
+    const userStatus = game.player.player === 'observer' ? 'observing'    :
+                       game.player.player === 'P1'       ? 'playing Blue' :
+                                                           'playing Red';
+    const hexSize = window.innerHeight / 5;
+    const selectionImage = (
+      <Hex noGlow pos={['info']}
+        size={ window.innerHeight / 7 }
+        contents={game.selection && game.selection.contents}
+        handleClick={ e => false }
+      />
+    );
+    const winnerColor = game.winner === 'P1' ? 'Blue' :
+                        game.winner === 'P2' ? 'Red'  :
+                        '#666';
 
     return (
       <div className='info-panel' style={ container }>
         <div style={ flexPositioner }>
-          <div className='game-info'>
-            <span>You are { userStatus }</span>
-            <br></br>
-            <span style={{color: 'blue', fontSize: '24px' }}>
-              { gameInfo ? gameInfo.creator : 'loading...' }
-            </span>
-            <span> vs. </span>
-            <span style={{color: 'red', fontSize: '24px' }}>
-              { gameInfo && gameInfo.challenger ? gameInfo.challenger : 'waiting...' }
-            </span>
+          <div key={1} className='info-block'>
+            <h3 style={{margin: 0}}>Info</h3>
           </div>
-          <div className='info-log'>
+          <div key={2} className='game-info clearfix'>
+            <VsBox gameInfo={gameInfo} hexSize={hexSize} />
+          </div>
+          <div key={3} className='info-block' style={{ background: winnerColor }}>
+            { game.winner ? `${winnerColor} wins!` : `You are ${userStatus}`}
+          </div>
+          <div key={4} className='info-block'>
+            <div className='hex-positioner' style={{float:'right', marginRight: `-${hexSize / 4}px`}}>
+              { game.selection && selectionImage }
+            </div>
+            <div className='selection-info' style={{minHeight:window.innerHeight / 7 + 'px'}}>
+              { this.getInfo(game.selection) }
+            </div>
+          </div>
+          <div key={5} className='info-block move-history info-log'>
             { displayText }
           </div>
         </div>
@@ -62,10 +100,11 @@ function styles() {
     display: 'block',
     float: 'left',
     position: 'relative',
-    backgroundColor: '#666',
-    padding: '10px',
+    backgroundColor: '#333',
+    padding: '0 10px',
     width: '300px',
     height: '100%',
+    fontSize: '18px',
   };
   const text = {
     display: 'block',
@@ -89,6 +128,9 @@ function styles() {
     height: '100%',
     width: '100%',
   };
+  const vsBox = {
+    position: 'relative',
+  };
 
-  return { container, text, image, flexPositioner };
+  return { container, text, image, flexPositioner, vsBox };
 };

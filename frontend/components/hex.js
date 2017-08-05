@@ -183,4 +183,4 @@ const styles = (size = 100) => {
     opacity: `1`,
   };
   return { hex, slant, hitbox, triangle, scale };
-;}
+};

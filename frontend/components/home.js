@@ -57,7 +57,7 @@ export default class Home extends Component {
           </div>
           <div style={marginAdder}>
             <Hex noGlow={true} pos={['home']} size={hexSize} handleClick={ () => this.linkTo('/rules') }>
-              <InnerHex size={hexSize} background={'powderblue'}>
+              <InnerHex size={hexSize} background={'#869'}>
                 <h3>How do I play?</h3>
                 <p>
                   The <Link to={'/rules'} style={{textDecoration:'underline'}}>rules</Link> are
@@ -71,7 +71,7 @@ export default class Home extends Component {
         <div className='even-column' style={evenColumn}>
           <div style={marginAdder}>
             <Hex noGlow={true} pos={['home']} size={hexSize} handleClick={ () => this.linkTo('/play') }>
-              <InnerHex size={hexSize} background={'mediumturquoise'}>
+              <InnerHex size={hexSize} background={'lightseagreen'}>
                 <h2>Play Now!</h2>
                 <p>
                   Battle your friends or outwit the computer!

@@ -95,6 +95,7 @@ class Game extends Component {
     } else {
       if ( nextPosition !== lastPosition && currentPlayer === player.player ) {
         const gameState = {
+          moveHistory: nextProps.game.moveHistory,
           pieces: nextProps.pieces,
           actions: nextProps.player.actions,
           currentPlayer: nextProps.currentPlayer
@@ -114,16 +115,14 @@ class Game extends Component {
       if ( capture.type === 'hero' ) {
         declareWinner(player.player);
         postWinner(this.gameId, player.player)
-        this.props.updateInfo({ text: 'Congratulations, you win!' });
       }
       if ( capture.type === 'node' ) {
         const nodeCount = pieces.filter(p => {
           return p.type === 'node' && p.player === capture.player && p.pos === 'prison';
-        });
+        }).length;
         if (nodeCount >= 2) {
           declareWinner(player.player);
           postWinner(this.gameId, player.player);
-          this.props.updateInfo({ text: 'Congratulations, you win!' });
         }
       }
     }
@@ -159,15 +158,19 @@ class Game extends Component {
     const deploy = ['node', 'pawn', 'bishop', 'rook', 'queen'];
     const [move1, move2] = this.ai.playTwoMoves(position);
     console.log(move1, move2);
-    computerPlays(move1);
-    computerPlays(move2);
-    // THEN: pass turn back to player;
-    this.endTurn();
+    window.setTimeout(() => {
+      computerPlays(move1);
+    }, 500);
+    window.setTimeout(() => {
+      computerPlays(move2);
+      // THEN: pass turn back to player;
+      this.endTurn();
+    }, 1000);
   }
 
   handleClick(hex) {
-    if ( this.gameOver ) { return false; }
-    const { currentPlayer, selection, player, pieces } = this.props;
+    const { currentPlayer, selection, player, pieces, winner } = this.props;
+    if ( winner ) { return false; }
 
     if ( !selection ) {
       if ( hex.player === player.player ) {
@@ -306,7 +309,7 @@ class Game extends Component {
   }
 
   render() {
-    const { player, selection, pieces, currentPlayer, game, gameInfo } = this.props;
+    const { player, selection, pieces, currentPlayer, game, gameInfo, metadata } = this.props;
     const legalMoves = selection ? this.getLegalMoves(selection.contents) : [];
     const info = this.buildInfoPanel();
     const nodeCount = this.getNodeCount(player, pieces);
@@ -347,7 +350,7 @@ class Game extends Component {
         />
         <InfoPanel info={ info }
           game={game}
-          gameInfo={gameInfo}
+          gameInfo={ metadata }
           remainingEnergy={ nodeCount - player.energy }
           remainingActions={ 2 - player.actions }
           currentPlayer={ currentPlayer }
@@ -379,6 +382,9 @@ function mapStateToProps(state) {
     thisPlayer: game.thisPlayer,
     pieces: game.position,
     currentUser: state.user,
+    moveHistory: state.moveHistory,
+    metadata: game.metadata,
+    winner: game.winner,
   };
 }
 

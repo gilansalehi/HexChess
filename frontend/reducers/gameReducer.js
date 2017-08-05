@@ -75,6 +75,23 @@ const gameId = (state = null, action) => {
   return state;
 }
 
+const metadata = (state = {}, action) => {
+  switch (action.type) {
+    case 'JOIN_GAME_SUCCESS':
+      var { creator, challenger } = action.payload;
+      return { creator, challenger };
+      break;
+    case 'OBSERVE_GAME_SUCCESS':
+      var { creator, challenger } = action.payload;
+      return { creator, challenger };
+      break;
+    case 'FETCH_GAME_STATE_SUCCESS':
+      var { creator, challenger } = action.payload;
+      return { creator, challenger };
+  }
+  return state;
+}
+
 const allReducers = combineReducers({
   id: gameId,
   selection: SelectionReducer,
@@ -82,8 +99,9 @@ const allReducers = combineReducers({
   thisPlayer: thisPlayer,
   position: PositionReducer,
   currentPlayer: currentPlayer,
-  winner: winner,
   moveHistory: MoveHistory,
+  metadata: metadata,
+  winner: winner,
 });
 
 export default allReducers
