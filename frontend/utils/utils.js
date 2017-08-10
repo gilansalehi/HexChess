@@ -207,6 +207,10 @@ export const Util = {
       gamma: 'γ',
       infinity: '∞',
       sheild: '⏠',
+      ballotX: '✘',
+      cancelX: '🗙',
+      boxX: '╳',
+      timesX: '✖',
     };
 
     return elements[element];

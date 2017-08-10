@@ -15,7 +15,6 @@ export default class Home extends Component {
     this.props.history.push(destination)
   }
 
-
   render() {
     const hexSize = Math.max(250, window.innerHeight / 3);
     const oddColumn = {

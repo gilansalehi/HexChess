@@ -727,3 +727,18 @@ img {
 .bg-yellow {
   color: #fc4;
 }
+
+.node-list {
+  display: block;
+  position: absolute;
+  top: 0;
+  z-index: 99;
+}
+
+.node-list.p1 {
+  left: 0;
+}
+
+.node-list.p2 {
+  right: 8%;
+}
