@@ -77,6 +77,7 @@ class GamesController < ApplicationController
       @game.position = ({
           currentPlayer: 'P1',
           actions: 1,
+          moveHistory: [],
           pieces: default_position
         }).to_json
     end

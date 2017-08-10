@@ -109,20 +109,22 @@ class Game extends Component {
 
   checkForWin(destination) {
     const { pieces, player, declareWinner, postWinner } = this.props;
-    const capture = destination.contents;
+    const opponent = player.player === 'P1' ? 'P2' : 'P1';
+    const capture = pieces.filter(p => p.pos.toString() === destination.toString())[0];
 
     if ( capture ) { // a piece is captured
+      const winner = capture.player === opponent ? player.player : opponent;
       if ( capture.type === 'hero' ) {
-        declareWinner(player.player);
-        postWinner(this.gameId, player.player)
+        declareWinner(winner);
+        postWinner(this.gameId, winner);
       }
       if ( capture.type === 'node' ) {
         const nodeCount = pieces.filter(p => {
           return p.type === 'node' && p.player === capture.player && p.pos === 'prison';
         }).length;
         if (nodeCount >= 2) {
-          declareWinner(player.player);
-          postWinner(this.gameId, player.player);
+          declareWinner(winner);
+          postWinner(this.gameId, winner);
         }
       }
     }
@@ -157,11 +159,12 @@ class Game extends Component {
     const { pieces, computerPlays } = this.props;
     const deploy = ['node', 'pawn', 'bishop', 'rook', 'queen'];
     const [move1, move2] = this.ai.playTwoMoves(position);
-    console.log(move1, move2);
     window.setTimeout(() => {
+      this.checkForWin(move1.end);
       computerPlays(move1);
     }, 500);
     window.setTimeout(() => {
+      this.checkForWin(move2.end);
       computerPlays(move2);
       // THEN: pass turn back to player;
       this.endTurn();
@@ -209,7 +212,7 @@ class Game extends Component {
           this.hideReserve();
         } else {
           this.props.movePiece(selection, hex);
-          this.checkForWin(hex);
+          this.checkForWin(hex.pos);
         }
         // THEN HANDLE TURN LOGIC:
         this.props.incrementActions();

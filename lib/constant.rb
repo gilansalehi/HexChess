@@ -474,4 +474,13 @@ module Constant
       return DEFAULT_POSITION
     end
 
+    def default_game_state
+      {
+        moveHistory: [],
+        pieces: default_position,
+        actions: 1,
+        currentPlayer: 'P1',
+      }
+    end
+
 end

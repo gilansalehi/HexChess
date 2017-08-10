@@ -7,6 +7,7 @@ export default class AI {
 
     this.analyzeBoard = this.analyzeBoard.bind(this);
     this.calculateMove = this.calculateMove.bind(this);
+    this.bestCapture = this.bestCapture.bind(this);
     this.enoughEnergy = this.enoughEnergy.bind(this);
     this.getLegalMoves = this.getLegalMoves.bind(this);
     this.moveBlockCapture = this.moveBlockCapture.bind(this);
@@ -77,13 +78,42 @@ export default class AI {
       if ( saveTheHero ) { return saveTheHero }
     }
     // 3. If I can capture a valuable piece, do that
-
+    const bestCap = this.bestCapture(analysis);
+    if ( bestCap ) { return bestCap; }
     // 4. If I'm about to lose a valuable piece, save it
 
     // 5. Otherwise, develop my board.
 
     // 6. Otherwise, play a random legal move
     return this.smartRandomMove(analysis);
+  }
+
+  bestCapture(analysis) {
+    const { myLegalMoves, enemyPieces } = analysis;
+    const pieceValues = {
+      pawn:   1,
+      node:   2,
+      bishop: 3,
+      rook:   4,
+      queen:  6,
+      hero:   99,
+    };
+    const valueMap = enemyPieces.reduce((acc, p) => {
+      acc[p.pos.toString()] = pieceValues[p.type];
+      return acc;
+    }, {});
+    const getValue = pos => valueMap[pos.toString()] || 0;
+
+    const canCapture = myLegalMoves.filter(m => valueMap[m.end.toString()]);
+    if ( !canCapture.length ) { return false; }
+    // to be implemented once ai can determine which pieces are defended:
+    // const goodCapture = canCapture.filter(m => {
+    //   if (m.type === 'hero') { debugger; }
+    //   return pieceValues[m.type] <= valueMap[m.end.toString()];
+    // });
+    // if ( !goodCapture.length ) { return false; }
+    const sortedByValue = canCapture.sort((a, b) => getValue(a.end) < getValue(b.end) ? -1 : 1);
+    return sortedByValue[0];
   }
 
   enoughEnergy(piece, position) {
