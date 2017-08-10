@@ -3,6 +3,7 @@ import { Util } from '../utils/utils.js';
 import Hex from './hex';
 import Piece from './piece';
 import VsBox from './vsBox';
+import SelectionInfo from './selectionInfo';
 
 export default class InfoPanel extends Component {
   constructor(props) {
@@ -54,7 +55,8 @@ export default class InfoPanel extends Component {
           <div style={{marginTop:'10px'}}>
             Hint: { hints[Math.floor( Math.random() * hints.length )] }
           </div>
-        </div>);
+        </div>
+      );
     }
 
     const infoBlock = {
@@ -101,12 +103,7 @@ export default class InfoPanel extends Component {
             { game.winner ? `${winnerColor} wins!` : `You are ${userStatus}`}
           </div>
           <div key={4} className='info-block selection-info-box'>
-            <div className='hex-positioner' style={{float:'right', marginRight: `-${hexSize / 4}px`}}>
-              { game.selection && selectionImage }
-            </div>
-            <div className='selection-info' style={{minHeight:window.innerHeight / 7 + 'px'}}>
-              { this.getInfo(game.selection) }
-            </div>
+            <SelectionInfo selection={game.selection} hexSize={hexSize} />
           </div>
           <div key={5} className='info-block move-history info-log'>
             { displayText }
