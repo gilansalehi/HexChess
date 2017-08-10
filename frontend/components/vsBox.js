@@ -23,7 +23,7 @@ export default class VsBox extends Component {
         <li key={n + color} className='clearfix' title={`Captured Nodes: ${capturedNodes}/3`}>
           <div style={{float: player === 'P1' ? 'left' : 'right', margin:'0 0 5px 0'}}>
             <MiniHex scale={hexSize / 6}
-              contents={captured ? '🗙' : '⎔'}
+              contents={captured ? '✗' : '⎔'}
               color={color}
             />
           </div>

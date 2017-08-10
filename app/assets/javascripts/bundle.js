@@ -24756,10 +24756,13 @@ function styles(scale, color) {
 
   var hexMiniContents = {
     position: 'absolute',
-    left: '47%',
-    top: '20%',
-    transform: 'translateX(-50%)',
-    fontSize: height
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    height: '100%',
+    fontSize: scale / 2,
+    lineHeight: scale / 2
   };
 
   var specialContents = {
@@ -44444,7 +44447,7 @@ var VsBox = function (_Component) {
             'div',
             { style: { float: player === 'P1' ? 'left' : 'right', margin: '0 0 5px 0' } },
             _react2.default.createElement(_miniHex2.default, { scale: hexSize / 6,
-              contents: captured ? '🗙' : '⎔',
+              contents: captured ? '✗' : '⎔',
               color: color
             })
           )

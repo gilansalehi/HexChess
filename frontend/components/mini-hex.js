@@ -7,7 +7,7 @@ export default class MiniHex extends Component {
     const { scale, color } = this.props;
     this.styles = styles(scale, color);
   }
-  
+
   render() {
     const { contents, special } = this.props;
     const { hexMiniLeft, hexMiniCenter, hexMiniRight, hexMiniContainer, hexMiniContents, specialContents } = this.styles;
@@ -25,7 +25,7 @@ export default class MiniHex extends Component {
 function styles(scale, color) {
   const height = scale * .866 / 2;
   const width = scale / 4;
-  
+
   const hexMiniLeft = {
     display: 'inline-block',
     height: 0,
@@ -36,7 +36,7 @@ function styles(scale, color) {
     borderBottom: height + 'px solid transparent',
     borderLeft: width + 'px solid transparent',
   };
-  
+
   const hexMiniCenter =  {
     display: 'inline-block',
     borderRight: width + 'px solid ' + color,
@@ -44,7 +44,7 @@ function styles(scale, color) {
     borderBottom: height + 'px solid ' + color,
     borderLeft: width + 'px solid ' + color,
   };
-  
+
   const hexMiniRight = {
     display: 'inline-block',
     height: 0,
@@ -55,22 +55,25 @@ function styles(scale, color) {
     borderBottom: height + 'px solid transparent',
     borderLeft: width + 'px solid ' + color,
   };
-  
+
   const hexMiniContainer = {
     display: 'block',
     height: scale * .866,
     width: scale * 1.5,
     position: 'relative',
   };
-  
+
   const hexMiniContents = {
-    position: 'absolute',
-    left: '47%',
-    top: '20%',
-    transform: 'translateX(-50%)',
-    fontSize: height,
+    position:'absolute',
+    display:'flex',
+    alignItems:'center',
+    justifyContent:'center',
+    width:'100%',
+    height: '100%',
+    fontSize: scale / 2,
+    lineHeight: scale / 2,
   };
-  
+
   const specialContents = {
     position: 'absolute',
     left: '47%',
@@ -79,6 +82,6 @@ function styles(scale, color) {
     fontSize: height * 1.5,
     lineHeight: height * 1.5 + 'px',
   };
-  
+
   return { hexMiniLeft, hexMiniCenter, hexMiniRight, hexMiniContainer, hexMiniContents, specialContents };
-} 
+}
