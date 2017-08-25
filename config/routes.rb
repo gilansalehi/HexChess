@@ -2,13 +2,13 @@ Rails.application.routes.draw do
 
   get 'hello_world', to: 'hello_world#index'
   root to: "static_pages#root"
-
   resources :users, only: [:new, :create, :show]
   resource :session, only: [:new, :create, :destroy]
 
   namespace :api, defaults: { format: :json } do
   end
 
+  get '/games/ai', to: "static_pages#root"
   # Heroku only supports one port... will need a different service when upgrading to websockets.
   mount ActionCable.server => '/cable'
 

@@ -18,13 +18,15 @@ export default class Reserve extends Component {
   buildPieceList() {
     const { player, pieces } = this.props; // pieces = this.props[player]
     const { text } = Util;
+    const nodeCount = this.context.getNodeCount(player, pieces);
+    const remainingEnergy = nodeCount - player.energy;
     const thisPlayer = player.player;
-
+    const ordering = ['node', 'pawn', 'bishop', 'rook', 'queen'];
     let pieceMap = {};
     let uniquePieces = [];
     let pieceList = pieces.filter((p) => {
       return p.player === thisPlayer && p.pos === 'reserve'
-    });
+    }).sort((a, b) => ordering.indexOf(a.type) <= ordering.indexOf(b.type) ? -1 : 1);
 
     pieceList.forEach((p) => {
       if ( !pieceMap[p.type] ) { pieceMap[p.type] = 0; uniquePieces.push(p); }
@@ -36,8 +38,9 @@ export default class Reserve extends Component {
       const special = piece.type === 'node';
       return (
         <li className='reserve-li clearfix' key={ i }>
-          <div className='reserve-energy-cost'>
-            <strong className='reserve-energy-cost-value'>{ piece.cost }</strong>
+          <div className={(piece.cost > remainingEnergy) ? 'grayed-out' : 'hidden'} title='Insufficient Energy'></div>
+          <div className='reserve-energy-cost' title='Energy Cost'>
+            <strong className='reserve-energy-cost-value' >{ piece.cost }</strong>
           </div>
           <div className='reserve-hex-holder clearfix'>
             <Hex
@@ -46,7 +49,7 @@ export default class Reserve extends Component {
               contents={ piece }
             />
           </div>
-          <div className='reserve-counter-positioner'>
+          <div className='reserve-counter-positioner' title='Copies in Reserve'>
             <MiniHex contents={ contents } scale={ 40 } color={ '#39b' } special={ special } />
           </div>
         </li>
@@ -87,4 +90,5 @@ export default class Reserve extends Component {
 Reserve.contextTypes = {
   hideReserve: React.PropTypes.func,
   deployPiece: React.PropTypes.func,
+  getNodeCount: React.PropTypes.func,
 };

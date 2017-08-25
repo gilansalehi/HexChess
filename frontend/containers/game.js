@@ -151,6 +151,7 @@ class Game extends Component {
       toggleReserve() { self.props.toggleReserve(); },
       deployPiece(x, y, z) { self.deployPiece(x, y, z); },
       resetEnergy() { self.props.resetEnergy(); },
+      getNodeCount(player, pieces) { return self.getNodeCount(player, pieces) },
       player: this.props.player,
     }
   }
@@ -369,6 +370,7 @@ Game.childContextTypes = {
   deployPiece: React.PropTypes.func,
   resetEnergy: React.PropTypes.func,
   toggleReserve: React.PropTypes.func,
+  getNodeCount: React.PropTypes.func,
   player: React.PropTypes.object,
 };
 

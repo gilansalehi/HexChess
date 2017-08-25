@@ -78,6 +78,7 @@ export default class Board extends Component {
           return (
             <Hex key={ key }
               size={hexSize}
+              noGlow={ !this.inBounds(pos) }
               pos={pos} col={ x + 5 }
               contents={ contents }
               selected={ selected }
@@ -127,7 +128,6 @@ export default class Board extends Component {
       </div>
     );
   }
-
 }
 
 Board.contextTypes = {
