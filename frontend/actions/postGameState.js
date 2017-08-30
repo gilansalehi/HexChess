@@ -17,6 +17,11 @@ function postGameState(gameId, gameState, dispatch) {
     // Rails parses the JSON automatically so we must double-stringify to store gamestate as a string
     data: JSON.stringify({ game: { position: JSON.stringify(gameState) } }),
     success: function(json) {
+      var { currentPlayer } = JSON.parse(json.position);
+      if ( json.player !== currentPlayer ) {
+        // set shouldFetch to true
+        dispatch({ type: 'BEGIN_ACCEPTING_FETCH_DATA' });
+      }
       dispatch({ type: 'POST_GAME_STATE_SUCCESS', payload: json });
     },
     error: function(msg) {

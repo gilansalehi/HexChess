@@ -4,15 +4,20 @@ export const fetchGameStateData = (gameId) => {
     return fetchGameState(gameId).then(([response, json]) => {
       if (response.status === 200) {
         const { currentPlayer, thisPlayer } = getState().game;
+        var serverCurrentPlayer = JSON.parse(json.position).currentPlayer;
+
         if (currentPlayer !== thisPlayer) {
-          // only dispatch an action if it's not our turn yet, because of asynchronicity
+          // not our turn according to client-side data
           dispatch(fetchGameStateSuccess(json));
+        }
+        if ( serverCurrentPlayer === thisPlayer ) {
+          // server says that it is now our turn
+          dispatch({ type: 'STOP_ACCEPTING_FETCH_DATA' });
         }
       } else {
         dispatch(fetchGameStateError(json))
       }
-    }
-    )
+    })
   }
 }
 

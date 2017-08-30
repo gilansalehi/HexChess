@@ -68,9 +68,8 @@ class Game extends Component {
       this.continuallyFetchGameState = false;
     } else {
       this.props.fetchGameStateData(this.gameId);
-
       this.continuallyFetchGameState = () => {
-        if ( this.props.currentPlayer !== this.props.player.player && !this.props.game.winner ) {
+        if ( this.props.shouldFetch && !this.props.game.winner ) {
           this.fetchGameState(this.gameId);
         }
         window.setTimeout(this.continuallyFetchGameState, 1000);
@@ -103,7 +102,7 @@ class Game extends Component {
 
         this.props.postGameStateData(id, gameState);
       }
-      // if it became my turn, ensure I have legal moves
+      // TODO: if it became my turn, ensure I have legal moves
     }
   }
 
@@ -390,6 +389,7 @@ function mapStateToProps(state) {
     moveHistory: state.moveHistory,
     metadata: game.metadata,
     winner: game.winner,
+    shouldFetch: game.shouldFetch,
   };
 }
 

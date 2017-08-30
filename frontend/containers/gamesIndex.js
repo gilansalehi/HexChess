@@ -52,7 +52,7 @@ class GamesIndex extends Component {
 
   setupActionCable() {
     const self = this;
-    console.log('Setting up Action Cable.' );
+    console.log('Setting up Action Cable.');
     App.games = App.cable.subscriptions.create("GamesChannel", {
       connected:    function() { console.log('GAMES_INDEX_SUCCESSFULLY_CONNECTED'); },
       disconnected: function() { console.log('GAMES_INDEX_DISCONNECTED'); },

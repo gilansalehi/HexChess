@@ -92,6 +92,16 @@ const metadata = (state = {}, action) => {
   return state;
 }
 
+const shouldFetch = (state = true, action) => {
+  switch (action.type) {
+    case 'STOP_ACCEPTING_FETCH_DATA':
+      return false;
+    case 'BEGIN_ACCEPTING_FETCH_DATA':
+      return true;
+  }
+  return state;
+}
+
 const allReducers = combineReducers({
   id: gameId,
   selection: SelectionReducer,
@@ -102,6 +112,7 @@ const allReducers = combineReducers({
   moveHistory: MoveHistory,
   metadata: metadata,
   winner: winner,
+  shouldFetch: shouldFetch,
 });
 
 export default allReducers
